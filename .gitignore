@@ -108,3 +108,4 @@ releases
 .DS_Store
 
 dump.rdb
+.vercel
