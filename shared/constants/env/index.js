@@ -1,0 +1,6 @@
+import config from './production'
+
+export const ENV = config.ENV
+export const SERVER_URL = config.SERVER_URL
+export const HOST_URL = config.HOST_URL
+export const API_URL = config.API_URL

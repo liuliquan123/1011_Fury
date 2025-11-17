@@ -1,0 +1,6 @@
+{
+  "ENV": "production",
+  "SERVER_URL": "https://www.satoshi.so",
+  "HOST_URL": "https://www.satoshi.so",
+  "API_URL": "https://www.satoshi.so"
+}

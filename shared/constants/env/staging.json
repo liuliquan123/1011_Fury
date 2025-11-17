@@ -1,0 +1,6 @@
+{
+  "ENV": "staging",
+  "SERVER_URL": "https://api.satoshi.so",
+  "HOST_URL": "https://www.satoshi.so",
+  "API_URL": "https://api.satoshi.so"
+}
