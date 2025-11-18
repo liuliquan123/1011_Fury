@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'utils/withRouter'
 import Title from 'components/DocumentTitle'
+import Header from 'components/Header'
 import 'resources/fonts/style.css'
 import { Buffer } from 'safe-buffer'
 import darkThemeStyle from 'resources/themes/dark'
@@ -42,6 +43,7 @@ const Root = ({ location, history, theme }) => {
     <Fragment>
       <Title render={title} />
       <div className={classNames(styles.root)}>
+        <Header />
         <Outlet />
       </div>
     </Fragment>
