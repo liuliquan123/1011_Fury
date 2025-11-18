@@ -14,11 +14,12 @@ html {
   font-size: 16px;
   touch-action: manipulation;
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+
+  /* -webkit-user-select: none; */
+  /* -khtml-user-select: none; */
+  /* -moz-user-select: none; */
+  /* -ms-user-select: none; */
+  /* user-select: none; */
 }
 
 /* Sections
@@ -36,8 +37,8 @@ body {
   /* color: var(--text-color); */
   /* color: #f4f5f6; */
 
-  overflow: hidden;
-  touch-action: none;
+  /* overflow: hidden; */
+  /* touch-action: none; */
 
   &::-webkit-scrollbar {
     width: 0;

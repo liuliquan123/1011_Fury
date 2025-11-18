@@ -7,7 +7,21 @@ const Landing = () => {
   return (
     <Fragment>
       <div className={styles.landing}>
-        Hello world!
+        <div className={styles.banner}>
+          <div className={styles.content}>
+            <div className={styles.title}>
+              Gate Welcome to Satoshi's Fury
+            </div>
+            <div className={styles.text}>
+              Join thousands fighting for justice in the crypto space
+            </div>
+            <div className={styles.button}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>SUBMIT YOUR LOSS</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </Fragment>
   )
