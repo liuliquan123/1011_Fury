@@ -10,6 +10,17 @@
 }
 
 @font-face {
+    font-family: 'Google Sans Code';
+    src: url('GoogleSansCode-bold.eot');
+    src: local('Google Sans Code'), local('GoogleSansCode-bold'),
+        url('GoogleSansCode-bold.eot?#iefix') format('embedded-opentype'),
+        url('GoogleSansCode-bold.woff') format('woff'),
+        url('GoogleSansCode-bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Jersey10';
     src: url('Jersey10-Regular.eot');
     src: local('Jersey10'), local('Jersey10-Regular'),

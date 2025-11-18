@@ -85,4 +85,102 @@
       }
     }
   }
+
+  .sections {
+    width: 100%;
+    background: #141519;
+    padding: 30px 60px;
+
+    .section {
+      .sectionTitle {
+        color: #FFF;
+        font-family: "Jersey10";
+        font-size: 36px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 68px;
+      }
+
+      &.platform {
+
+      }
+    }
+  }
+
+  .footer {
+    width: 100%;
+    background: #E9FD66;
+    padding: 30px 60px 0;
+
+    .content {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-top: 20px;
+      padding-bottom: 40px;
+
+      .branding {
+        display: flex;
+        align-items: center;
+
+        .logo {
+          width: 24px;
+          height: 24px;
+          margin-right: 10px;
+        }
+
+        .text {
+          color: black;
+          font-family: "Jersey10";
+          font-size: 32px;
+        }
+      }
+
+      .social {
+        width: 200px;
+
+        .socialTitle {
+          color: #000;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 24px;
+          margin-bottom: 30px;
+        }
+
+        .socialLinks {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+
+          .socialLink {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background: black;
+          }
+        }
+      }
+    }
+
+    .bottom {
+      display: flex;
+      align-items: center;
+      padding: 20px 0;
+      justify-content: space-between;
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 16px;
+      font-family: "Google Sans Code";
+      border-top: 1px solid rgba(0, 0, 0, 0.40);
+
+      .privacyButton, .tosButton {
+        cursor: pointer;
+        display: inline;
+      }
+    }
+  }
 }
