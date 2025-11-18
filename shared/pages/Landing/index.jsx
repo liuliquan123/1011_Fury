@@ -62,19 +62,230 @@ const Landing = () => {
               </div>
             </div>
           </div>
-          <div className={classNames(styles.section, styles.feature)}>
+          <div className={classNames(styles.section, styles.featured)}>
             <div className={styles.sectionTitle}>
               _> Featured Cases
+            </div>
+            <div className={styles.sectionContent}>
+              <div className={styles.cases}>
+                <div className={styles.case}>
+                  <div className={styles.caseTitle}>
+                    <div className={styles.text}>Binance BTC/USDT - Illegal Contract Liquidation</div>
+                    <div className={styles.status}>Under Legal Review</div>
+                  </div>
+                  <div className={styles.caseCards}>
+                    <div className={styles.caseCard}>
+                      <div className={styles.caseContent}>
+                        Binance
+                      </div>
+                      <div className={styles.caseName}>
+                        Exchange
+                      </div>
+                    </div>
+                    <div className={styles.caseCard}>
+                      <div className={styles.caseContent}>
+                        12,547
+                      </div>
+                      <div className={styles.caseName}>
+                        Participants
+                      </div>
+                    </div>
+                    <div className={styles.caseCard}>
+                      <div className={styles.caseContent}>
+                        $18.5M
+                      </div>
+                      <div className={styles.caseName}>
+                        Total Damage
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.pagination}>
+                <div className={styles.paginationContent}>
+                  <div className={styles.leftButton}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
+                      <path d="M0.113852 5.56483C0.103751 5.57951 0.0957266 5.59583 0.0869215 5.6111C0.0387433 5.69507 0.0108409 5.78666 0.00267635 5.8804C-0.0138618 6.06774 0.0465054 6.26109 0.189811 6.40452L5.46894 11.6837C5.7261 11.9406 6.14327 11.9398 6.40047 11.683C6.65744 11.4258 6.65745 11.0093 6.40047 10.7521L2.01627 6.36792H13.794C14.1578 6.36792 14.4528 6.07295 14.4528 5.70915C14.4528 5.34537 14.1578 5.05038 13.794 5.05038H2.47479L6.40047 1.1247C6.65768 0.867487 6.65762 0.449726 6.40047 0.192476C6.1432 -0.0644227 5.72607 -0.0639614 5.46894 0.193166L0.190502 5.47161C0.16168 5.50047 0.136207 5.5324 0.113852 5.56483Z" fill="white" />
+                    </svg>
+                  </div>
+                  <div className={styles.dots}>
+
+                  </div>
+                  <div className={styles.rightButton}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
+                      <path d="M14.272 5.48209C14.3215 5.53372 14.3599 5.59201 14.3894 5.65334C14.4053 5.68642 14.418 5.72074 14.428 5.75554C14.4335 5.77454 14.4402 5.79353 14.4439 5.81285C14.484 6.02032 14.4236 6.24327 14.263 6.40395L8.98455 11.6824C8.72737 11.9396 8.31027 11.9401 8.05302 11.6831C7.79607 11.4258 7.79587 11.008 8.05302 10.7509L12.4358 6.36804L0.65878 6.36873C0.295167 6.36873 0.000307519 6.07351 1.08056e-05 5.70996C1.06422e-05 5.34617 0.294985 5.05119 0.65878 5.05119L11.9787 5.0505L8.05233 1.12413C7.79558 0.866846 7.79594 0.449676 8.05302 0.192598C8.31011 -0.0643469 8.72662 -0.0641074 8.98386 0.192598L14.2637 5.47242C14.2666 5.47532 14.2692 5.47911 14.272 5.48209Z" fill="black" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={classNames(styles.section, styles.intro)}>
+            <div className={styles.sectionContent}>
+              <div className={styles.feature}>
+                <div className={styles.featureIcon}>
+
+                </div>
+                <div className={styles.featureTitle}>
+                  Collective Action
+                </div>
+                <div className={styles.featureText}>
+                  Join forces with others who suffered similar losses
+                </div>
+              </div>
+
+              <div className={styles.feature}>
+                <div className={styles.featureIcon}>
+
+                </div>
+                <div className={styles.featureTitle}>
+                  Secure & Private
+                </div>
+                <div className={styles.featureText}>
+                  Your data is encrypted and stored securely
+                </div>
+              </div>
+
+              <div className={styles.feature}>
+                <div className={styles.featureIcon}>
+
+                </div>
+                <div className={styles.featureTitle}>
+                  AI-Powered Matching
+                </div>
+                <div className={styles.featureText}>
+                  Automatically matched to relevant cases
+                </div>
+              </div>
             </div>
           </div>
           <div className={classNames(styles.section, styles.community)}>
             <div className={styles.sectionTitle}>
               _> Join Our Community
             </div>
+            <div className={styles.sectionContent}>
+              <div className={styles.socialAccount}>
+                <div className={styles.socialAccountInfo}>
+                  <div className={styles.socialAccountIcon}>
+
+                  </div>
+                  <div className={styles.socialAccountTitle}>
+                    Follow us on Twitter
+                  </div>
+                  <div className={styles.socialAccountText}>
+                    Get the latest updates on cases, announcements, and compensation progress
+                  </div>
+                </div>
+                <div className={styles.socialAccountAction}>
+                  Go
+                </div>
+              </div>
+              <div className={styles.socialAccount}>
+                <div className={styles.socialAccountInfo}>
+                  <div className={styles.socialAccountIcon}>
+
+                  </div>
+                  <div className={styles.socialAccountTitle}>
+                    Join Telegram Channel
+                  </div>
+                  <div className={styles.socialAccountText}>
+                    Connect with other users, get instant support, and participate in community discussions
+                  </div>
+                </div>
+                <div className={styles.socialAccountAction}>
+                  Go
+                </div>
+              </div>
+              <div className={styles.socialAccount}>
+                <div className={styles.socialAccountInfo}>
+                  <div className={styles.socialAccountIcon}>
+
+                  </div>
+                  <div className={styles.socialAccountTitle}>
+                    Join Discord Server
+                  </div>
+                  <div className={styles.socialAccountText}>
+                    Chat with the community, get support, and participate in governance
+                  </div>
+                </div>
+                <div className={styles.socialAccountAction}>
+                  Go
+                </div>
+              </div>
+              <div className={styles.socialAccount}>
+                <div className={styles.socialAccountInfo}>
+                  <div className={styles.socialAccountIcon}>
+
+                  </div>
+                  <div className={styles.socialAccountTitle}>
+                    Read on Medium
+                  </div>
+                  <div className={styles.socialAccountText}>
+                    In-depth articles, case studies, and legal insights
+                  </div>
+                </div>
+                <div className={styles.socialAccountAction}>
+                  Go
+                </div>
+              </div>
+            </div>
           </div>
           <div className={classNames(styles.section, styles.questions)}>
             <div className={styles.sectionTitle}>
               _> Frequently Asked Questions
+            </div>
+            <div className={styles.sectionContent}>
+              <div className={styles.question}>
+                <div className={styles.questionTitle}>
+                  <div className={styles.questionTitleText}>
+                    How does the collective lawsuit work?
+                  </div>
+                  <div className={styles.questionTitleIcon}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="2" viewBox="0 0 14 2" fill="none">
+                      <path d="M14 2H0V0H14V2Z" fill="white"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className={styles.questionContent}>
+                  We automatically match your loss report with similar cases. When enough evidence is gathered, our legal team will initiate proceedings on behalf of all participants.
+                </div>
+              </div>
+              <div className={styles.question}>
+                <div className={styles.questionTitle}>
+                  <div className={styles.questionTitleText}>
+                    Is my data secure?
+                  </div>
+                  <div className={styles.questionTitleIcon}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.question}>
+                <div className={styles.questionTitle}>
+                  <div className={styles.questionTitleText}>
+                    What are the costs involved?
+                  </div>
+                  <div className={styles.questionTitleIcon}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.question}>
+                <div className={styles.questionTitle}>
+                  <div className={styles.questionTitleText}>
+                    How long does the process take?
+                  </div>
+                  <div className={styles.questionTitleIcon}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

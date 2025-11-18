@@ -134,6 +134,287 @@
           }
         }
       }
+
+      &.featured {
+        margin-bottom: 60px;
+
+        .sectionContent {
+          padding-bottom: 40px;
+          background: #232326;
+
+          .cases {
+
+            .case {
+              display: flex;
+              padding: 40px 24px;
+              flex-direction: column;
+              align-items: center;
+              gap: 44px;
+              align-self: stretch;
+
+
+              .caseTitle {
+                width: 100%;
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                flex-wrap: wrap;
+
+                .text {
+                  color: #FFF;
+                  font-family: "Google Sans Code";
+                  font-size: 24px;
+                  font-style: normal;
+                  font-weight: 600;
+                  line-height: 32px;
+                }
+
+                .status {
+                  color: #37D375;
+                  font-family: "Google Sans Code";
+                  font-size: 16px;
+                  font-style: normal;
+                  font-weight: 600;
+                  line-height: 24px;
+                  background: rgba(55, 211, 117, 0.12);
+                  padding: 10px;
+                }
+              }
+
+              .caseCards {
+                width: 100%;
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+
+                .caseCard {
+                  display: flex;
+                  padding: 16px;
+                  flex: 1 0 0;
+                  background: #141519;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+
+                  .caseContent {
+                    color: #E9FD66;
+                    font-family: "Jersey10";
+                    font-size: 40px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 40px;
+                  }
+
+                  .caseName {
+                    color: #A7ADB9;
+                    text-align: center;
+                    font-family: "Google Sans Code";
+                    font-size: 14px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 24px;
+                  }
+                }
+              }
+            }
+          }
+
+          .pagination {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+
+            .paginationContent {
+              display: flex;
+
+              .leftButton {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid white;
+                cursor: pointer;
+              }
+
+              .dots {
+                padding: 0 20px;
+              }
+
+              .rightButton {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid white;
+                cursor: pointer;
+                background: white;
+              }
+            }
+          }
+        }
+      }
+
+      &.intro {
+        margin-bottom: 60px;
+
+        .sectionContent {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+
+          .feature {
+            background: #232326;
+            padding: 20px;
+            flex: 1;
+
+            .featureIcon {
+              width: 40px;
+              height: 40px;
+              background: black;
+            }
+
+            .featureTitle {
+              color: #FFF;
+              font-family: "Google Sans Code";
+              font-size: 20px;
+              font-style: normal;
+              font-weight: 600;
+              line-height: 28px;
+              margin-top: 10px;
+            }
+
+            .featureText {
+              color: #A7ADB9;
+              font-family: "Google Sans Code";
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 20px;
+              margin-top: 10px;
+            }
+          }
+        }
+      }
+
+      &.community {
+        margin-bottom: 60px;
+
+        .sectionContent {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+
+          .socialAccount {
+            background: #232326;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .socialAccountInfo {
+              .socialAccountIcon {
+                width: 40px;
+                height: 40px;
+                background: black;
+              }
+
+              .socialAccountTitle {
+                color: #FFF;
+                font-family: "Google Sans Code";
+                font-size: 20px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 28px;
+                margin-top: 10px;
+              }
+
+              .socialAccountText {
+                color: #A7ADB9;
+                font-family: "Google Sans Code";
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 20px;
+                margin-top: 10px;
+              }
+            }
+
+            .socialAccountAction {
+              margin-top: 20px;
+              display: flex;
+              height: 40px;
+              padding: 20px 24px;
+              justify-content: center;
+              align-items: center;
+              gap: 10px;
+              align-self: stretch;
+              border: 1px solid #E9FD66;
+              cursor: pointer;
+
+              color: #E9FD66;
+              font-family: "Google Sans Code";
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 500;
+              line-height: 24px; /* 150% */
+              text-transform: lowercase;
+            }
+          }
+        }
+      }
+
+      &.questions {
+        margin-bottom: 60px;
+
+        .sectionContent {
+          background: #232326;
+
+          .question {
+            padding: 20px;
+            cursor: pointer;
+
+            .questionTitle {
+              display: flex;
+              align-items: flex-start;
+              justify-content: space-between;
+
+              .questionTitleText {
+                color: #FFF;
+                font-family: "Google Sans Code";
+                font-size: 22px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 32px;
+              }
+
+              .questionTitleIcon {
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+            }
+
+            .questionContent {
+              margin-top: 20px;
+              padding: 10px;
+              background: #141519;
+              color: #A7ADB9;
+              font-family: "Google Sans Code";
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 24px;
+            }
+          }
+        }
+      }
     }
   }
 
