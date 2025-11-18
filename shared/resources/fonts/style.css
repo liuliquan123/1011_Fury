@@ -1,7 +1,18 @@
 @font-face {
+    font-family: 'Google Sans Code';
+    src: url('GoogleSansCode-Regular.eot');
+    src: local('Google Sans Code'), local('GoogleSansCode-Regular'),
+        url('GoogleSansCode-Regular.eot?#iefix') format('embedded-opentype'),
+        url('GoogleSansCode-Regular.woff') format('woff'),
+        url('GoogleSansCode-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Jersey10';
     src: url('Jersey10-Regular.eot');
-    src: local('Jersey10-Regular'),
+    src: local('Jersey10'), local('Jersey10-Regular'),
         url('Jersey10-Regular.eot?#iefix') format('embedded-opentype'),
         url('Jersey10-Regular.woff') format('woff'),
         url('Jersey10-Regular.ttf') format('truetype');

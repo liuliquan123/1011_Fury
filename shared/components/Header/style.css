@@ -45,6 +45,7 @@
       justify-content: center;
       font-weight: 500;
       cursor: pointer;
+      font-family: "Google Sans Code";
       /* transition: all 0.2s ease; */
 
       .text {
