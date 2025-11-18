@@ -102,7 +102,37 @@
       }
 
       &.platform {
+        margin-bottom: 60px;
 
+        .sectionContent {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+
+          .statistic {
+            flex: 1;
+            padding: 20px 24px;
+            background: #232326;
+
+            .statisticNumber {
+              color: #E9FD66;
+              font-family: "Jersey10";
+              font-size: 48px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 48px;
+            }
+
+            .statisticName {
+              color: #A7ADB9;
+              font-family: "Google Sans Code";
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 20px;
+            }
+          }
+        }
       }
     }
   }

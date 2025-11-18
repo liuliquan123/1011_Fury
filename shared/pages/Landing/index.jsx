@@ -27,6 +27,40 @@ const Landing = () => {
             <div className={styles.sectionTitle}>
               _> platform-statistics
             </div>
+            <div className={styles.sectionContent}>
+              <div className={styles.statistic}>
+                <div className={styles.statisticNumber}>
+                  12
+                </div>
+                <div className={styles.statisticName}>
+                  Active Cases
+                </div>
+              </div>
+              <div className={styles.statistic}>
+                <div className={styles.statisticNumber}>
+                  27,100
+                </div>
+                <div className={styles.statisticName}>
+                  Participants
+                </div>
+              </div>
+              <div className={styles.statistic}>
+                <div className={styles.statisticNumber}>
+                  $101.5M
+                </div>
+                <div className={styles.statisticName}>
+                  Total Damage
+                </div>
+              </div>
+              <div className={styles.statistic}>
+                <div className={styles.statisticNumber}>
+                  1250K
+                </div>
+                <div className={styles.statisticName}>
+                  Token Distributed
+                </div>
+              </div>
+            </div>
           </div>
           <div className={classNames(styles.section, styles.feature)}>
             <div className={styles.sectionTitle}>
