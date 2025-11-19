@@ -1,8 +1,16 @@
 import React, { useEffect, useState, useCallback, Fragment } from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'utils/withRouter'
 import classNames from 'classnames'
+import * as actions from 'actions/auth'
 import styles from './style.css'
 
-const Login = () => {
+const Login = ({ actions }) => {
+  useEffect(() => {
+    actions.initializeWeb3Auth()
+  }, [])
+
   return (
     <div className={styles.login}>
       <div className={styles.container}>
@@ -54,4 +62,15 @@ const Login = () => {
   )
 }
 
-export default Login
+export default withRouter(
+  connect(
+    state => ({
+
+    }),
+    dispatch => ({
+      actions: bindActionCreators({
+        ...actions
+      }, dispatch)
+    })
+  )(Login)
+)

@@ -67,6 +67,16 @@ const baseConfig = {
           }
         ]
       },
+      // {
+      //   test: /node_modules\/@toruslabs\/base-controllers/,
+      //   parser: {
+      //     javascript: {
+      //       exprContextCritical: false,
+      //       wrappedContextCritical: false,
+      //       unknownContextCritical: false
+      //     }
+      //   }
+      // },
       {
         test: /\.worker\.js$/,
         use: { loader: 'worker-loader' }
@@ -185,6 +195,12 @@ const baseConfig = {
 const browserConfig = {
   ...baseConfig,
   context: resolve('browser'),
+  ignoreWarnings: [
+    {
+      module: /node_modules\/@toruslabs\/base-controllers/,
+      message: /Critical dependency: 'import.meta'/
+    }
+  ],
   resolve: {
     ...baseConfig.resolve,
     fallback: {
@@ -210,6 +226,9 @@ const browserConfig = {
     new webpack.ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^@react-native-async-storage\/async-storage$/
     }),
     new NodePolyfillPlugin(),
     new HtmlWebpackPlugin({
