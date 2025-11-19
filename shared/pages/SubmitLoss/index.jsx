@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import styles from './style.css'
 
 const SubmitLoss = () => {
-  const [stepIndex, setStepIndex] = useState(2)
+  const [stepIndex, setStepIndex] = useState(0)
 
   const nextStep = useCallback(() => {
     if (stepIndex < 2) {
