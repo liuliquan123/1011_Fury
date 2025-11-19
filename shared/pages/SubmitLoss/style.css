@@ -2,7 +2,7 @@
   color: white;
   padding: 40px 60px;
 
-  .step {
+  .stepOne {
     .title {
       color: #FFF;
       font-family: "Jersey10";
@@ -166,13 +166,166 @@
     }
   }
 
+  .stepTwo {
+    .title {
+      color: #FFF;
+      font-family: "Jersey10";
+      font-size: 68px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 100px;
+    }
+
+    .sections {
+      background: #232326;
+      padding: 40px 20px;
+
+      .section {
+        width: 100%;
+
+        .sectionTitle {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 40px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 40px;
+          width: 100%;
+          margin-bottom: 20px;
+        }
+
+      }
+    }
+
+    .exchanges {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      .exchange {
+        cursor: pointer;
+        flex: 1;
+        height: 200px;
+        min-width: 200px;
+        background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .exchangeLogo {
+
+        }
+
+        .exchangeName {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 20px;
+          font-style: normal;
+          line-height: 24px;
+        }
+      }
+    }
+
+    .notification {
+      background: rgba(55, 211, 117, 0.12);
+      padding: 10px 20px;
+      margin-top: 20px;
+
+      .notificationTitle {
+        color: #37D375;
+        font-family: "Google Sans Code";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+      }
+
+      .notificationContent {
+        margin-top: 10px;
+
+        .notificationContentItem {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+
+  .stepThree {
+    .title {
+      color: #FFF;
+      font-family: "Jersey10";
+      font-size: 68px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 100px;
+    }
+
+    .sections {
+      background: #232326;
+      padding: 40px 20px;
+
+      .section {
+        width: 100%;
+
+        .sectionTitle {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 40px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 40px;
+          width: 100%;
+          margin-bottom: 20px;
+        }
+
+        .input {
+          padding: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 20px;
+          border: 1px dashed #A7ADB9;
+          background: #232326;
+          cursor: pointer;
+        }
+
+        .tip {
+          background: black;
+          padding: 10px 20px;
+          margin-top: 20px;
+
+          .tipContent {
+            margin-top: 10px;
+
+            .tipContentItem {
+              color: #FFF;
+              font-family: "Google Sans Code";
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 24px;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .actions {
-    margin-top: 40px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 
     .backButton {
+      margin-top: 20px;
       display: flex;
       width: 120px;
       height: 48px;
@@ -187,6 +340,7 @@
     }
 
     .nextButton {
+      margin-top: 20px;
       display: flex;
       width: 320px;
       height: 48px;

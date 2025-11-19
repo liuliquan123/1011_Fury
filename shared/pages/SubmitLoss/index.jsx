@@ -3,12 +3,24 @@ import classNames from 'classnames'
 import styles from './style.css'
 
 const SubmitLoss = () => {
-  const [stepIndex, setStepIndex] = useState(0)
+  const [stepIndex, setStepIndex] = useState(2)
+
+  const nextStep = useCallback(() => {
+    if (stepIndex < 2) {
+      setStepIndex(stepIndex + 1)
+    }
+  }, [stepIndex])
+
+  const prevStep = useCallback(() => {
+    if (stepIndex > 0) {
+      setStepIndex(stepIndex - 1)
+    }
+  }, [stepIndex])
 
   return (
     <div className={styles.submitLoss}>
       {stepIndex === 0 && (
-        <div className={styles.step}>
+        <div className={styles.stepOne}>
           <div className={styles.title}>
             Submit Your Loss - Step 1
           </div>
@@ -130,11 +142,89 @@ const SubmitLoss = () => {
           </div>
         </div>
       )}
+      {stepIndex === 1 && (
+        <div className={styles.stepTwo}>
+          <div className={styles.title}>
+            Submit Your Loss - Step 2
+          </div>
+          <div className={styles.sections}>
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>
+                Select Exchange
+              </div>
+              <div className={styles.exchanges}>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeLogo}>
+                    Binance
+                  </div>
+                  <div className={styles.exchangeName}>Binance</div>
+                </div>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeName}>OKX</div>
+                </div>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeName}>Bybit</div>
+                </div>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeName}>Bitget</div>
+                </div>
+              </div>
+              <div className={styles.notification}>
+                <div className={styles.notificationTitle}>
+                  You can submit to this exchange
+                </div>
+                <div className={styles.notificationContent}>
+                  <div className={styles.notificationContentItem}>
+                    Current Stage: 1/4
+                  </div>
+                  <div className={styles.notificationContentItem}>
+                    Submissions in this stage: 0/1
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {stepIndex === 2 && (
+        <div className={styles.stepThree}>
+          <div className={styles.title}>
+            Submit Your Loss - Step 3
+          </div>
+          <div className={styles.sections}>
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>
+                Upload Evidence
+              </div>
+              <div className={styles.input}>
+                <div className={styles.inputIcon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <path d="M16 12H28V16H16V28H12V16H0V12H12V0H16V12Z" fill="white"/>
+                  </svg>
+                </div>
+                <div className={styles.inputButton}>
+                  Click to upload
+                </div>
+                <div className={styles.inputDescription}>
+                  PNG, JPG up to 10MB • OCR extraction enabled • Single file only
+                </div>
+              </div>
+              <div className={styles.tip}>
+                <div className={styles.tipContent}>
+                  <div className={styles.tipContentItem}>
+                    Tip: Our AI will automatically extract trading data from your screenshot. You can review and edit the data in the next step. Only one file can be uploaded.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className={styles.actions}>
-        <div className={styles.backButton}>
+        <div className={styles.backButton} onClick={prevStep}>
           Back
         </div>
-        <div className={styles.nextButton}>
+        <div className={styles.nextButton} onClick={nextStep}>
           Continue
         </div>
       </div>
