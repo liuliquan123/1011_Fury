@@ -1,3 +1,204 @@
 .submitLoss {
   color: white;
+  padding: 40px 60px;
+
+  .step {
+    .title {
+      color: #FFF;
+      font-family: "Jersey10";
+      font-size: 68px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 100px;
+    }
+
+    .sections {
+      background: #232326;
+      padding: 40px 20px;
+
+      .section {
+        width: 100%;
+
+        .sectionTitle {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 40px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 40px;
+          width: 100%;
+          margin-bottom: 20px;
+        }
+
+        .sectionDescription {
+          color: #A7ADB9;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 24px;
+          width: 100%;
+          margin-bottom: 20px;
+        }
+
+        .sectionSteps {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+
+          .sectionStep {
+            flex: 1;
+            padding: 20px;
+            background: #141519;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: column;
+            min-width: 40%;
+
+            .sectionStepInfo {
+              width: 100%;
+
+              .sectionStepTitle {
+                color: #E9FD66;
+                font-family: "Google Sans Code";
+                font-size: 20px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 32px;
+                margin-bottom: 10px;
+              }
+
+              .sectionStepTitleDescription {
+                color: #A7ADB9;
+                font-family: "Google Sans Code";
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 24px;
+                margin-bottom: 10px;
+              }
+            }
+
+            .sectionStepTitleScreenShot {
+              width: 100%;
+              height: 300px;
+              background: #232326;
+            }
+          }
+        }
+      }
+
+      .warning {
+        background: rgba(239, 77, 18, 0.12);
+        padding: 10px 20px;
+        margin-top: 20px;
+
+        .warningTitle {
+          color: #EF4D12;
+          font-family: "Google Sans Code";
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 24px;
+        }
+
+        .warningContent {
+          margin-top: 10px;
+
+          .warningContentItem {
+            color: #FFF;
+            font-family: "Google Sans Code";
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 24px;
+          }
+        }
+      }
+    }
+
+    .questions {
+      background: #232326;
+      padding: 40px 20px;
+      margin-top: 40px;
+
+      .questionsTitle {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 32px;
+        margin-bottom: 20px;
+      }
+
+      .list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .listItem {
+          padding: 10px 20px;
+          background: #141519;
+          width: 100%;
+
+          .listItemTitle {
+            color: #FFF;
+            font-family: "Google Sans Code";
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 32px;
+          }
+
+          .listItemDescription {
+            color: #A7ADB9;
+            font-family: "Google Sans Code";
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 24px;
+          }
+        }
+      }
+    }
+  }
+
+  .actions {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .backButton {
+      display: flex;
+      width: 120px;
+      height: 48px;
+      padding: 20px 24px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      color: #E9FD66;
+      border: 1px solid #E9FD66;
+      cursor: pointer;
+    }
+
+    .nextButton {
+      display: flex;
+      width: 320px;
+      height: 48px;
+      padding: 20px 24px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      color: black;
+      border: 1px solid #E9FD66;
+      background: #E9FD66;
+      cursor: pointer;
+    }
+  }
 }
