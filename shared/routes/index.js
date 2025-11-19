@@ -5,7 +5,8 @@ import NoMatch from 'components/NoMatch'
 import {
   Landing,
   Profile,
-  SubmitLoss
+  SubmitLoss,
+  Login
 } from 'routes/sync'
 
 export const routes = [
@@ -26,6 +27,10 @@ export const routes = [
         component: SubmitLoss
       },
       {
+        path: 'login',
+        component: Login
+      },
+      {
         path: '*',
         component: NoMatch
       }
@@ -39,6 +44,7 @@ export const RootRoutes = () => (
       <Route index element={<Landing />} />
       <Route path="profile" element={<Profile />} />
       <Route path="submit-loss" element={<SubmitLoss />} />
+      <Route path="login" element={<Login />} />
       <Route path="*" element={<NoMatch />} />
     </Route>
   </Routes>

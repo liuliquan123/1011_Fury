@@ -44,7 +44,9 @@ const Root = ({ location, history, theme }) => {
       <Title render={title} />
       <div className={classNames(styles.root)}>
         <Header />
-        <Outlet />
+        <div className={classNames(styles.content)}>
+          <Outlet />
+        </div>
       </div>
     </Fragment>
   )

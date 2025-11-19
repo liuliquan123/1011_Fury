@@ -7,6 +7,8 @@
   padding: 0 60px;
   display: flex;
   align-items: center;
+  z-index: 9999;
+  position: fixed;
 
   .branding {
     text-decoration: none;
