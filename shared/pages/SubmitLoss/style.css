@@ -293,6 +293,24 @@
           border: 1px dashed #A7ADB9;
           background: #232326;
           cursor: pointer;
+
+          .inputButton {
+            color: #FFF;
+            font-family: "Google Sans Code";
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 24px;
+          }
+
+          .inputDescription {
+            color: #A7ADB9;
+            font-family: "Google Sans Code";
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 24px;
+          }
         }
 
         .tip {
