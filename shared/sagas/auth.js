@@ -123,11 +123,11 @@ function* web3AuthLogin(web3auth, data) {
 
     const authToken = authResponse.data.token
     const refreshToken = authResponse.data.refresh_token
+    const userId = authResponse.data.user.id
 
     localStorage.setItem('auth_token', authToken)
     localStorage.setItem('refresh_token', refreshToken)
-
-    const userId = authResponse.data.user.id
+    localStorage.setItem('user_id', userId)
 
     const profileResponse = yield call(api.getProfile, {
       userId
@@ -136,6 +136,7 @@ function* web3AuthLogin(web3auth, data) {
       tokenFetcher: () => authToken
     })
 
+    yield put(actions.updateProfile(profileResponse.data))
     console.log('profileResponse', profileResponse)
   }
 }
@@ -321,6 +322,51 @@ function* submitLoss(action) {
   }
 }
 
+function* getProfile(action) {
+  try {
+    console.log('getProfile start')
+    const authToken = localStorage.getItem('auth_token')
+    const refreshToken = localStorage.getItem('refresh_token')
+    const userId = localStorage.getItem('user_id')
+
+    if (userId && authToken && refreshToken) {
+      const profileResponse = yield call(api.getProfile, {
+        userId
+      }, {
+        requireAuth: true,
+        tokenFetcher: () => authToken
+      })
+
+      yield put(actions.updateProfile(profileResponse.data))
+
+      const userTokensResponse = yield call(api.getUserTokens, {}, {
+        requireAuth: true,
+        tokenFetcher: () => authToken
+      })
+
+      yield put(actions.updateUserTokens(userTokensResponse.data))
+
+      const submissionsResponse = yield call(api.getMySubmissions, {}, {
+        requireAuth: true,
+        tokenFetcher: () => authToken
+      })
+
+      yield put(actions.updateSubmissions(submissionsResponse.data))
+
+      const referralStatsResponse = yield call(api.getReferralStats, {}, {
+        requireAuth: true,
+        tokenFetcher: () => authToken
+      })
+
+      yield put(actions.updateReferralStats(referralStatsResponse.data))
+    }
+    console.log('getProfile end')
+  } catch (error) {
+    console.log('getProfile error')
+    console.log('error', error)
+  }
+}
+
 export default function* authSaga() {
   yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
 
@@ -331,4 +377,6 @@ export default function* authSaga() {
 
   yield takeEvery(String(actions.uploadEvidenceOcr), uploadEvidenceOcr)
   yield takeEvery(String(actions.submitLoss), submitLoss)
+
+  yield takeEvery(String(actions.getProfile), getProfile)
 }

@@ -1,8 +1,25 @@
 import React, { useEffect, useState, useCallback, Fragment } from 'react'
+import { withRouter } from 'utils/withRouter'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as actions from 'actions/auth'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
-const Profile = () => {
+const Profile = ({ profile, userTokens, referralStats, actions }) => {
+  useEffect(() => {
+    actions.getProfile()
+  }, [])
+
+  console.log('profile', profile)
+  console.log('userTokens', userTokens)
+  console.log('referralStats', referralStats)
+
+  if (!profile) {
+    return null
+  }
+
   return (
     <div className={styles.profile}>
       <div className={styles.title}>
@@ -18,8 +35,8 @@ const Profile = () => {
           <div className={styles.user}>
             <div className={styles.top}>
               <div className={styles.logo}></div>
-              <div className={styles.name}>demo_wallet_user</div>
-              <div className={styles.description}>N/A</div>
+              <div className={styles.name}>{profile.username}</div>
+              <div className={styles.description}>{profile.id}</div>
             </div>
             <div className={styles.bottom}>
               <div className={styles.list}>
@@ -28,7 +45,7 @@ const Profile = () => {
                     Login Type
                   </div>
                   <div className={styles.listItemContent}>
-                    Wallet
+                    {profile.login_type}
                   </div>
                 </div>
                 <div className={styles.listItem}>
@@ -36,7 +53,7 @@ const Profile = () => {
                     Wallet
                   </div>
                   <div className={styles.listItemContent}>
-                    Ox742d……ObEb
+                    {profile.wallet_address}
                   </div>
                 </div>
                 <div className={styles.listItem}>
@@ -44,12 +61,12 @@ const Profile = () => {
                     Member Since
                   </div>
                   <div className={styles.listItemContent}>
-                    2025-10-24
+                    {profile.created_at}
                   </div>
                 </div>
               </div>
               <div className={styles.button}>
-                Edit PROFILE
+                LOGOUT
               </div>
             </div>
           </div>
@@ -129,9 +146,9 @@ const Profile = () => {
             Quick Actions
           </div>
           <div className={styles.list}>
-            <div className={styles.listItem}>
+            <Link className={styles.listItem} to="/submit-loss">
               submit new loss
-            </div>
+            </Link>
             <div className={styles.listItem}>
               view referral program
             </div>
@@ -145,4 +162,18 @@ const Profile = () => {
   )
 }
 
-export default Profile
+export default withRouter(
+  connect(
+    state => ({
+      profile: state.auth.profile,
+      userTokens: state.auth.userTokens,
+      submissions: state.auth.submissions,
+      referralStats: state.auth.referralStats,
+    }),
+    dispatch => ({
+      actions: bindActionCreators({
+        ...actions
+      }, dispatch)
+    })
+  )(Profile)
+)

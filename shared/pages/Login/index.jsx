@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import { WALLET_CONNECTORS, AUTH_CONNECTION } from '@web3auth/modal'
 import styles from './style.css'
 
-const Login = ({ actions }) => {
+const Login = ({ actions, history }) => {
   const [initializing, setInitializing] = useState(true)
 
   const [connectingWallet, setConnectingWallet] = useState(false)
@@ -38,6 +38,7 @@ const Login = ({ actions }) => {
         toast('Email Login Success!')
         setConnectingEmail(false)
         setEmail('')
+        history('/profile')
       },
       onError: (message) => {
         toast(message)
@@ -54,6 +55,7 @@ const Login = ({ actions }) => {
       onSuccess: () => {
         toast('Wallet Login Success!')
         setConnectingWallet(false)
+        history('/profile')
       },
       onError: (message) => {
         toast(message)
@@ -69,6 +71,7 @@ const Login = ({ actions }) => {
       onSuccess: () => {
         toast('Twitter Login Success!')
         setConnectingTwitter(false)
+        history('/profile')
       },
       onError: (message) => {
         toast(message)
@@ -84,6 +87,7 @@ const Login = ({ actions }) => {
       onSuccess: () => {
         toast('Telegram Login Success!')
         setConnectingTelegram(false)
+        history('/profile')
       },
       onError: (message) => {
         toast(message)

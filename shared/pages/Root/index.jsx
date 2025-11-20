@@ -11,6 +11,7 @@ import { Buffer } from 'safe-buffer'
 import darkThemeStyle from 'resources/themes/dark'
 import lightThemeStyle from 'resources/themes/light'
 import { ToastContainer } from 'react-toastify'
+import * as actions from 'actions/auth'
 import styles from './style.css'
 
 const getAppTheme = (mode) => {
@@ -23,11 +24,12 @@ const getAppTheme = (mode) => {
   return darkThemeStyle
 }
 
-const Root = ({ location, history, theme }) => {
+const Root = ({ location, history, theme, actions }) => {
   const [title, setTitle] = useState('Satoshis Fury')
 
   useEffect(() => {
     setTitle('Satoshis Fury')
+    actions.getProfile()
   }, [])
 
   useEffect(() => {
@@ -61,7 +63,7 @@ export default withRouter(
     }),
     dispatch => ({
       actions: bindActionCreators({
-
+        ...actions
       }, dispatch)
     })
   )(Root)
