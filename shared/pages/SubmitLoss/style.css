@@ -81,9 +81,18 @@
             }
 
             .sectionStepTitleScreenShot {
-              width: 100%;
               height: 300px;
               background: #232326;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+
+              img {
+                max-height: 100%;
+                max-width: 100%;
+                margin: 0 auto;
+              }
             }
           }
         }
@@ -211,6 +220,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        border: 1px solid transparent;
+
+        &.selected {
+          border: 1px solid #E9FD66;
+        }
 
         .exchangeLogo {
 
@@ -371,6 +385,11 @@
       border: 1px solid #E9FD66;
       background: #E9FD66;
       cursor: pointer;
+
+      &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
     }
   }
 }
