@@ -7,11 +7,13 @@ export const authByTwitter = createAction('auth/BY_TWITTER')
 export const authByTelegram = createAction('auth/BY_TELEGRAM')
 
 export const getProfile = createAction('auth/GET_PROFILE')
+export const getExchangePhase = createAction('auth/GET_EXCHANGE_PHASE')
 
 export const updateProfile = createAction('auth/UPDATE_PROFILE')
 export const updateUserTokens = createAction('auth/UPDATE_USER_TOKENS')
 export const updateSubmissions = createAction('auth/UPDATE_SUBMISSIONS')
 export const updateReferralStats = createAction('auth/UPDATE_REFERRAL_STATS')
+export const updateExchangePhase = createAction('auth/UPDATE_EXCHANGE_PHASE')
 
 export const updateUser = createAction('auth/UPDATE_USER')
 

@@ -6,3 +6,9 @@ export const getProfile = (params, options) => supabaseApi('GET', '/get-profile'
 export const getUserTokens = (params, options) => supabaseApi('GET', '/get-user-tokens', params, options)
 export const getMySubmissions = (params, options) => supabaseApi('GET', '/get-my-submissions', params, options)
 export const getReferralStats = (params, options) => supabaseApi('GET', '/get-referral-stats', params, options)
+
+export const getExchangePhase = (params, options) => supabaseApi('GET', '/get-exchange-phase', params, options)
+
+
+export const uploadEvidenceOcr = (params, options) => supabaseApi('POST', '/upload-evidence-ocr', params, options)
+export const submitLoss = (params, options) => supabaseApi('POST', '/submit-loss', params, options)

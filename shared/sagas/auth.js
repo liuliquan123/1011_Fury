@@ -324,7 +324,6 @@ function* submitLoss(action) {
 
 function* getProfile(action) {
   try {
-    console.log('getProfile start')
     const authToken = localStorage.getItem('auth_token')
     const refreshToken = localStorage.getItem('refresh_token')
     const userId = localStorage.getItem('user_id')
@@ -359,10 +358,36 @@ function* getProfile(action) {
       })
 
       yield put(actions.updateReferralStats(referralStatsResponse.data))
+
+      const exchangePhaseResponse = yield call(api.getExchangePhase, {}, {
+        requireAuth: true,
+        tokenFetcher: () => authToken
+      })
+
+      yield put(actions.updateExchangePhase(exchangePhaseResponse.data))
     }
-    console.log('getProfile end')
   } catch (error) {
-    console.log('getProfile error')
+    console.log('getProfile error', error)
+  }
+}
+
+function* getExchangePhase(action) {
+  try {
+    const authToken = localStorage.getItem('auth_token')
+    const refreshToken = localStorage.getItem('refresh_token')
+    const userId = localStorage.getItem('user_id')
+
+    if (userId && authToken && refreshToken) {
+      const exchange = action.payload.exchange
+
+      const exchangePhaseResponse = yield call(api.getExchangePhase, { exchange }, {
+        requireAuth: true,
+        tokenFetcher: () => authToken
+      })
+
+      yield put(actions.updateExchangePhase({ exchange, phase: exchangePhaseResponse.data }))
+    }
+  } catch (error) {
     console.log('error', error)
   }
 }
@@ -379,4 +404,5 @@ export default function* authSaga() {
   yield takeEvery(String(actions.submitLoss), submitLoss)
 
   yield takeEvery(String(actions.getProfile), getProfile)
+  yield takeEvery(String(actions.getExchangePhase), getExchangePhase)
 }

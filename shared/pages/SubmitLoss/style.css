@@ -221,13 +221,17 @@
         align-items: center;
         justify-content: center;
         border: 1px solid transparent;
+        flex-direction: column;
+        gap: 20px;
 
         &.selected {
           border: 1px solid #E9FD66;
         }
 
         .exchangeLogo {
-
+          img {
+            height: 40px;
+          }
         }
 
         .exchangeName {

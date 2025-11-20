@@ -6,6 +6,8 @@ const initialState = {
   userTokens: {},
   submissions: {},
   referralStats: {},
+  exchangePhase: {},
+  submitLoss: {}
 }
 
 export default handleActions({
@@ -23,5 +25,9 @@ export default handleActions({
   },
   [actions.updateSubmissions] (state, action) {
     state.submissions = action.payload
+  },
+  [actions.updateExchangePhase] (state, action) {
+    const { exchange, phase } = action.payload
+    state.exchangePhase[exchange] = phase
   }
 }, initialState)

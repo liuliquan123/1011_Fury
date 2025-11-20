@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback, Fragment } from 'react'
 import classNames from 'classnames'
+import { withRouter } from 'utils/withRouter'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as actions from 'actions/auth'
+import binanceLogo from 'resources/images/logos/binance-logo.svg'
+import okxLogo from 'resources/images/logos/okx-logo.svg'
+import bybitLogo from 'resources/images/logos/bybit-logo.svg'
+import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
 
 import binanceScreenshotStep1 from 'resources/images/screenshots/binance/binance-step1.jpeg'
 import binanceScreenshotStep2 from 'resources/images/screenshots/binance/binance-step2.jpeg'
@@ -89,13 +97,17 @@ const getExchangeScreenUrl = (exchangeType, stepIndex) => {
   }
 }
 
-const SubmitLoss = () => {
+const SubmitLoss = ({ actions, exchangePhase, profile }) => {
   const [exchangeType, setExchangeType] = useState()
   const [stepIndex, setStepIndex] = useState(0)
+  const isLoggedIn = !!profile && !!profile.id
+  const phase = exchangePhase[getExchangeName(exchangeType)]
 
   const selectExchange = useCallback((exchangeType) => () => {
     setExchangeType(exchangeType)
+    actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
   }, [])
+  console.log('exchangePhase', exchangePhase, phase)
 
   const nextStep = useCallback(() => {
     if (stepIndex < 2) {
@@ -132,7 +144,7 @@ const SubmitLoss = () => {
                     onClick={selectExchange('binance')}
                   >
                     <div className={styles.exchangeLogo}>
-
+                      <img src={binanceLogo} alt={`binance logo`} />
                     </div>
                     <div className={styles.exchangeName}>Binance</div>
                   </div>
@@ -142,6 +154,9 @@ const SubmitLoss = () => {
                     })}
                     onClick={selectExchange('okx')}
                   >
+                    <div className={styles.exchangeLogo}>
+                      <img src={okxLogo} alt={`okx logo`} />
+                    </div>
                     <div className={styles.exchangeName}>OKX</div>
                   </div>
                   <div
@@ -150,6 +165,9 @@ const SubmitLoss = () => {
                     })}
                     onClick={selectExchange('bybit')}
                   >
+                    <div className={styles.exchangeLogo}>
+                      <img src={bybitLogo} alt={`bybit logo`} />
+                    </div>
                     <div className={styles.exchangeName}>Bybit</div>
                   </div>
                   <div
@@ -158,22 +176,29 @@ const SubmitLoss = () => {
                     })}
                     onClick={selectExchange('bitget')}
                   >
+                    <div className={styles.exchangeLogo}>
+                      <img src={bitgetLogo} alt={`bitget logo`} />
+                    </div>
                     <div className={styles.exchangeName}>Bitget</div>
                   </div>
                 </div>
-                <div className={styles.notification}>
-                  <div className={styles.notificationTitle}>
-                    You can submit to this exchange
-                  </div>
-                  <div className={styles.notificationContent}>
-                    <div className={styles.notificationContentItem}>
-                      Current Stage: 1/4
+                {phase && (
+                  <div className={classNames(styles.notification, {
+                    [styles.success]: true
+                  })}>
+                    <div className={styles.notificationTitle}>
+                      {phase.phase_info.description}
                     </div>
-                    <div className={styles.notificationContentItem}>
-                      Submissions in this stage: 0/1
+                    <div className={styles.notificationContent}>
+                      <div className={styles.notificationContentItem}>
+                        Current Stage: {phase.current_phase}/3
+                      </div>
+                      <div className={styles.notificationContentItem}>
+                        Submissions in this stage: {phase.phase_info.current_submissions}/{phase.phase_info.max_submissions}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -371,4 +396,15 @@ const SubmitLoss = () => {
   )
 }
 
-export default SubmitLoss
+export default withRouter(
+  connect(
+    state => ({
+      exchangePhase: state.auth.exchangePhase,
+    }),
+    dispatch => ({
+      actions: bindActionCreators({
+        ...actions
+      }, dispatch)
+    })
+  )(SubmitLoss)
+)
