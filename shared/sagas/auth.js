@@ -1,5 +1,12 @@
-// import { delay } from 'redux-saga'
-import { takeEvery, call, apply, delay } from 'redux-saga/effects'
+import {
+  eventChannel,
+  takeEvery,
+  call,
+  apply,
+  delay,
+  put,
+  END
+} from 'redux-saga/effects'
 import {
   Web3Auth,
   Web3AuthNoModal,
@@ -14,6 +21,32 @@ import * as actions from 'actions/auth'
 
 let web3auth
 
+function* waitUntil(web3auth, status) {
+  return new Promise((resolve, reject) => {
+    const iv = setInterval(() => {
+      if (web3auth.status === status) {
+        clearInterval(iv)
+        resolve(true)
+      } else {
+        console.log('wait until', web3auth, status)
+      }
+    }, 100)
+  })
+}
+
+function waitUntilNot(web3auth, status) {
+  return new Promise((resolve, reject) => {
+    const iv = setInterval(() => {
+      if (web3auth.status !== status) {
+        clearInterval(iv)
+        resolve(true)
+      } else {
+        console.log('wait until not', web3auth, status)
+      }
+    }, 100)
+  })
+}
+
 function* initWeb3Auth() {
   if (!web3auth) {
     web3auth = new Web3AuthNoModal({
@@ -24,38 +57,75 @@ function* initWeb3Auth() {
     })
   }
 
-  yield apply(web3auth, web3auth.init)
-  yield delay(500)
+  console.log('initWeb3Auth load', web3auth, web3auth.status)
+
+  if (
+    web3auth.status !== 'connected'
+      && web3auth.status !== 'errored'
+      && web3auth.status !== 'ready'
+      && web3auth.status !== 'connecting'
+  ) {
+    yield apply(web3auth, web3auth.init)
+    yield call(waitUntilNot, web3auth, 'not_ready')
+    console.log('initWeb3Auth init', web3auth, web3auth.status)
+  }
 
   if (web3auth.status === 'connected') {
-    yield apply(web3auth, web3auth.logout)
+    yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
+    console.log('initWeb3Auth logout', web3auth, web3auth.status)
+  } else if (web3auth.status === 'connecting') {
+    // yield call(waitUntilNot, web3auth, 'connecting')
+    console.log('initWeb3Auth abort', web3auth, web3auth.status)
   }
 
   return web3auth
 }
 
 function* authByWallet(action) {
-  const web3auth = yield call(initWeb3Auth)
+  const { onSuccess, onError } = action.payload
 
-  yield apply(web3auth, web3auth.connectTo, [
-    WALLET_CONNECTORS.METAMASK, {
-      chainNamespace: CHAIN_NAMESPACES.EIP155
-    }
-  ])
+  try {
+    const web3auth = yield call(initWeb3Auth)
+    console.log('authByWallet start', web3auth, web3auth.status)
+
+    yield apply(web3auth, web3auth.connectTo, [
+      WALLET_CONNECTORS.METAMASK, {
+        chainNamespace: CHAIN_NAMESPACES.EIP155
+      }
+    ])
+
+    console.log('authByWallet end', web3auth, web3auth.status)
+    onSuccess()
+  } catch (error) {
+    console.log('authByWallet error')
+    console.log('error', error)
+    onError(error.message)
+  }
 }
 
 function* authByTwitter(action) {
+  const { onSuccess, onError } = action.payload
+
   try {
     const web3auth = yield call(initWeb3Auth)
-    console.log('authByTwitter', web3auth)
+    console.log('authByTwitter start', web3auth, web3auth.status)
 
     yield apply(web3auth, web3auth.connectTo, [
       WALLET_CONNECTORS.AUTH, {
         authConnection: AUTH_CONNECTION.TWITTER,
       }
     ])
+
+    console.log('authByTwitter end', web3auth, web3auth.status)
+    onSuccess()
   } catch (error) {
-    console.log('error', error.message)
+    console.log('authByTwitter error')
+    console.log('error', error)
+    if (error.message.includes("popup window is blocked")) {
+      yield put(actions.authByTwitter({ onSuccess, onError }))
+    } else {
+      onError(error.message)
+    }
   }
 }
 

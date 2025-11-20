@@ -155,7 +155,7 @@ const SubmitLoss = () => {
               <div className={styles.exchanges}>
                 <div className={styles.exchange}>
                   <div className={styles.exchangeLogo}>
-                    Binance
+
                   </div>
                   <div className={styles.exchangeName}>Binance</div>
                 </div>

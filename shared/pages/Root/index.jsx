@@ -10,6 +10,7 @@ import 'resources/fonts/style.css'
 import { Buffer } from 'safe-buffer'
 import darkThemeStyle from 'resources/themes/dark'
 import lightThemeStyle from 'resources/themes/light'
+import { ToastContainer } from 'react-toastify'
 import styles from './style.css'
 
 const getAppTheme = (mode) => {
@@ -46,6 +47,7 @@ const Root = ({ location, history, theme }) => {
         <Header />
         <div className={classNames(styles.content)}>
           <Outlet />
+          <ToastContainer />
         </div>
       </div>
     </Fragment>

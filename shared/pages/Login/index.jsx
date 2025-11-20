@@ -4,15 +4,30 @@ import { connect } from 'react-redux'
 import { withRouter } from 'utils/withRouter'
 import classNames from 'classnames'
 import * as actions from 'actions/auth'
+import { toast } from 'react-toastify'
 import styles from './style.css'
 
 const Login = ({ actions }) => {
   const authByWallet = useCallback(() => {
-    actions.authByWallet()
+    actions.authByWallet({
+      onSuccess: () => {
+        toast('Wallet Login Success!')
+      },
+      onError: (message) => {
+        toast(message)
+      }
+    })
   }, [])
 
   const authByTwitter = useCallback(() => {
-    actions.authByTwitter()
+    actions.authByTwitter({
+      onSuccess: () => {
+        toast('Twitter Login Success!')
+      },
+      onError: (message) => {
+        toast(message)
+      }
+    })
   }, [])
 
   useEffect(() => {
