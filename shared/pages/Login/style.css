@@ -12,7 +12,7 @@
 
     .status {
       font-family: "Google Sans Code";
-      font-size: 20px;
+      font-size: 16px;
       color: white;
     }
 
@@ -58,6 +58,7 @@
             font-size: 16px;
             font-style: normal;
             line-height: 24px;
+            text-align: center;
           }
 
           .placeholder {
@@ -166,6 +167,33 @@
         text-transform: uppercase;
 
         cursor: pointer;
+
+        .form {
+          width: 100%;
+
+          .input {
+            position: relative;
+            padding-right: 40px;
+
+            .submit {
+              position: absolute;
+              top: 4px;
+              right: 4px;
+              width: 40px;
+              height: 40px;
+              background: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              &.disabled {
+                opacity: 0.5;
+                pointer-events: none;
+                cursor: not-allowed;
+              }
+            }
+          }
+        }
       }
     }
   }

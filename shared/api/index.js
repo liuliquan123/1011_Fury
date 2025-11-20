@@ -82,3 +82,13 @@ export const codeApi = apiCreator(`${HOST_URL}`, {
     'Content-Type': 'application/javascript'
   }
 })
+
+const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
+const SUPABASE_ANON_KEY = "sb_publishable_wl9QBcaEFGJWauO77gIDiQ_VEmbEnxv"
+
+export const supabaseApi = apiCreator(`${SUPABASE_URL}/functions/v1`, {
+  headers: {
+    apikey: SUPABASE_ANON_KEY
+  },
+  tokenFetcher: () => SUPABASE_ANON_KEY
+})

@@ -18,6 +18,7 @@
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "@lagunovsky/redux-react-router": "^4.4.1",
+    "@supabase/supabase-js": "^2.84.0",
     "@web3auth/modal": "^10.8.0",
     "bignumber.js": "^9.0.2",
     "body-parser": "^1.20.0",
