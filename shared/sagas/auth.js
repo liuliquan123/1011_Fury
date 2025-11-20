@@ -47,45 +47,53 @@ function waitUntilNot(web3auth, status) {
   })
 }
 
-function* initWeb3Auth() {
-  if (!web3auth) {
-    web3auth = new Web3AuthNoModal({
-      clientId: 'BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k',
-      web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-      sessionTime: 86400 * 7, // 7 days (in seconds)
-      storageType: 'local'
-    })
+function* initWeb3Auth(action) {
+  const { onSuccess, onError } = action.payload
+
+  try {
+    if (!web3auth) {
+      web3auth = new Web3AuthNoModal({
+        clientId: 'BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k',
+        web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+        sessionTime: 86400 * 7, // 7 days (in seconds)
+        storageType: 'local'
+      })
+    }
+
+    console.log('initWeb3Auth load', web3auth, web3auth.status)
+
+    if (
+      web3auth.status !== 'connected'
+        && web3auth.status !== 'errored'
+        && web3auth.status !== 'ready'
+        && web3auth.status !== 'connecting'
+    ) {
+      yield apply(web3auth, web3auth.init)
+      yield call(waitUntilNot, web3auth, 'not_ready')
+      console.log('initWeb3Auth init', web3auth, web3auth.status)
+    }
+
+    if (web3auth.status === 'connected') {
+      yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
+      console.log('initWeb3Auth logout', web3auth, web3auth.status)
+    } else if (web3auth.status === 'connecting') {
+      // yield call(waitUntilNot, web3auth, 'connecting')
+      console.log('initWeb3Auth abort', web3auth, web3auth.status)
+    }
+
+    onSuccess()
+  } catch (error) {
+    console.log('initWeb3Auth error')
+    console.log('error', error)
+    onError(error.message)
   }
-
-  console.log('initWeb3Auth load', web3auth, web3auth.status)
-
-  if (
-    web3auth.status !== 'connected'
-      && web3auth.status !== 'errored'
-      && web3auth.status !== 'ready'
-      && web3auth.status !== 'connecting'
-  ) {
-    yield apply(web3auth, web3auth.init)
-    yield call(waitUntilNot, web3auth, 'not_ready')
-    console.log('initWeb3Auth init', web3auth, web3auth.status)
-  }
-
-  if (web3auth.status === 'connected') {
-    yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
-    console.log('initWeb3Auth logout', web3auth, web3auth.status)
-  } else if (web3auth.status === 'connecting') {
-    // yield call(waitUntilNot, web3auth, 'connecting')
-    console.log('initWeb3Auth abort', web3auth, web3auth.status)
-  }
-
-  return web3auth
 }
 
 function* authByWallet(action) {
   const { onSuccess, onError } = action.payload
 
   try {
-    const web3auth = yield call(initWeb3Auth)
+    // const web3auth = yield call(initWeb3Auth)
     console.log('authByWallet start', web3auth, web3auth.status)
 
     yield apply(web3auth, web3auth.connectTo, [
@@ -107,7 +115,7 @@ function* authByTwitter(action) {
   const { onSuccess, onError } = action.payload
 
   try {
-    const web3auth = yield call(initWeb3Auth)
+    // const web3auth = yield call(initWeb3Auth)
     console.log('authByTwitter start', web3auth, web3auth.status)
 
     yield apply(web3auth, web3auth.connectTo, [
@@ -121,15 +129,12 @@ function* authByTwitter(action) {
   } catch (error) {
     console.log('authByTwitter error')
     console.log('error', error)
-    if (error.message.includes("popup window is blocked")) {
-      yield put(actions.authByTwitter({ onSuccess, onError }))
-    } else {
-      onError(error.message)
-    }
+    onError(error.message)
   }
 }
 
 export default function* intlSaga() {
+  yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
   yield takeEvery(String(actions.authByWallet), authByWallet)
   yield takeEvery(String(actions.authByTwitter), authByTwitter)
 }
