@@ -7,8 +7,16 @@ import * as actions from 'actions/auth'
 import styles from './style.css'
 
 const Login = ({ actions }) => {
+  const authByWallet = useCallback(() => {
+    actions.authByWallet()
+  }, [])
+
+  const authByTwitter = useCallback(() => {
+    actions.authByTwitter()
+  }, [])
+
   useEffect(() => {
-    actions.initializeWeb3Auth()
+
   }, [])
 
   return (
@@ -47,10 +55,10 @@ const Login = ({ actions }) => {
           <div className={styles.provider}>
             EMAIL
           </div>
-          <div className={styles.provider}>
+          <div className={styles.provider} onClick={authByWallet}>
             WALLET
           </div>
-          <div className={styles.provider}>
+          <div className={styles.provider} onClick={authByTwitter}>
             X
           </div>
           <div className={styles.provider}>

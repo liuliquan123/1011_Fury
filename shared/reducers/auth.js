@@ -6,7 +6,7 @@ const initialState = {
 }
 
 export default handleActions({
-  [actions.initializeWeb3Auth] (state, action) {
+  [actions.authByWallet] (state, action) {
 
   }
 }, initialState)

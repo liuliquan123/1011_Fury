@@ -7,7 +7,8 @@ import {
   WALLET_CONNECTORS,
   CHAIN_NAMESPACES,
   ADAPTER_EVENTS,
-  CONNECTOR_EVENTS
+  CONNECTOR_EVENTS,
+  AUTH_CONNECTION
 } from '@web3auth/modal'
 import * as actions from 'actions/auth'
 
@@ -33,7 +34,7 @@ function* initWeb3Auth() {
   return web3auth
 }
 
-function* initializeWeb3Auth(action) {
+function* authByWallet(action) {
   const web3auth = yield call(initWeb3Auth)
 
   yield apply(web3auth, web3auth.connectTo, [
@@ -41,10 +42,24 @@ function* initializeWeb3Auth(action) {
       chainNamespace: CHAIN_NAMESPACES.EIP155
     }
   ])
+}
 
-  console.log('initializeWeb3Auth', action, web3auth, web3auth.status)
+function* authByTwitter(action) {
+  try {
+    const web3auth = yield call(initWeb3Auth)
+    console.log('authByTwitter', web3auth)
+
+    yield apply(web3auth, web3auth.connectTo, [
+      WALLET_CONNECTORS.AUTH, {
+        authConnection: AUTH_CONNECTION.TWITTER,
+      }
+    ])
+  } catch (error) {
+    console.log('error', error.message)
+  }
 }
 
 export default function* intlSaga() {
-  yield takeEvery(String(actions.initializeWeb3Auth), initializeWeb3Auth)
+  yield takeEvery(String(actions.authByWallet), authByWallet)
+  yield takeEvery(String(actions.authByTwitter), authByTwitter)
 }
