@@ -5,3 +5,9 @@ export const authByWallet = createAction('auth/BY_WALLET')
 export const authByEmail = createAction('auth/BY_EMAIL')
 export const authByTwitter = createAction('auth/BY_TWITTER')
 export const authByTelegram = createAction('auth/BY_TELEGRAM')
+
+export const updateProfile = createAction('auth/UPDATE_PROFILE')
+export const updateUser = createAction('auth/UPDATE_USER')
+
+export const uploadEvidenceOcr = createAction('auth/UPLOAD_EVIDENCE_OCR')
+export const submitLoss = createAction('auth/SUBMIT_LOSS')

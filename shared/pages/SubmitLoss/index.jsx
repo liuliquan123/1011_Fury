@@ -27,6 +27,50 @@ const SubmitLoss = () => {
           <div className={styles.sections}>
             <div className={styles.section}>
               <div className={styles.sectionTitle}>
+                Select Exchange
+              </div>
+              <div className={styles.exchanges}>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeLogo}>
+
+                  </div>
+                  <div className={styles.exchangeName}>Binance</div>
+                </div>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeName}>OKX</div>
+                </div>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeName}>Bybit</div>
+                </div>
+                <div className={styles.exchange}>
+                  <div className={styles.exchangeName}>Bitget</div>
+                </div>
+              </div>
+              <div className={styles.notification}>
+                <div className={styles.notificationTitle}>
+                  You can submit to this exchange
+                </div>
+                <div className={styles.notificationContent}>
+                  <div className={styles.notificationContentItem}>
+                    Current Stage: 1/4
+                  </div>
+                  <div className={styles.notificationContentItem}>
+                    Submissions in this stage: 0/1
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {stepIndex === 1 && (
+        <div className={styles.stepTwo}>
+          <div className={styles.title}>
+            Submit Your Loss - Step 2
+          </div>
+          <div className={styles.sections}>
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>
                 How to Get Your Loss Screenshot
               </div>
               <div className={styles.sectionDescription}>
@@ -141,50 +185,7 @@ const SubmitLoss = () => {
             </div>
           </div>
         </div>
-      )}
-      {stepIndex === 1 && (
-        <div className={styles.stepTwo}>
-          <div className={styles.title}>
-            Submit Your Loss - Step 2
-          </div>
-          <div className={styles.sections}>
-            <div className={styles.section}>
-              <div className={styles.sectionTitle}>
-                Select Exchange
-              </div>
-              <div className={styles.exchanges}>
-                <div className={styles.exchange}>
-                  <div className={styles.exchangeLogo}>
 
-                  </div>
-                  <div className={styles.exchangeName}>Binance</div>
-                </div>
-                <div className={styles.exchange}>
-                  <div className={styles.exchangeName}>OKX</div>
-                </div>
-                <div className={styles.exchange}>
-                  <div className={styles.exchangeName}>Bybit</div>
-                </div>
-                <div className={styles.exchange}>
-                  <div className={styles.exchangeName}>Bitget</div>
-                </div>
-              </div>
-              <div className={styles.notification}>
-                <div className={styles.notificationTitle}>
-                  You can submit to this exchange
-                </div>
-                <div className={styles.notificationContent}>
-                  <div className={styles.notificationContentItem}>
-                    Current Stage: 1/4
-                  </div>
-                  <div className={styles.notificationContentItem}>
-                    Submissions in this stage: 0/1
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       )}
       {stepIndex === 2 && (
         <div className={styles.stepThree}>

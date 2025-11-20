@@ -2,7 +2,7 @@
   color: white;
   padding: 40px 60px;
 
-  .stepOne {
+  .stepTwo {
     .title {
       color: #FFF;
       font-family: "Jersey10";
@@ -166,7 +166,7 @@
     }
   }
 
-  .stepTwo {
+  .stepOne {
     .title {
       color: #FFF;
       font-family: "Jersey10";

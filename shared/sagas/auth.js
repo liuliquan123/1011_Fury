@@ -126,11 +126,22 @@ function* web3AuthLogin(web3auth, data) {
 
     localStorage.setItem('auth_token', authToken)
     localStorage.setItem('refresh_token', refreshToken)
+
+    const userId = authResponse.data.user.id
+
+    const profileResponse = yield call(api.getProfile, {
+      userId
+    }, {
+      requireAuth: true,
+      tokenFetcher: () => authToken
+    })
+
+    console.log('profileResponse', profileResponse)
   }
 }
 
 function* authByWallet(action) {
-  const { onSuccess, onError } = action.payload
+  const { onSuccess, onError, referralCode } = action.payload
 
   try {
     // const web3auth = yield call(initWeb3Auth)
@@ -141,6 +152,8 @@ function* authByWallet(action) {
         chainNamespace: CHAIN_NAMESPACES.EIP155
       }
     ])
+
+    yield call(web3AuthLogin, web3auth, { referralCode })
 
     console.log('authByWallet end', web3auth, web3auth.status)
     onSuccess()
@@ -153,7 +166,7 @@ function* authByWallet(action) {
 }
 
 function* authByEmail(action) {
-  const { onSuccess, onError, email } = action.payload
+  const { onSuccess, onError, email, referralCode } = action.payload
 
   try {
     // const web3auth = yield call(initWeb3Auth)
@@ -165,6 +178,8 @@ function* authByEmail(action) {
         loginHint: email
       }
     ])
+
+    yield call(web3AuthLogin, web3auth, { referralCode })
 
     console.log('authByEmail end', web3auth, web3auth.status)
     onSuccess()
@@ -276,6 +291,36 @@ function* authByTelegram(action) {
   }
 }
 
+function* uploadEvidenceOcr(action) {
+  const { onSuccess, onError } = action.payload
+
+  try {
+    console.log('uploadEvidenceOcr start')
+
+    console.log('uploadEvidenceOcr end')
+    onSuccess()
+  } catch (error) {
+    console.log('uploadEvidenceOcr error')
+    console.log('error', error)
+    onError(error.message)
+  }
+}
+
+function* submitLoss(action) {
+  const { onSuccess, onError } = action.payload
+
+  try {
+    console.log('submitLoss start')
+
+    console.log('submitLoss end')
+    onSuccess()
+  } catch (error) {
+    console.log('submitLoss error')
+    console.log('error', error)
+    onError(error.message)
+  }
+}
+
 export default function* authSaga() {
   yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
 
@@ -283,4 +328,7 @@ export default function* authSaga() {
   yield takeEvery(String(actions.authByEmail), authByEmail)
   yield takeEvery(String(actions.authByTwitter), authByTwitter)
   yield takeEvery(String(actions.authByTelegram), authByTelegram)
+
+  yield takeEvery(String(actions.uploadEvidenceOcr), uploadEvidenceOcr)
+  yield takeEvery(String(actions.submitLoss), submitLoss)
 }
