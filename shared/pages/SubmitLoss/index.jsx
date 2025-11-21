@@ -8,6 +8,7 @@ import binanceLogo from 'resources/images/logos/binance-logo.svg'
 import okxLogo from 'resources/images/logos/okx-logo.svg'
 import bybitLogo from 'resources/images/logos/bybit-logo.svg'
 import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
+import { toast } from 'react-toastify'
 
 import binanceScreenshotStep1 from 'resources/images/screenshots/binance/binance-step1.jpeg'
 import binanceScreenshotStep2 from 'resources/images/screenshots/binance/binance-step2.jpeg'
@@ -97,8 +98,11 @@ const getExchangeScreenUrl = (exchangeType, stepIndex) => {
   }
 }
 
-const SubmitLoss = ({ actions, exchangePhase, profile }) => {
+const SubmitLoss = ({ actions, exchangePhase, profile, ocrFor, historym }) => {
+  const [uploading, setUploading] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [exchangeType, setExchangeType] = useState()
+  const [file, setFile] = useState()
   const [stepIndex, setStepIndex] = useState(0)
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
@@ -107,10 +111,10 @@ const SubmitLoss = ({ actions, exchangePhase, profile }) => {
     setExchangeType(exchangeType)
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
   }, [])
-  console.log('exchangePhase', exchangePhase, phase)
+  console.log('exchangePhase', exchangePhase, phase, ocrForm)
 
   const nextStep = useCallback(() => {
-    if (stepIndex < 2) {
+    if (stepIndex < 3) {
       setStepIndex(stepIndex + 1)
     }
   }, [stepIndex])
@@ -120,6 +124,45 @@ const SubmitLoss = ({ actions, exchangePhase, profile }) => {
       setStepIndex(stepIndex - 1)
     }
   }, [stepIndex])
+
+  const updateEvidenceForm = useCallback(({ name, value }) => {
+
+  }, [])
+
+  const updateFile = useCallback((file) => {
+    setFile(file)
+  }, [])
+
+  const uploadFile = useCallback(() => {
+    setUploading(true)
+    actions.uploadEvidenceOcr({
+      file,
+      onSuccess: () => {
+        setUploading(false)
+        nextStep()
+      },
+      onError: (message) => {
+        setUploading(false)
+        toast(message)
+      },
+    })
+  }, [file])
+
+  const submitLoss = useCallback(() => {
+    setSubmitting(true)
+    actions.submitLoss({
+      onSuccess: () => {
+        setSubmitting(false)
+        toast('Submit loss sucess!')
+        setFile()
+        history('/profile')
+      },
+      onError: (message) => {
+        setSubmitting(false)
+        toast(message)
+      },
+    })
+  }, [file])
 
   const exchangeName = getExchangeName(exchangeType)
 
@@ -359,17 +402,31 @@ const SubmitLoss = ({ actions, exchangePhase, profile }) => {
                   Upload Evidence
                 </div>
                 <div className={styles.input}>
-                  <div className={styles.inputIcon}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                      <path d="M16 12H28V16H16V28H12V16H0V12H12V0H16V12Z" fill="white"/>
-                    </svg>
-                  </div>
-                  <div className={styles.inputButton}>
-                    Click to upload
-                  </div>
-                  <div className={styles.inputDescription}>
-                    PNG, JPG up to 10MB • OCR extraction enabled • Single file only
-                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => updateFile(e.target.files[0])}
+                  />
+                  {!file && (
+                    <Fragment>
+                      <div className={styles.inputIcon}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                          <path d="M16 12H28V16H16V28H12V16H0V12H12V0H16V12Z" fill="white"/>
+                        </svg>
+                      </div>
+                      <div className={styles.inputButton}>
+                        Click to upload
+                      </div>
+                      <div className={styles.inputDescription}>
+                        PNG, JPG up to 10MB • OCR extraction enabled • Single file only
+                      </div>
+                    </Fragment>
+                  )}
+                  {!!file && (
+                    <div className={styles.inputDescription}>
+                      {file.name}
+                    </div>
+                  )}
                 </div>
                 <div className={styles.tip}>
                   <div className={styles.tipContent}>
@@ -385,8 +442,98 @@ const SubmitLoss = ({ actions, exchangePhase, profile }) => {
             <div className={styles.backButton} onClick={prevStep}>
               Back
             </div>
-            <div className={styles.nextButton} onClick={nextStep}>
+            <div className={classNames(styles.nextButton, {
+              [styles.disabled]: uploading
+            })}  onClick={uploadFile}>
               Continue
+            </div>
+          </div>
+        </Fragment>
+      )}
+      {stepIndex === 3 && (
+        <Fragment>
+          <div className={styles.stepFour}>
+            <div className={styles.title}>
+              Submit Your Loss - Step 4
+            </div>
+            <div className={styles.sections}>
+              <div className={styles.section}>
+                <div className={styles.sectionTitle}>
+                  Loss Info
+                </div>
+                <div className={styles.form}>
+                  <div className={styles.field}>
+                    <div className={styles.name}>
+                      Exchange
+                    </div>
+                    <div className={styles.input}>
+                      <input
+                        className={styles.disabled}
+                        type="text" value={ocrForm.exchange || ''} />
+                    </div>
+                  </div>
+                  <div className={styles.field}>
+                    <div className={styles.name}>
+                      Loss Date*
+                    </div>
+                    <div className={styles.input}>
+                      <input
+                        className={styles.disabled}
+                        type="text"
+                        value={ocrForm.loss_date || ''}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.field}>
+                    <div className={styles.name}>
+                      Loss Amount (USD)*
+                    </div>
+                    <div className={styles.input}>
+                      <input
+                        className={styles.disabled}
+                        type="text"
+                        value={ocrForm.loss_amount || ''}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.field}>
+                    <div className={styles.name}>
+                      Leverage *
+                    </div>
+                    <div className={styles.input}>
+                      <input
+                        className={styles.disabled}
+                        type="text"
+                        value={ocrForm.leverage || ''}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.field}>
+                    <div className={styles.name}>
+                      User Note (Optional)
+                    </div>
+                    <div className={styles.input}>
+                      <input
+                        type="text"
+                        value={ocrForm.user_note || ''}
+                        onChange={(e) => actions.updateOcrForm({
+                          user_note: e.target.value
+                        })}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.actions}>
+            <div className={styles.backButton} onClick={prevStep}>
+              Back
+            </div>
+            <div className={classNames(styles.nextButton, {
+              [styles.disabled]: submitting
+            })} onClick={submitLoss}>
+              Submit
             </div>
           </div>
         </Fragment>
@@ -400,6 +547,7 @@ export default withRouter(
   connect(
     state => ({
       exchangePhase: state.auth.exchangePhase,
+      ocrForm: state.auth.ocrForm,
     }),
     dispatch => ({
       actions: bindActionCreators({

@@ -7,7 +7,8 @@ const initialState = {
   submissions: {},
   referralStats: {},
   exchangePhase: {},
-  submitLoss: {}
+  evidenceForm: {},
+  ocrForm: {}
 }
 
 export default handleActions({
@@ -29,5 +30,13 @@ export default handleActions({
   [actions.updateExchangePhase] (state, action) {
     const { exchange, phase } = action.payload
     state.exchangePhase[exchange] = phase
+  },
+  [actions.updateEvidenceForm] (state, action) {
+    const evidenceForm = action.payload
+    state.evidenceForm = { ...state.evidenceForm, ...evidenceForm }
+  },
+  [actions.updateOcrForm] (state, action) {
+    const ocrForm = action.payload
+    state.ocrForm = { ...state.ocrForm, ...ocrForm }
   }
 }, initialState)

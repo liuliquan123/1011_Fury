@@ -5,6 +5,7 @@ import {
   apply,
   delay,
   put,
+  select,
   END
 } from 'redux-saga/effects'
 import {
@@ -284,6 +285,11 @@ function* authByTelegram(action) {
       }
     }
 
+    const tgAuthResponse = yield call(api.getAuthToken, {
+      token,
+    })
+    console.log('tgAuthResponse', tgAuthResponse)
+
     console.log('authByTelegram start', { token, encodedToken, deepLink, webLink })
     onSuccess()
   } catch (error) {
@@ -293,15 +299,18 @@ function* authByTelegram(action) {
 }
 
 function* uploadEvidenceOcr(action) {
-  const { onSuccess, onError } = action.payload
+  const { onSuccess, onError, file } = action.payload
 
   try {
-    console.log('uploadEvidenceOcr start')
-
-    console.log('uploadEvidenceOcr end')
+    const evidenceResponse = yield call(api.uploadEvidenceOcr, { file }, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    console.log('evidenceResponse', evidenceResponse)
+    yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
     onSuccess()
   } catch (error) {
-    console.log('uploadEvidenceOcr error')
     console.log('error', error)
     onError(error.message)
   }
@@ -311,12 +320,23 @@ function* submitLoss(action) {
   const { onSuccess, onError } = action.payload
 
   try {
-    console.log('submitLoss start')
+    const ocrForm = yield select(state => state.auth.ocrForm)
+    console.log('ocrForm', ocrForm)
 
-    console.log('submitLoss end')
+    const authToken = localStorage.getItem('auth_token')
+
+    const submitLossResponse = yield call(api.submitLoss, ocrForm, {
+      requireAuth: true,
+      tokenFetcher: () => authToken
+    })
+
+    if (!submitLossResponse.success) {
+      throw new Error(submitLossResponse.error)
+    }
+
+    console.log('submitLossResponse', submitLossResponse)
     onSuccess()
   } catch (error) {
-    console.log('submitLoss error')
     console.log('error', error)
     onError(error.message)
   }
@@ -359,12 +379,12 @@ function* getProfile(action) {
 
       yield put(actions.updateReferralStats(referralStatsResponse.data))
 
-      const exchangePhaseResponse = yield call(api.getExchangePhase, {}, {
-        requireAuth: true,
-        tokenFetcher: () => authToken
-      })
+      // const exchangePhaseResponse = yield call(api.getExchangePhase, {}, {
+      //   requireAuth: true,
+      //   tokenFetcher: () => authToken
+      // })
 
-      yield put(actions.updateExchangePhase(exchangePhaseResponse.data))
+      // yield put(actions.updateExchangePhase(exchangePhaseResponse.data))
     }
   } catch (error) {
     console.log('getProfile error', error)
@@ -392,6 +412,26 @@ function* getExchangePhase(action) {
   }
 }
 
+function* logout(action) {
+  const { onSuccess, onError } = action.payload
+
+  try {
+    const authToken = localStorage.getItem('auth_token')
+    const refreshToken = localStorage.getItem('refresh_token')
+    const userId = localStorage.getItem('user_id')
+
+    localStorage.removeItem('auth_store')
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('refresh_token')
+    localStorage.removeItem('user_id')
+
+    onSuccess()
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
+
 export default function* authSaga() {
   yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
 
@@ -405,4 +445,6 @@ export default function* authSaga() {
 
   yield takeEvery(String(actions.getProfile), getProfile)
   yield takeEvery(String(actions.getExchangePhase), getExchangePhase)
+
+  yield takeEvery(String(actions.logout), logout)
 }

@@ -37,6 +37,10 @@
 
   .buttons {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
 
     .button {
       text-decoration: none;

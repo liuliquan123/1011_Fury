@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
-const Profile = ({ profile, userTokens, referralStats, actions }) => {
+const Profile = ({ profile, userTokens, referralStats, actions, history }) => {
   useEffect(() => {
     actions.getProfile()
   }, [])
@@ -15,6 +15,14 @@ const Profile = ({ profile, userTokens, referralStats, actions }) => {
   console.log('profile', profile)
   console.log('userTokens', userTokens)
   console.log('referralStats', referralStats)
+
+  const logout = useCallback(() => {
+    actions.logout({
+      onSuccess: () => {
+        history('/login')
+      }
+    })
+  }, [])
 
   if (!profile) {
     return null
@@ -65,7 +73,7 @@ const Profile = ({ profile, userTokens, referralStats, actions }) => {
                   </div>
                 </div>
               </div>
-              <div className={styles.button}>
+              <div className={styles.button} onClick={logout}>
                 LOGOUT
               </div>
             </div>

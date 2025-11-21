@@ -19,8 +19,11 @@ const Header = () => {
       <div className={classNames(styles.buttons)}>
         <Link className={classNames(styles.button)} to="/submit-loss">
           <div className={classNames(styles.leftArrow)}>{">"}</div>
-          <div className={classNames(styles.text)}>Submit your Loss</div>
+          <div className={classNames(styles.text)}>Submit</div>
           <div className={classNames(styles.rightArrow)}>{"<"}</div>
+        </Link>
+        <Link className={classNames(styles.button)} to="/login">
+          <div className={classNames(styles.text)}>Login</div>
         </Link>
       </div>
     </div>
