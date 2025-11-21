@@ -11,5 +11,6 @@ export const getExchangePhase = (params, options) => supabaseApi('GET', '/get-ex
 
 export const uploadEvidenceOcr = (params, options) => supabaseApi('POST', '/upload-evidence-ocr', params, options)
 export const submitLoss = (params, options) => supabaseApi('POST', '/submit-loss', params, options)
+export const linkWeb3Auth = (params, options) => supabaseApi('POST', '/link-web3auth', params, options)
 
 export const getAuthToken = (params, options) => supabaseRestApi('GET', '/auth_tokens', params, options)

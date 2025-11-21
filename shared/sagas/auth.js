@@ -21,6 +21,7 @@ import {
 import { createClient } from "@supabase/supabase-js"
 import * as actions from 'actions/auth'
 import * as api from 'api/supabase'
+import { ethers } from 'ethers'
 
 const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k"
 const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
@@ -70,23 +71,23 @@ function* initWeb3Auth(action) {
 
   try {
     // if (!web3auth) {
-      // localStorage.removeItem('auth_store')
+    // localStorage.removeItem('auth_store')
 
-      web3auth = new Web3AuthNoModal({
-        clientId: WEB3AUTH_CLIENT_ID,
-        web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-        sessionTime: 86400 * 7,
-        storageType: 'local'
-      })
+    web3auth = new Web3AuthNoModal({
+      clientId: WEB3AUTH_CLIENT_ID,
+      web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+      sessionTime: 86400 * 7,
+      storageType: 'local'
+    })
     // }
 
     console.log('initWeb3Auth load', web3auth, web3auth.status)
 
     if (
       web3auth.status !== 'connected'
-        && web3auth.status !== 'errored'
-        && web3auth.status !== 'ready'
-        && web3auth.status !== 'connecting'
+      && web3auth.status !== 'errored'
+      && web3auth.status !== 'ready'
+      && web3auth.status !== 'connecting'
     ) {
       yield apply(web3auth, web3auth.init)
       yield call(waitUntilNot, web3auth, 'not_ready')
@@ -326,7 +327,7 @@ function* authByTelegram(action) {
       }
 
       count++
-      yield delay(3000)
+                             yield delay(3000)
     }
 
     localStorage.setItem('auth_token', authToken)
@@ -489,6 +490,52 @@ function* logout(action) {
   }
 }
 
+function* linkWallet(action) {
+  const { onSuccess, onError } = action.payload
+
+  try {
+    yield call(initWeb3Auth, { payload: {
+      onSuccess: () => {},
+      onError: () => {},
+    }})
+
+    console.log('linkWallet start', web3auth, web3auth.status)
+
+    const provider = yield apply(web3auth, web3auth.connectTo, [
+      WALLET_CONNECTORS.METAMASK, {
+        chainNamespace: CHAIN_NAMESPACES.EIP155
+      }
+    ])
+    console.log('linkWallet 1', provider)
+    const web3AuthResponse = yield apply(web3auth, web3auth.getIdentityToken)
+    const web3AuthToken = web3AuthResponse.idToken
+    console.log('linkWallet 2', web3AuthToken)
+
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    const walletAddress = yield apply(signer, signer.getAddress)
+    console.log('linkWallet start3', walletAddress)
+
+    const authToken = localStorage.getItem('auth_token')
+
+    const linkResponse = yield call(api.linkWeb3Auth, {
+      idToken: web3AuthToken,
+      walletAddress,
+    }, {
+      requireAuth: true,
+      tokenFetcher: () => authToken
+    })
+    console.log('linkResponse', linkResponse)
+
+    yield put(actions.getProfile())
+
+    onSuccess()
+  } catch (error) {
+    console.log('error', error)
+    const message = typeof error.message === 'string' ? error.message : (error.message && error.message.error)
+    onError(message)
+  }
+}
 
 export default function* authSaga() {
   yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
@@ -505,4 +552,5 @@ export default function* authSaga() {
   yield takeEvery(String(actions.getExchangePhase), getExchangePhase)
 
   yield takeEvery(String(actions.logout), logout)
+  yield takeEvery(String(actions.linkWallet), linkWallet)
 }

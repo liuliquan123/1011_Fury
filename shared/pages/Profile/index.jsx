@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import styles from './style.css'
 
@@ -75,6 +76,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   const exchangeTypes = rewards.map(reward => reward.exchange)
   const exchangeCount = exchangeTypes.length
   const [activeIdx, setActiveIdx] = useState(0)
+  const [connectingWallet, setConnectingWallet] = useState(false)
   const [date, setDate] = useState(0)
   let reward = !!exchangeCount ? rewards[activeIdx] : null
   const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
@@ -109,6 +111,21 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
 
   useEffect(() => {
     actions.getProfile()
+  }, [])
+
+  const linkWallet = useCallback(() => {
+    setConnectingWallet(true)
+
+    actions.linkWallet({
+      onSuccess: () => {
+        toast('Connect Wallet Success!')
+        setConnectingWallet(false)
+      },
+      onError: (message) => {
+        toast(message)
+        setConnectingWallet(false)
+      },
+    })
   }, [])
 
   const prev = useCallback(() => {
@@ -241,8 +258,10 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     Accelerate Unlock
                   </div>
                   {profile && !profile.wallet_address && (
-                    <div className={styles.actionButtonDark}>
-                      Connect Wallet
+                    <div className={classNames(styles.actionButtonDark, {
+                      [styles.disabled]: connectingWallet
+                    })} onClick={linkWallet}>
+                      {connectingWallet ? 'Connecting Wallet' : 'Connect Wallet'}
                     </div>
                   )}
                 </div>

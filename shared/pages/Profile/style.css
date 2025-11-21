@@ -319,6 +319,12 @@
               border: 1px solid #E9FD66;
               color: #E9FD66;
               cursor: pointer;
+
+              &.disabled {
+                opacity: 0.5;
+                pointer-events: none;
+                cursor: not-allowed;
+              }
             }
           }
         }
