@@ -38,5 +38,16 @@ export default handleActions({
   [actions.updateOcrForm] (state, action) {
     const ocrForm = action.payload
     state.ocrForm = { ...state.ocrForm, ...ocrForm }
+  },
+  [actions.resetAuth] (state, action) {
+    state.profile = {}
+    state.userTokens = {}
+
+    state.submissions = {}
+    state.referralStats = {}
+
+    state.exchangePhase = {}
+    state.evidenceForm = {}
+    state.ocrForm = {}
   }
 }, initialState)

@@ -360,6 +360,8 @@ function* uploadEvidenceOcr(action) {
       }
     })
     console.log('evidenceResponse', evidenceResponse)
+    evidenceResponse.data.ocr.user_note = ''
+
     yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
     onSuccess()
   } catch (error) {
@@ -389,8 +391,9 @@ function* submitLoss(action) {
     console.log('submitLossResponse', submitLossResponse)
     onSuccess()
   } catch (error) {
-    console.log('error', error)
-    onError(error.message)
+    console.log('submitLoss error', error)
+    const message = typeof error.message === 'string' ? error.message : (error.message && error.message.error)
+    onError(message)
   }
 }
 
@@ -477,6 +480,8 @@ function* logout(action) {
     localStorage.removeItem('auth_token')
     localStorage.removeItem('refresh_token')
     localStorage.removeItem('user_id')
+
+    yield put(actions.resetAuth())
 
     onSuccess()
   } catch (error) {

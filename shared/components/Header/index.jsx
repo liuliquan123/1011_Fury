@@ -1,9 +1,28 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import { withRouter } from 'utils/withRouter'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as actions from 'actions/auth'
 import classNames from 'classnames'
 import styles from './style.css'
 
-const Header = () => {
+const Header = ({ profile, actions, history }) => {
+  const [showMenu, setShowMenu] = useState(true)
+
+  useEffect(() => {
+    actions.getProfile()
+  }, [])
+
+  const logout = useCallback(() => {
+    actions.logout({
+      onSuccess: () => {
+        history('/login')
+        window.location.reload()
+      }
+    })
+  }, [])
+
   return (
     <div className={classNames(styles.header)}>
       <Link className={classNames(styles.branding)} to="/">
@@ -22,12 +41,46 @@ const Header = () => {
           <div className={classNames(styles.text)}>Submit</div>
           <div className={classNames(styles.rightArrow)}>{"<"}</div>
         </Link>
-        <Link className={classNames(styles.button)} to="/login">
-          <div className={classNames(styles.text)}>Login</div>
-        </Link>
+        {!profile.id && (
+          <Link className={classNames(styles.button)} to="/login">
+            <div className={classNames(styles.text)}>Login</div>
+          </Link>
+        )}
+        {profile.id && (
+          <Link className={classNames(styles.logoButton)}>
+            <div className={classNames(styles.logo)}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+                <path d="M4 9H5V10H11V9H12V8H13V2H12V1H11V0H5V1H4V2H3V8H4V9ZM5 4H6V3H7V2H9V3H10V4H11V6H10V7H9V8H7V7H6V6H5V4Z" fill="black"/>
+                <path d="M15 13V12H14V11H2V12H1V13H0V18H2V15H3V14H4V13H12V14H13V15H14V18H16V13H15Z" fill="black"/>
+              </svg>
+            </div>
+            <div className={classNames(styles.menu)}>
+              <Link className={classNames(styles.menuItem)} to="/profile">
+                Profile
+              </Link>
+              <div className={classNames(styles.menuItem)}>
+                Referral
+              </div>
+              <div className={classNames(styles.menuItem)} onClick={logout}>
+                Logout
+              </div>
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   )
 }
 
-export default Header
+export default withRouter(
+  connect(
+    state => ({
+      profile: state.auth.profile
+    }),
+    dispatch => ({
+      actions: bindActionCreators({
+        ...actions
+      }, dispatch)
+    })
+  )(Header)
+)

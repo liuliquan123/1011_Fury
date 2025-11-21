@@ -21,5 +21,7 @@ export const updateOcrForm = createAction('auth/UPDATE_SUBMIT_LOSS')
 
 export const updateUser = createAction('auth/UPDATE_USER')
 
+export const resetAuth = createAction('auth/RESET')
+
 export const uploadEvidenceOcr = createAction('auth/UPLOAD_EVIDENCE_OCR')
 export const submitLoss = createAction('auth/SUBMIT_LOSS')

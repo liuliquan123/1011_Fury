@@ -103,6 +103,7 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
   const [submitting, setSubmitting] = useState(false)
   const [exchangeType, setExchangeType] = useState()
   const [file, setFile] = useState()
+  const [previewUrl, setPreviewUrl] = useState()
   const [stepIndex, setStepIndex] = useState(0)
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
@@ -131,6 +132,9 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
 
   const updateFile = useCallback((file) => {
     setFile(file)
+    const previewUrl = URL.createObjectURL(file)
+    setPreviewUrl(previewUrl)
+    console.log('set file', file, previewUrl)
   }, [])
 
   const uploadFile = useCallback(() => {
@@ -423,9 +427,14 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
                     </Fragment>
                   )}
                   {!!file && (
-                    <div className={styles.inputDescription}>
-                      {file.name}
-                    </div>
+                    <Fragment>
+                      <div className={styles.imagePreview}>
+                        <img src={previewUrl} alt="image preview" />
+                      </div>
+                      <div className={styles.inputDescription}>
+                        {file.name}
+                      </div>
+                    </Fragment>
                   )}
                 </div>
                 <div className={styles.tip}>
@@ -445,7 +454,7 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
             <div className={classNames(styles.nextButton, {
               [styles.disabled]: uploading
             })}  onClick={uploadFile}>
-              Continue
+              {uploading ? 'Uploading' : 'Continue'}
             </div>
           </div>
         </Fragment>
@@ -533,7 +542,7 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
             <div className={classNames(styles.nextButton, {
               [styles.disabled]: submitting
             })} onClick={submitLoss}>
-              Submit
+              {uploading ? 'Submitting' : 'Submit'}
             </div>
           </div>
         </Fragment>

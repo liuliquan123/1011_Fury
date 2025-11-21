@@ -16,7 +16,7 @@
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 200px;
     font-family: Jersey10;
     cursor: pointer;
@@ -41,6 +41,47 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
+
+    .logoButton {
+      text-decoration: none;
+      color: black;
+      font-size: 16px;
+      padding: 2px 16px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      cursor: pointer;
+      position:  relative;
+
+      &:hover {
+        .menu {
+          display: block;
+        }
+      }
+
+      .menu {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        width: 200px;
+        height: 120px;
+        background: #E9FD66;
+        border: 1px solid black;
+        display: none;
+
+        .menuItem {
+          color: black;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-bottom: 1px solid black;
+          text-decoration: none;
+        }
+      }
+    }
 
     .button {
       text-decoration: none;
@@ -81,6 +122,17 @@
         .rightArrow {
           opacity: 1;
         }
+      }
+    }
+  }
+}
+
+
+@media (max-width: 600px) {
+  .header {
+    .branding {
+      .text {
+        display: none;
       }
     }
   }
