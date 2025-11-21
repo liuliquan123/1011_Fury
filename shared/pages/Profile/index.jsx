@@ -7,28 +7,101 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
+// {
+//   created_at: "2025-11-21T11:18:42.279562+00:00",
+//   exchange: "Binance",
+//   granted_at: "2025-11-21T11:18:42.294+00:00",
+//   id: "3070fe14-8438-42e3-b074-74daf0a859cb",
+//   status: "locked",
+//   submission_id: "e2b62bce-aacf-4870-bf98-c8aab7380a9e",
+//   token_amount: 0,
+//   unlock_date: "2025-11-28T11:18:42.294+00:00",
+//   updated_at: "2025-11-21T11:18:42.279562+00:00",
+//   user_id: "7f2f5499-98e7-466a-baee-ebc103e5b362"
+// }
+
+const getFormattedTime = (reward) => {
+  if (reward) {
+    const unlockTimestamp = new Date(reward.unlock_date).getTime()
+    const now = Date.now()
+
+    let diff = unlockTimestamp - now
+
+    if (diff <= 0) {
+      return { d: 0, h: 0, m: 0, s: 0 }; // already unlocked
+    }
+
+    // Convert ms → d/h/m/s
+    let seconds = Math.floor(diff / 1000)
+
+    const d = Math.floor(seconds / 86400)
+    seconds %= 86400
+
+    const h = Math.floor(seconds / 3600)
+    seconds %= 3600
+
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+
+    return { d, h, m, s }
+  }
+
+  return { d: 0, h: 0, m: 0, s: 0 }
+}
+
+const getPercentage = (reward) => {
+  if (reward) {
+    const start = new Date(reward.granted_at).getTime();
+    const end = new Date(reward.unlock_date).getTime();
+    const now = Date.now();
+
+    if (now <= start) return 0;      // not started yet
+    if (now >= end) return 100;      // already unlocked
+
+    const total = end - start;
+    const passed = now - start;
+
+    const percentage = (passed / total) * 100;
+
+    return Math.min(100, Math.max(0, percentage))
+  }
+
+  return 0
+}
+
+
 const Profile = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
-  const rewards = userTokens.rewards || [{
-    created_at: "2025-11-21T11:18:42.279562+00:00",
-    exchange: "Binance",
-    granted_at: "2025-11-21T11:18:42.294+00:00",
-    id: "3070fe14-8438-42e3-b074-74daf0a859cb",
-    status: "locked",
-    submission_id: "e2b62bce-aacf-4870-bf98-c8aab7380a9e",
-    token_amount: 0,
-    unlock_date: "2025-11-28T11:18:42.294+00:00",
-    updated_at: "2025-11-21T11:18:42.279562+00:00",
-    user_id: "7f2f5499-98e7-466a-baee-ebc103e5b362"
-  }]
-  const exchangeTypes = rewards.map(reward => rewards.exchange)
+  const rewards = userTokens.rewards || []
+  const exchangeTypes = rewards.map(reward => reward.exchange)
   const exchangeCount = exchangeTypes.length
   const [activeIdx, setActiveIdx] = useState(0)
+  const [date, setDate] = useState(0)
   let reward = !!exchangeCount ? rewards[activeIdx] : null
+  const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
+  const [percentage, setPercentage] = useState(getPercentage(reward))
 
   console.log('profile', profile)
   console.log('userTokens', userTokens)
   console.log('referralStats', referralStats)
   console.log('submissions', submissions)
+
+  console.log('formattedTime', formattedTime)
+  console.log('percentage', percentage)
+
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setDate(+new Date())
+    }, 1000)
+
+    return () => {
+      clearInterval(iv)
+    }
+  }, [])
+
+  useEffect(() => {
+    setFormattedTime(getFormattedTime(reward))
+    setPercentage(getPercentage(reward))
+  }, [reward, date])
 
   useEffect(() => {
     setActiveIdx(0)
@@ -115,7 +188,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
             </div>
           </div>
           <div className={styles.tokenSection}>
-            {(!!reward || true) && (
+            {(!!reward) && (
               <div className={styles.locked}>
                 <div className={styles.nav}>
                   <div className={classNames(styles.leftButton, {
@@ -146,20 +219,20 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                         Remaining
                       </div>
                       <div className={styles.tokenLockTimeContent}>
-                        <div className={styles.tokenLockTimeContentCellNumber}>00</div>
+                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
                         <div className={styles.tokenLockTimeContentCellText}>D</div>
-                        <div className={styles.tokenLockTimeContentCellNumber}>01</div>
+                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.h}</div>
                         <div className={styles.tokenLockTimeContentCellText}>H</div>
-                        <div className={styles.tokenLockTimeContentCellNumber}>07</div>
+                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.m}</div>
                         <div className={styles.tokenLockTimeContentCellText}>M</div>
-                        <div className={styles.tokenLockTimeContentCellNumber}>17</div>
+                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.s}</div>
                         <div className={styles.tokenLockTimeContentCellText}>S</div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className={styles.progress}>
-                  <div className={styles.percentage}>
+                  <div className={styles.percentage} style={{ width: `${percentage}%` }}>
 
                   </div>
                 </div>
