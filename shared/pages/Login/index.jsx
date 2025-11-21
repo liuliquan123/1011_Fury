@@ -21,6 +21,15 @@ const Login = ({ actions, history }) => {
   const [email, setEmail] = useState('')
   const [referralCode, setReferralCode] = useState('')
 
+  const logout = useCallback(() => {
+    actions.logout({
+      onSuccess: () => {
+        history('/login')
+        window.location.reload()
+      }
+    })
+  }, [])
+
   const onReferralCodeChange = useCallback((event) => {
     setReferralCode(event.target.value)
   }, [])
@@ -128,6 +137,9 @@ const Login = ({ actions, history }) => {
           <div className={styles.status}>
             Connecting Wallet...
           </div>
+          <div className={styles.cancelButton} onClick={logout}>
+            Cancel
+          </div>
         </div>
       </div>
     )
@@ -139,6 +151,21 @@ const Login = ({ actions, history }) => {
         <div className={styles.container}>
           <div className={styles.status}>
             Connecting X...
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (connectingTelegram) {
+    return (
+      <div className={styles.login}>
+        <div className={styles.container}>
+          <div className={styles.status}>
+            Connecting Telegram...
+          </div>
+          <div className={styles.cancelButton} onClick={logout}>
+            Cancel
           </div>
         </div>
       </div>

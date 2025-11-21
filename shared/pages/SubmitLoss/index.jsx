@@ -98,7 +98,7 @@ const getExchangeScreenUrl = (exchangeType, stepIndex) => {
   }
 }
 
-const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, historym }) => {
+const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
   const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [exchangeType, setExchangeType] = useState()

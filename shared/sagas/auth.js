@@ -70,14 +70,14 @@ function* initWeb3Auth(action) {
 
   try {
     // if (!web3auth) {
-    // localStorage.removeItem('auth_store')
+      // localStorage.removeItem('auth_store')
 
-    web3auth = new Web3AuthNoModal({
-      clientId: WEB3AUTH_CLIENT_ID,
-      web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-      sessionTime: 86400 * 7,
-      storageType: 'local'
-    })
+      web3auth = new Web3AuthNoModal({
+        clientId: WEB3AUTH_CLIENT_ID,
+        web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+        sessionTime: 86400 * 7,
+        storageType: 'local'
+      })
     // }
 
     console.log('initWeb3Auth load', web3auth, web3auth.status)
@@ -146,7 +146,11 @@ function* authByWallet(action) {
   const { onSuccess, onError, referralCode } = action.payload
 
   try {
-    // const web3auth = yield call(initWeb3Auth)
+    yield call(initWeb3Auth, { payload: {
+      onSuccess: () => {},
+      onError: () => {},
+    }})
+
     console.log('authByWallet start', web3auth, web3auth.status)
 
     yield apply(web3auth, web3auth.connectTo, [
@@ -280,17 +284,65 @@ function* authByTelegram(action) {
     } else {
       const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
 
+      webWindow.onbeforeunload = function () {
+        console.log('telegram window closed')
+      }
+
       if (!webWindow) {
         throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
       }
     }
 
-    const tgAuthResponse = yield call(api.getAuthToken, {
-      token,
-    })
-    console.log('tgAuthResponse', tgAuthResponse)
+    let finished = false
+    let count = 0
+    let MAX_ATTEMPTS = 30
+    let authToken
+    let refreshToken
+    let userId
 
-    console.log('authByTelegram start', { token, encodedToken, deepLink, webLink })
+    while (!finished) {
+      if (count === MAX_ATTEMPTS) {
+        throw new Error('Telegram login timeout')
+        break
+      }
+
+      const tgAuthResponse = yield call(api.getAuthToken, {
+        token: `eq.${token}`,
+        select: 'status,access_token,refresh_token,user_id'
+      })
+
+      console.log('tgAuthResponse', tgAuthResponse)
+
+      if (tgAuthResponse && tgAuthResponse[0]) {
+        const status = tgAuthResponse[0].status
+        authToken = tgAuthResponse[0].access_token
+        refreshToken = tgAuthResponse[0].refreshToken
+        userId = tgAuthResponse[0].user_id
+
+        if (status !== 'pending') {
+          finished = true
+          break
+        }
+      }
+
+      count++
+      yield delay(3000)
+    }
+
+    localStorage.setItem('auth_token', authToken)
+    localStorage.setItem('refresh_token', refreshToken)
+    localStorage.setItem('user_id', userId)
+
+    const profileResponse = yield call(api.getProfile, {
+      userId
+    }, {
+      requireAuth: true,
+      tokenFetcher: () => authToken
+    })
+
+    yield put(actions.updateProfile(profileResponse.data))
+    console.log('profileResponse', profileResponse)
+
     onSuccess()
   } catch (error) {
     console.log('error', error)
@@ -378,13 +430,6 @@ function* getProfile(action) {
       })
 
       yield put(actions.updateReferralStats(referralStatsResponse.data))
-
-      // const exchangePhaseResponse = yield call(api.getExchangePhase, {}, {
-      //   requireAuth: true,
-      //   tokenFetcher: () => authToken
-      // })
-
-      // yield put(actions.updateExchangePhase(exchangePhaseResponse.data))
     }
   } catch (error) {
     console.log('getProfile error', error)
@@ -419,6 +464,14 @@ function* logout(action) {
     const authToken = localStorage.getItem('auth_token')
     const refreshToken = localStorage.getItem('refresh_token')
     const userId = localStorage.getItem('user_id')
+
+    if (web3auth) {
+      try {
+        yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
+      } catch (error) {
+        console.log('error', error)
+      }
+    }
 
     localStorage.removeItem('auth_store')
     localStorage.removeItem('auth_token')

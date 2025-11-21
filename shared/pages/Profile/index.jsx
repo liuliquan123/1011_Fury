@@ -20,6 +20,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, history }) => {
     actions.logout({
       onSuccess: () => {
         history('/login')
+        window.location.reload()
       }
     })
   }, [])
