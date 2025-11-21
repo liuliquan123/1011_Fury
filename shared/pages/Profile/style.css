@@ -145,6 +145,35 @@
         .locked {
           padding: 30px;
           background: #232326;
+          position: relative;
+
+          .nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            .leftButton, .rightButton {
+              width: 40px;
+              height: 40px;
+              background: white;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              &.disabled {
+                opacity: 0.5;
+                pointer-events: none;
+                cursor: not-allowed;
+              }
+            }
+          }
 
           .text {
             color: #FFF;
@@ -179,6 +208,12 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: 48px;
+
+                .status {
+                  font-size: 20px;
+                  margin-left: 10px;
+                  color: #7E7E7E;
+                }
               }
 
               .tokenLockTime {
@@ -260,6 +295,7 @@
             gap: 20px;
 
             .actionButton {
+              text-decoration: none;
               flex: 1;
               display: flex;
               height: 52px;
