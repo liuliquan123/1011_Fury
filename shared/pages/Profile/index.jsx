@@ -70,7 +70,6 @@ const getPercentage = (reward) => {
   return 0
 }
 
-
 const Profile = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
   const rewards = userTokens.rewards || []
   const exchangeTypes = rewards.map(reward => reward.exchange)
@@ -148,11 +147,6 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
       }
     })
   }, [])
-
-  if (!profile) {
-    return null
-  }
-
 
   return (
     <div className={styles.profile}>

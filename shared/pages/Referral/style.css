@@ -24,46 +24,218 @@
       font-weight: 400;
       line-height: 24px;
     }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+
+      .button {
+        text-decoration: none;
+        width: 250px;
+        margin-top: 20px;
+        background: #E9FD66;
+        color: black;
+        display: flex;
+        height: 48px;
+        padding: 20px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+
+        font-family: "Google Sans Code";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        text-transform: uppercase;
+      }
+    }
   }
 
   .content {
-    .account {
-      margin-bottom: 20px;
-      display: flex;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .myReferral {
       width: 100%;
-      gap: 20px;
-      flex-wrap: wrap;
+      background: #232326;
+      padding: 40px;
 
-      .user {
-        flex: 1;
-        background: #232326;
-        padding: 30px;
+      .contentTitle {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 18px;
+        font-style: normal;
+        line-height: 28px;
+        margin-bottom: 20px;
+      }
 
-        .top {
+      .code {
+        width: 100%;
+        padding: 40px;
+        color: #E9FD66;
+        font-family: "Jersey10";
+        font-size: 40px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 40px;
+        background: #141519;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 40px;
+      }
+
+      .buttons {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+
+        .shareButton {
           display: flex;
-          align-items: center;
+          height: 40px;
+          padding: 20px 24px;
           justify-content: center;
+          align-items: center;
+          gap: 10px;
+          flex: 1 0 0;
+          border: 1px solid #E9FD66;
+          white-space: pre;
+
+          color: #E9FD66;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 24px;
+          cursor: pointer;
+        }
+
+        .copyButton {
+          display: flex;
+          height: 40px;
+          padding: 20px 24px;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          flex: 1 0 0;
+          border: 1px solid #E9FD66;
+          white-space: pre;
+
+          background: #E9FD66;
+          color: black;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 24px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .taskOne {
+      width: 100%;
+      background: #232326;
+      padding: 40px;
+
+      .contentTitle {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 18px;
+        font-style: normal;
+        line-height: 28px;
+        margin-bottom: 20px;
+      }
+
+      .contentText {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px;
+        margin-bottom: 20px;
+      }
+
+      .buttons {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+
+        .inviteButton {
+          display: flex;
+          height: 40px;
+          padding: 20px 24px;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          flex: 1 0 0;
+          border: 1px solid #E9FD66;
+          white-space: pre;
+
+          background: #E9FD66;
+          color: black;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 24px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .taskMore {
+      width: 100%;
+      background: #232326;
+      padding: 40px;
+
+      .contentTitle {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 18px;
+        font-style: normal;
+        line-height: 28px;
+        margin-bottom: 20px;
+      }
+
+      .contentStats {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+
+        .contentStatsItem {
+          flex: 1;
+          padding: 20px;
+          background: #141519;
+          display: flex;
+          align-items: flex-start;
           flex-direction: column;
-          gap: 20px;
+          gap: 10px;
 
-          .logo {
-            width: 80px;
-            height: 80px;
-            background: #D9D9D9;
-            border-radius: 40px;
-          }
-
-          .name {
-            color: #FFF;
-            text-align: center;
+          .contentStatsItemName {
+            color: #E9FD66;
             font-family: "Jersey10";
-            font-size: 48px;
+            font-size: 40px;
             font-style: normal;
             font-weight: 400;
-            line-height: 48px;
+            line-height: 40px;
           }
 
-          .description {
+          .contentStatsItemNumber {
             color: #A7ADB9;
             text-align: center;
             font-family: "Google Sans Code";
@@ -73,298 +245,109 @@
             line-height: 24px;
           }
         }
-
-        .bottom {
-          background: #141519;
-          padding: 20px;
-          margin-top: 20px;
-
-          .list {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            width: 100%;
-            gap: 20px;
-
-            .listItem {
-              width: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-
-              .listItemName {
-                color: #A7ADB9;
-                font-family: "Google Sans Code";
-                font-size: 14px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 24px;
-              }
-
-              .listItemContent {
-                color: #FFF;
-                font-family: "Google Sans Code";
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 600;
-                line-height: 24px;
-              }
-            }
-          }
-
-          .button {
-            width: 100%;
-            margin-top: 20px;
-            background: #E9FD66;
-            color: black;
-            display: flex;
-            height: 48px;
-            padding: 20px 24px;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-
-            font-family: "Google Sans Code";
-            font-size: 16px;
-            font-style: normal;
-            font-weight: 500;
-            line-height: 24px;
-            text-transform: uppercase;
-          }
-        }
       }
 
-      .tokenSection {
-        flex: 2;
+      .buttons {
+        width: 100%;
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
         gap: 20px;
+        flex-wrap: wrap;
 
-        .locked {
-          padding: 30px;
-          background: #232326;
-          position: relative;
+        .inviteButton {
+          display: flex;
+          height: 40px;
+          padding: 20px 24px;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          flex: 1 0 0;
+          border: 1px solid #E9FD66;
+          white-space: pre;
 
-          .nav {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 100px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+          background: #E9FD66;
+          color: black;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 24px;
+          cursor: pointer;
+        }
+      }
+    }
 
-            .leftButton, .rightButton {
-              width: 40px;
-              height: 40px;
-              background: white;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+    .myToken {
+      width: 100%;
+      background: #232326;
 
-              &.disabled {
-                opacity: 0.5;
-                pointer-events: none;
-                cursor: not-allowed;
-              }
-            }
-          }
+      .exchange {
+        background: #39393A;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
 
-          .text {
-            color: #FFF;
-            font-family: "Google Sans Code";
-            font-size: 24px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: 32px;
-            margin-bottom: 20px;
-          }
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 16px;
+        font-style: normal;
+        line-height: 24px;
+      }
 
-          .tokens {
-            width: 100%;
+      .bottom {
+        padding: 40px;
 
-            .token {
-              width: 100%;
-              display: flex;
-              align-items: center;
-              gap: 16px;
-
-              .tokenLogo {
-                width: 40px;
-                height: 40px;
-                border-radius: 20px;
-                background: #7E7E7E;
-              }
-
-              .tokenAmount {
-                color: #E9FD66;
-                font-family: "Jersey10";
-                font-size: 48px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 48px;
-
-                .status {
-                  font-size: 20px;
-                  margin-left: 10px;
-                  color: #7E7E7E;
-                }
-              }
-
-              .tokenLockTime {
-                display: flex;
-                margin-left: auto;
-                align-items: center;
-
-                .tokenLockTimeName {
-                  color: #A7ADB9;
-                  text-align: center;
-                  font-family: "Google Sans Code";
-                  font-size: 14px;
-                  font-style: normal;
-                  font-weight: 400;
-                  line-height: 24px;
-                  margin-right: 10px;
-                }
-
-                .tokenLockTimeContent {
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-
-                  .tokenLockTimeContentCellNumber, .tokenLockTimeContentCellText {
-                    display: inline;
-                    width: 30px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                  }
-
-                  .tokenLockTimeContentCellNumber {
-                    color: #E9FD66;
-                    text-align: center;
-                    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-                    font-family: "Google Sans Code";
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 24px;
-                    text-transform: capitalize;
-                    background: black;
-                  }
-
-                  .tokenLockTimeContentCellText {
-                    color: #FFF;
-                    text-align: center;
-                    font-family: "Google Sans Code";
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 24px;
-                    text-transform: capitalize;
-                  }
-                }
-              }
-            }
-          }
-
-          .progress {
-            margin-top: 20px;
-            width: 100%;
-            border: 1px solid #E9FD66;
-            height: 16px;
-
-            .percentage {
-              height: 100%;
-              width: 0%;
-              background: #E9FD66;
-            }
-          }
-
-          .actionButtons {
-            display: flex;
-            margin-top: 20px;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-
-            .actionButton {
-              text-decoration: none;
-              flex: 1;
-              display: flex;
-              height: 52px;
-              padding: 24px 16px;
-              justify-content: center;
-              align-items: center;
-              background: #E9FD66;
-              border: 1px solid #E9FD66;
-              color: #141519;
-              cursor: pointer;
-            }
-
-            .actionButtonDark {
-              flex: 1;
-              display: flex;
-              height: 52px;
-              padding: 24px 16px;
-              justify-content: center;
-              align-items: center;
-              background: #141519;
-              border: 1px solid #E9FD66;
-              color: #E9FD66;
-              cursor: pointer;
-
-              &.disabled {
-                opacity: 0.5;
-                pointer-events: none;
-                cursor: not-allowed;
-              }
-            }
-          }
+        .name {
+          color: #E9FD66;
+          text-align: center;
+          font-family: "Google Sans Code";
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 24px;
+          text-transform: capitalize;
+          padding: 20px;
         }
 
-        .statistic {
-          background: #232326;
-          padding: 40px;
+        .tokens {
+          width: 100%;
 
-          .statisticTitle {
-            color: #FFF;
-            font-family: "Google Sans Code";
-            font-size: 24px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: 32px;
-            margin-bottom: 40px;
-          }
-
-          .list {
+          .token {
+            width: 100%;
             display: flex;
-            gap: 20px;
+            align-items: center;
+            gap: 16px;
 
-            .listItem {
-              background: #141519;
-              flex: 1;
-              padding: 16px;
-              display: flex;
-              align-items: flex-start;
-              flex-direction: column;
+            .tokenLogo {
+              width: 40px;
+              height: 40px;
+              border-radius: 20px;
+              background: #7E7E7E;
+            }
 
-              .listItemNumber {
-                color: #E9FD66;
-                font-family: "Jersey10";
-                font-size: 40px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 40px;
+            .tokenAmount {
+              color: #E9FD66;
+              font-family: "Jersey10";
+              font-size: 48px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 48px;
+
+              .status {
+                font-size: 20px;
+                margin-left: 10px;
+                color: #7E7E7E;
               }
+            }
 
-              .listItemName {
+            .tokenLockTime {
+              display: flex;
+              margin-left: auto;
+              align-items: center;
+
+              .tokenLockTimeName {
                 color: #A7ADB9;
                 text-align: center;
                 font-family: "Google Sans Code";
@@ -372,46 +355,88 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: 24px;
+                margin-right: 10px;
+              }
+
+              .tokenLockTimeContent {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .tokenLockTimeContentCellNumber, .tokenLockTimeContentCellText {
+                  display: inline;
+                  width: 30px;
+                  height: 30px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+
+                .tokenLockTimeContentCellNumber {
+                  color: #E9FD66;
+                  text-align: center;
+                  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+                  font-family: "Google Sans Code";
+                  font-size: 16px;
+                  font-style: normal;
+                  font-weight: 600;
+                  line-height: 24px;
+                  text-transform: capitalize;
+                  background: black;
+                }
+
+                .tokenLockTimeContentCellText {
+                  color: #FFF;
+                  text-align: center;
+                  font-family: "Google Sans Code";
+                  font-size: 16px;
+                  font-style: normal;
+                  font-weight: 600;
+                  line-height: 24px;
+                  text-transform: capitalize;
+                }
               }
             }
           }
         }
-      }
-    }
 
-    .actions {
-      background: #232326;
-      padding: 20px;
-
-      .actionTitle {
-        color: #FFF;
-        font-family: "Google Sans Code";
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 32px;
-        margin-bottom: 20px;
-      }
-
-      .list {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        .listItem {
-          text-decoration: none;
-          padding: 10px 20px;
-          background: #141519;
+        .progress {
+          margin-top: 20px;
+          padding: 0 20px;
           width: 100%;
-          color: #FFF;
-          text-align: left;
-          font-family: "Google Sans Code";
-          font-size: 16px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: 24px;
-          text-transform: capitalize;
+          border: 1px solid #E9FD66;
+          height: 16px;
+
+          .percentage {
+            height: 100%;
+            width: 0%;
+            background: #E9FD66;
+          }
+        }
+
+        .nav {
+          width: 100%;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+
+          .leftButton, .rightButton {
+            width: 40px;
+            height: 40px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &.disabled {
+              opacity: 0.5;
+              pointer-events: none;
+              cursor: not-allowed;
+            }
+          }
         }
       }
     }
