@@ -67,10 +67,11 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
   const [percentage, setPercentage] = useState(getPercentage(reward))
   console.log('formattedTime', formattedTime)
+  console.log('percentage', percentage)
 
   useEffect(() => {
     const iv = setInterval(() => {
-      // setDate(+new Date())
+      setDate(+new Date())
     }, 1000)
 
     return () => {
@@ -79,8 +80,8 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   }, [])
 
   useEffect(() => {
-    // setFormattedTime(getFormattedTime(reward))
-    // setPercentage(getPercentage(reward))
+    setFormattedTime(getFormattedTime(reward))
+    setPercentage(getPercentage(reward))
   }, [reward, date])
 
   useEffect(() => {
@@ -116,7 +117,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
       <div className={styles.content}>
         {(!!reward) && (
           <div className={styles.myToken}>
-            <div className={styles.exchange}>Binance</div>
+            <div className={styles.exchange}>{reward.exchange}</div>
             <div className={styles.bottom}>
               <div className={styles.tokens}>
                 <div className={styles.token}>

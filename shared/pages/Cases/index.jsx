@@ -36,7 +36,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
               <div className={styles.list}>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
                   </div>
                   <div className={styles.listItemName}>
                     Total Submissions
@@ -44,7 +44,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {(submissions && submissions.statistics && submissions.statistics.total_loss_amount) || 0}
                   </div>
                   <div className={styles.listItemName}>
                     Total Loss

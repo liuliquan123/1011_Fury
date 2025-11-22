@@ -216,6 +216,7 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 20px;
+        flex-wrap: wrap;
 
         .contentStatsItem {
           flex: 1;
@@ -402,7 +403,6 @@
 
         .progress {
           margin-top: 20px;
-          padding: 0 20px;
           width: 100%;
           border: 1px solid #E9FD66;
           height: 16px;
