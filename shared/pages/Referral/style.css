@@ -1,0 +1,419 @@
+.referral {
+  color: white;
+  padding: 60px;
+
+  .title {
+    margin-bottom: 60px;
+
+    .text {
+      color: #FFF;
+      font-family: "Jersey10";
+      font-size: 120px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140px;
+      text-align: center;
+    }
+
+    .description {
+      color: #A7ADB9;
+      text-align: center;
+      font-family: "Google Sans Code";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+    }
+  }
+
+  .content {
+    .account {
+      margin-bottom: 20px;
+      display: flex;
+      width: 100%;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      .user {
+        flex: 1;
+        background: #232326;
+        padding: 30px;
+
+        .top {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 20px;
+
+          .logo {
+            width: 80px;
+            height: 80px;
+            background: #D9D9D9;
+            border-radius: 40px;
+          }
+
+          .name {
+            color: #FFF;
+            text-align: center;
+            font-family: "Jersey10";
+            font-size: 48px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 48px;
+          }
+
+          .description {
+            color: #A7ADB9;
+            text-align: center;
+            font-family: "Google Sans Code";
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 24px;
+          }
+        }
+
+        .bottom {
+          background: #141519;
+          padding: 20px;
+          margin-top: 20px;
+
+          .list {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            width: 100%;
+            gap: 20px;
+
+            .listItem {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+
+              .listItemName {
+                color: #A7ADB9;
+                font-family: "Google Sans Code";
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 24px;
+              }
+
+              .listItemContent {
+                color: #FFF;
+                font-family: "Google Sans Code";
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 24px;
+              }
+            }
+          }
+
+          .button {
+            width: 100%;
+            margin-top: 20px;
+            background: #E9FD66;
+            color: black;
+            display: flex;
+            height: 48px;
+            padding: 20px 24px;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+
+            font-family: "Google Sans Code";
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 24px;
+            text-transform: uppercase;
+          }
+        }
+      }
+
+      .tokenSection {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .locked {
+          padding: 30px;
+          background: #232326;
+          position: relative;
+
+          .nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            .leftButton, .rightButton {
+              width: 40px;
+              height: 40px;
+              background: white;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              &.disabled {
+                opacity: 0.5;
+                pointer-events: none;
+                cursor: not-allowed;
+              }
+            }
+          }
+
+          .text {
+            color: #FFF;
+            font-family: "Google Sans Code";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 32px;
+            margin-bottom: 20px;
+          }
+
+          .tokens {
+            width: 100%;
+
+            .token {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              gap: 16px;
+
+              .tokenLogo {
+                width: 40px;
+                height: 40px;
+                border-radius: 20px;
+                background: #7E7E7E;
+              }
+
+              .tokenAmount {
+                color: #E9FD66;
+                font-family: "Jersey10";
+                font-size: 48px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 48px;
+
+                .status {
+                  font-size: 20px;
+                  margin-left: 10px;
+                  color: #7E7E7E;
+                }
+              }
+
+              .tokenLockTime {
+                display: flex;
+                margin-left: auto;
+                align-items: center;
+
+                .tokenLockTimeName {
+                  color: #A7ADB9;
+                  text-align: center;
+                  font-family: "Google Sans Code";
+                  font-size: 14px;
+                  font-style: normal;
+                  font-weight: 400;
+                  line-height: 24px;
+                  margin-right: 10px;
+                }
+
+                .tokenLockTimeContent {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+
+                  .tokenLockTimeContentCellNumber, .tokenLockTimeContentCellText {
+                    display: inline;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+
+                  .tokenLockTimeContentCellNumber {
+                    color: #E9FD66;
+                    text-align: center;
+                    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+                    font-family: "Google Sans Code";
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: 24px;
+                    text-transform: capitalize;
+                    background: black;
+                  }
+
+                  .tokenLockTimeContentCellText {
+                    color: #FFF;
+                    text-align: center;
+                    font-family: "Google Sans Code";
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: 24px;
+                    text-transform: capitalize;
+                  }
+                }
+              }
+            }
+          }
+
+          .progress {
+            margin-top: 20px;
+            width: 100%;
+            border: 1px solid #E9FD66;
+            height: 16px;
+
+            .percentage {
+              height: 100%;
+              width: 0%;
+              background: #E9FD66;
+            }
+          }
+
+          .actionButtons {
+            display: flex;
+            margin-top: 20px;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+
+            .actionButton {
+              text-decoration: none;
+              flex: 1;
+              display: flex;
+              height: 52px;
+              padding: 24px 16px;
+              justify-content: center;
+              align-items: center;
+              background: #E9FD66;
+              border: 1px solid #E9FD66;
+              color: #141519;
+              cursor: pointer;
+            }
+
+            .actionButtonDark {
+              flex: 1;
+              display: flex;
+              height: 52px;
+              padding: 24px 16px;
+              justify-content: center;
+              align-items: center;
+              background: #141519;
+              border: 1px solid #E9FD66;
+              color: #E9FD66;
+              cursor: pointer;
+
+              &.disabled {
+                opacity: 0.5;
+                pointer-events: none;
+                cursor: not-allowed;
+              }
+            }
+          }
+        }
+
+        .statistic {
+          background: #232326;
+          padding: 40px;
+
+          .statisticTitle {
+            color: #FFF;
+            font-family: "Google Sans Code";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 32px;
+            margin-bottom: 40px;
+          }
+
+          .list {
+            display: flex;
+            gap: 20px;
+
+            .listItem {
+              background: #141519;
+              flex: 1;
+              padding: 16px;
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+
+              .listItemNumber {
+                color: #E9FD66;
+                font-family: "Jersey10";
+                font-size: 40px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 40px;
+              }
+
+              .listItemName {
+                color: #A7ADB9;
+                text-align: center;
+                font-family: "Google Sans Code";
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 24px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .actions {
+      background: #232326;
+      padding: 20px;
+
+      .actionTitle {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 32px;
+        margin-bottom: 20px;
+      }
+
+      .list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .listItem {
+          text-decoration: none;
+          padding: 10px 20px;
+          background: #141519;
+          width: 100%;
+          color: #FFF;
+          text-align: left;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 24px;
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+}
