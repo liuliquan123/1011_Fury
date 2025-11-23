@@ -9,7 +9,8 @@ const initialState = {
   referralInfo: {},
   exchangePhase: {},
   evidenceForm: {},
-  ocrForm: {}
+  ocrForm: {},
+  phasesLocked: {}
 }
 
 export default handleActions({
@@ -31,6 +32,11 @@ export default handleActions({
   [actions.updateExchangePhase] (state, action) {
     const { exchange, phase } = action.payload
     state.exchangePhase[exchange] = phase
+
+    const currentPhase = phase.current_phase
+    const userSubmissionStatus = phase.user_submission_status
+    const isLocked = userSubmissionStatus[`phase_${currentPhase}`]
+    state.phasesLocked[exchange] = isLocked
   },
   [actions.updateEvidenceForm] (state, action) {
     const evidenceForm = action.payload

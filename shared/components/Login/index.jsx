@@ -59,7 +59,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isNoted, setIsNoted] = useState(false)
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  const link = `${baseUrl}/invite?code=${code}`
+  const link = code ? `${baseUrl}/invite` : `${baseUrl}/invite?code=${code}`
 
   const onModalContentClick = useCallback((event) => {
     event.preventDefault()
@@ -82,8 +82,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
   }, [code])
 
   const onReferralCodeChange = useCallback((event) => {
-    // setReferralCode(event.target.value)
-  }, [])
+    if (!code) {
+      setReferralCode(event.target.value)
+    }
+  }, [code])
 
   const onEmailChange = useCallback((event) => {
     setEmail(event.target.value)

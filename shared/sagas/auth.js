@@ -446,16 +446,13 @@ function* getExchangePhase(action) {
     const refreshToken = localStorage.getItem('refresh_token')
     const userId = localStorage.getItem('user_id')
 
-    if (userId && authToken && refreshToken) {
-      const exchange = action.payload.exchange
+    // if (userId && authToken && refreshToken) {
+    const exchange = action.payload.exchange
 
-      const exchangePhaseResponse = yield call(api.getExchangePhase, { exchange }, {
-        requireAuth: true,
-        tokenFetcher: () => authToken
-      })
+    const exchangePhaseResponse = yield call(api.getExchangePhase, { exchange })
 
-      yield put(actions.updateExchangePhase({ exchange, phase: exchangePhaseResponse.data }))
-    }
+    yield put(actions.updateExchangePhase({ exchange, phase: exchangePhaseResponse.data }))
+    // }
   } catch (error) {
     console.log('error', error)
   }

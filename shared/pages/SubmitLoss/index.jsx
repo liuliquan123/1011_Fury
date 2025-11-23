@@ -101,7 +101,7 @@ const getExchangeScreenUrl = (exchangeType, stepIndex) => {
   }
 }
 
-const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
+const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
 
@@ -116,13 +116,16 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
 
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
+  const phaseLocked = phasesLocked[getExchangeName(exchangeType)]
 
   const selectExchange = useCallback((exchangeType) => () => {
     setExchangeType(exchangeType)
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
   }, [])
+
   console.log('exchangePhase', exchangePhase, phase, ocrForm)
   console.log('isLoggedIn', isLoggedIn, profile)
+  console.log('phaseLocked', phasesLocked, getExchangeName(exchangeType), !!phaseLocked)
 
   const openModal = useCallback(() => {
     setIsOpen(true)
@@ -278,7 +281,7 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
                 </div>
                 {phase && (
                   <div className={classNames(styles.notification, {
-                    [styles.success]: true
+                    [styles.error]:!!phaseLocked
                   })}>
                     <div className={styles.notificationTitle}>
                       {phase.phase_info.description}
@@ -301,7 +304,7 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
               Back
             </div>
             <div className={classNames(styles.nextButton, {
-              [styles.disabled]: !exchangeType
+              [styles.disabled]: !exchangeType || !!phaseLocked
             })} onClick={nextStep}>
               Continue
             </div>
@@ -603,6 +606,7 @@ export default withRouter(
   connect(
     state => ({
       exchangePhase: state.auth.exchangePhase,
+      phasesLocked: state.auth.phasesLocked,
       profile: state.auth.profile,
       ocrForm: state.auth.ocrForm,
     }),

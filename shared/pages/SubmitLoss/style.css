@@ -271,6 +271,14 @@
         line-height: 24px;
       }
 
+      &.error {
+        background: rgba(239, 77, 18, 0.12);
+
+        .notificationTitle {
+          color: #EF4D12;
+        }
+      }
+
       .notificationContent {
         margin-top: 10px;
 
