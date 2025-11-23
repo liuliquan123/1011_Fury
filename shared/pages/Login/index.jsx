@@ -11,6 +11,7 @@ import styles from './style.css'
 
 const Login = ({ actions, history }) => {
   const [initializing, setInitializing] = useState(true)
+  const [checked, setChecked] = useState(false)
 
   const [connectingWallet, setConnectingWallet] = useState(false)
   const [connectingTwitter, setConnectingTwitter] = useState(false)
@@ -20,6 +21,11 @@ const Login = ({ actions, history }) => {
   const [showEmailInput, setShowEmailInput] = useState(false)
   const [email, setEmail] = useState('')
   const [referralCode, setReferralCode] = useState('')
+
+  const toggleAgreement = useCallback(() => {
+    setChecked(!checked)
+    console.log('toggleAgreement')
+  }, [checked])
 
   const logout = useCallback(() => {
     actions.logout({
@@ -43,6 +49,7 @@ const Login = ({ actions, history }) => {
 
     actions.authByEmail({
       email,
+      referralCode,
       onSuccess: () => {
         toast('Email Login Success!')
         setConnectingEmail(false)
@@ -55,12 +62,13 @@ const Login = ({ actions, history }) => {
         setEmail('')
       }
     })
-  }, [email])
+  }, [email, referralCode])
 
   const authByWallet = useCallback(() => {
     setConnectingWallet(true)
 
     actions.authByWallet({
+      referralCode,
       onSuccess: () => {
         toast('Wallet Login Success!')
         setConnectingWallet(false)
@@ -71,12 +79,13 @@ const Login = ({ actions, history }) => {
         setConnectingWallet(false)
       }
     })
-  }, [])
+  }, [referralCode])
 
   const authByTwitter = useCallback(() => {
     setConnectingTwitter(true)
 
     actions.authByTwitter({
+      referralCode,
       onSuccess: () => {
         toast('Twitter Login Success!')
         setConnectingTwitter(false)
@@ -87,12 +96,13 @@ const Login = ({ actions, history }) => {
         setConnectingTwitter(false)
       }
     })
-  }, [])
+  }, [referralCode])
 
   const authByTelegram = useCallback(() => {
     setConnectingTelegram(true)
 
     actions.authByTelegram({
+      referralCode,
       onSuccess: () => {
         toast('Telegram Login Success!')
         setConnectingTelegram(false)
@@ -103,7 +113,7 @@ const Login = ({ actions, history }) => {
         setConnectingTelegram(false)
       }
     })
-  }, [])
+  }, [referralCode])
 
   useEffect(() => {
     setInitializing(true)
@@ -189,7 +199,6 @@ const Login = ({ actions, history }) => {
                 value={referralCode}
                 onChange={onReferralCodeChange}
               />
-
               {!referralCode && (
                 <div className={styles.placeholder}>
                   Enter referral code
@@ -198,9 +207,9 @@ const Login = ({ actions, history }) => {
             </div>
           </div>
         </div>
-        <div className={styles.checks}>
+        <div className={styles.checks} onClick={toggleAgreement}>
           <div className={styles.inputIcon}>
-            <input type="checkbox" />
+            <input type="checkbox" checked={checked} onChange={toggleAgreement} />
           </div>
           <div className={styles.inputText}>
             I agree to the <a>Terms of Service</a> and <a>Privacy Policy</a>

@@ -160,7 +160,7 @@ function* authByWallet(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referred_by: referralCode })
 
     console.log('authByWallet end', web3auth, web3auth.status)
     onSuccess()
@@ -186,7 +186,7 @@ function* authByEmail(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referred_by: referralCode })
 
     console.log('authByEmail end', web3auth, web3auth.status)
     onSuccess()
@@ -211,7 +211,7 @@ function* authByTwitter(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referred_by: referralCode })
 
     console.log('authByTwitter end', web3auth, web3auth.status)
     onSuccess()

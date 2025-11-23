@@ -248,6 +248,7 @@
             gap: 20px;
 
             .inviteButton {
+              text-decoration: none;
               width: 200px;
               color: #E9FD66;
               border: 1px solid #E9FD66;

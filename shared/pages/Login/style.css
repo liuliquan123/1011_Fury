@@ -110,6 +110,10 @@
 
       .inputIcon {
         margin-right: 10px;
+
+        input {
+          cursor: pointer;
+        }
       }
 
       .inputText {

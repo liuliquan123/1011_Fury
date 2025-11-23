@@ -34,7 +34,7 @@ export const routes = [
         component: Referral
       },
       {
-        path: 'my-cases',
+        path: 'my-case',
         component: Cases
       },
       {
@@ -60,7 +60,7 @@ export const RootRoutes = () => (
       <Route path="profile" element={<Profile />} />
       <Route path="submit-loss" element={<SubmitLoss />} />
       <Route path="referral" element={<Referral />} />
-      <Route path="my-cases" element={<Cases />} />
+      <Route path="my-case" element={<Cases />} />
       <Route path="invite" element={<Invite />} />
       <Route path="login" element={<Login />} />
       <Route path="*" element={<NoMatch />} />

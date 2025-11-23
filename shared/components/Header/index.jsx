@@ -61,6 +61,9 @@ const Header = ({ profile, actions, history }) => {
               <Link className={classNames(styles.menuItem)} to="/referral">
                 Referral
               </Link>
+              <Link className={classNames(styles.menuItem)} to="/my-case">
+                My Case
+              </Link>
               <div className={classNames(styles.menuItem)} onClick={logout}>
                 Logout
               </div>

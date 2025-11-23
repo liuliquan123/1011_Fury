@@ -66,12 +66,14 @@
         top: 50px;
         right: 0;
         width: 200px;
-        height: 120px;
+        height: 160px;
         background: #E9FD66;
         border: 1px solid black;
+        cursor: pointer;
         display: none;
 
         .menuItem {
+          cursor: pointer;
           color: black;
           height: 40px;
           display: flex;

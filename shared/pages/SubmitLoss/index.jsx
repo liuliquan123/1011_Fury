@@ -452,7 +452,7 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
               Back
             </div>
             <div className={classNames(styles.nextButton, {
-              [styles.disabled]: uploading
+              [styles.disabled]: uploading || !file
             })}  onClick={uploadFile}>
               {uploading ? 'Uploading' : 'Continue'}
             </div>

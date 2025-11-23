@@ -5,8 +5,40 @@ import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import binanceLogo from 'resources/images/logos/binance-logo.svg'
+import okxLogo from 'resources/images/logos/okx-logo.svg'
+import bybitLogo from 'resources/images/logos/bybit-logo.svg'
+import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
 import classNames from 'classnames'
 import styles from './style.css'
+
+const getInviteCode = (code, exchangeType) => {
+  if (exchangeType === 'binance') {
+    return `${code || ''}-BINANCE`
+  } else if (exchangeType === 'okx') {
+    return `${code || ''}-OKX`
+  } else if (exchangeType === 'bybit') {
+    return `${code || ''}-BYBIT`
+  } else if (exchangeType === 'bitget') {
+    return `${code || ''}-BITGET`
+  }
+
+  return code
+}
+
+const getExchangeName = (exchangeType, uppercase) => {
+  if (exchangeType === 'binance') {
+    return uppercase ? 'BINANCE' : 'Binance'
+  } else if (exchangeType === 'okx') {
+    return 'OKX'
+  } else if (exchangeType === 'bybit') {
+    return uppercase ? 'BYBIT' : 'Bybit'
+  } else if (exchangeType === 'bitget') {
+    return uppercase ? 'BITGET' : 'Bitget'
+  }
+
+  return ''
+}
 
 const getFormattedTime = (reward) => {
   if (reward) {
@@ -66,8 +98,17 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   let reward = !!exchangeCount ? rewards[activeIdx] : null
   const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
   const [percentage, setPercentage] = useState(getPercentage(reward))
+  const [exchangeType, setExchangeType] = useState('binance')
+  const [inviteCode, setInviteCode] = useState(getInviteCode(referralStats.referral_code, exchangeType))
+
   console.log('formattedTime', formattedTime)
   console.log('percentage', percentage)
+  console.log('inviteCode', inviteCode)
+
+  const selectExchange = useCallback((exchangeType) => () => {
+    setExchangeType(exchangeType)
+    actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
+  }, [])
 
   useEffect(() => {
     const iv = setInterval(() => {
@@ -78,6 +119,10 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
       clearInterval(iv)
     }
   }, [])
+
+  useEffect(() => {
+    setInviteCode(getInviteCode(referralStats.referral_code, exchangeType))
+  }, [referralStats, exchangeType])
 
   useEffect(() => {
     setFormattedTime(getFormattedTime(reward))
@@ -103,6 +148,33 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
       setActiveIdx(activeIdx + 1)
     }
   }, [activeIdx, exchangeCount])
+
+  const handleCopyLink = useCallback(() => {
+    try {
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+      const link = `${baseUrl}/invite?code=${inviteCode}`
+      navigator.clipboard.writeText(link);
+      toast('Copied!')
+    } catch (error) {
+      console.error('Failed to copy:', error);
+    }
+  }, [inviteCode])
+
+  const handleShareTwitter = useCallback(() => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    const link = `${baseUrl}/invite?code=${inviteCode}`
+    const text = `Join me on Satoshi's Fury! Use my referral code: ${inviteCode}\n${link}`
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`
+    window.open(url, '_blank')
+  }, [inviteCode])
+
+  const handleShareTelegram = useCallback(() => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    const link = `${baseUrl}/invite?code=${inviteCode}`
+    const text = `Join me on Satoshi's Fury! Use my referral code: ${inviteCode}\n${link}`;
+    const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`
+    window.open(url, '_blank')
+  }, [inviteCode])
 
   return (
     <div className={styles.referral}>
@@ -171,81 +243,127 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
           <div className={styles.contentTitle}>
             Your Participated Cases
           </div>
+          <div className={styles.exchanges}>
+            <div
+              className={classNames(styles.exchange, {
+                [styles.selected]: exchangeType === 'binance'
+              })}
+              onClick={selectExchange('binance')}
+            >
+              <div className={styles.exchangeLogo}>
+                <img src={binanceLogo} alt={`binance logo`} />
+              </div>
+              <div className={styles.exchangeName}>Binance</div>
+            </div>
+            <div
+              className={classNames(styles.exchange, {
+                [styles.selected]: exchangeType === 'okx'
+              })}
+              onClick={selectExchange('okx')}
+            >
+              <div className={styles.exchangeLogo}>
+                <img src={okxLogo} alt={`okx logo`} />
+              </div>
+              <div className={styles.exchangeName}>OKX</div>
+            </div>
+            <div
+              className={classNames(styles.exchange, {
+                [styles.selected]: exchangeType === 'bybit'
+              })}
+              onClick={selectExchange('bybit')}
+            >
+              <div className={styles.exchangeLogo}>
+                <img src={bybitLogo} alt={`bybit logo`} />
+              </div>
+              <div className={styles.exchangeName}>Bybit</div>
+            </div>
+            <div
+              className={classNames(styles.exchange, {
+                [styles.selected]: exchangeType === 'bitget'
+              })}
+              onClick={selectExchange('bitget')}
+            >
+              <div className={styles.exchangeLogo}>
+                <img src={bitgetLogo} alt={`bitget logo`} />
+              </div>
+              <div className={styles.exchangeName}>Bitget</div>
+            </div>
+          </div>
           <div className={styles.code}>
-            REF-USER-123-2025
+            {inviteCode}
           </div>
           <div className={styles.buttons}>
-            <div className={styles.shareButton}>
+            <div className={styles.shareButton} onClick={handleShareTwitter}>
               share on X（Twitter）
             </div>
-            <div className={styles.shareButton}>
-              share on Other Platforms
+            <div className={styles.shareButton} onClick={handleShareTelegram}>
+              share on Telegram
             </div>
-            <div className={styles.copyButton}>
+            <div className={styles.copyButton} onClick={handleCopyLink}>
               Copy referral link
             </div>
           </div>
         </div>
       </div>
-      <div className={styles.title}>
-        <div className={styles.text}>
+      {/* <div className={styles.title}>
+          <div className={styles.text}>
           Inviter Tasks
-        </div>
-        <div className={styles.description}>
+          </div>
+          <div className={styles.description}>
           Unlock up to 300 USDC per month by inviting friends
-        </div>
-      </div>
-      <div className={styles.content}>
-        <div className={styles.taskOne}>
+          </div>
+          </div>
+          <div className={styles.content}>
+          <div className={styles.taskOne}>
           <div className={styles.contentTitle}>
-            Task 1:
+          Task 1:
           </div>
           <div className={styles.contentText}>
-            Unlock up to 300 USDC per month by inviting friends
+          Unlock up to 300 USDC per month by inviting friends
           </div>
           <div className={styles.buttons}>
-            <div className={styles.inviteButton}>
-              invite
-            </div>
+          <div className={styles.inviteButton}>
+          invite
           </div>
-        </div>
-        <div className={styles.taskMore}>
+          </div>
+          </div>
+          <div className={styles.taskMore}>
           <div className={styles.contentTitle}>
-            超级返佣
+          超级返佣
           </div>
           <div className={styles.contentStats}>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁加快 X 天
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                0-5人
-              </div>
-            </div>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁加快 X+1 天
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                6-50人
-              </div>
-            </div>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                51人以上
-              </div>
-            </div>
+          <div className={styles.contentStatsItem}>
+          <div className={styles.contentStatsItemName}>
+          解锁加快 X 天
+          </div>
+          <div className={styles.contentStatsItemNumber}>
+          0-5人
+          </div>
+          </div>
+          <div className={styles.contentStatsItem}>
+          <div className={styles.contentStatsItemName}>
+          解锁加快 X+1 天
+          </div>
+          <div className={styles.contentStatsItemNumber}>
+          6-50人
+          </div>
+          </div>
+          <div className={styles.contentStatsItem}>
+          <div className={styles.contentStatsItemName}>
+          解锁
+          </div>
+          <div className={styles.contentStatsItemNumber}>
+          51人以上
+          </div>
+          </div>
           </div>
           <div className={styles.buttons}>
-            <div className={styles.inviteButton}>
-              INVITE MORE
-            </div>
+          <div className={styles.inviteButton}>
+          INVITE MORE
           </div>
-        </div>
-      </div>
+          </div>
+          </div>
+          </div> */}
     </div>
   )
 }
