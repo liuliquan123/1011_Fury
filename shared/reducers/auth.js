@@ -6,6 +6,7 @@ const initialState = {
   userTokens: {},
   submissions: {},
   referralStats: {},
+  referralInfo: {},
   exchangePhase: {},
   evidenceForm: {},
   ocrForm: {}
@@ -39,12 +40,18 @@ export default handleActions({
     const ocrForm = action.payload
     state.ocrForm = { ...state.ocrForm, ...ocrForm }
   },
+  [actions.updateReferralInfo] (state, action) {
+    const info = action.payload
+    const code = info.code
+    state.referralInfo[code] = info
+  },
   [actions.resetAuth] (state, action) {
     state.profile = {}
     state.userTokens = {}
 
     state.submissions = {}
     state.referralStats = {}
+    state.referralInfo = {}
 
     state.exchangePhase = {}
     state.evidenceForm = {}

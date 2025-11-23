@@ -160,7 +160,7 @@ function* authByWallet(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referred_by: referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode })
 
     console.log('authByWallet end', web3auth, web3auth.status)
     onSuccess()
@@ -186,7 +186,7 @@ function* authByEmail(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referred_by: referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode })
 
     console.log('authByEmail end', web3auth, web3auth.status)
     onSuccess()
@@ -211,7 +211,7 @@ function* authByTwitter(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referred_by: referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode })
 
     console.log('authByTwitter end', web3auth, web3auth.status)
     onSuccess()
@@ -461,6 +461,18 @@ function* getExchangePhase(action) {
   }
 }
 
+function* getReferralInfo(action) {
+  try {
+    const referralCode = action.payload.referralCode
+
+    const infoResponse = yield call(api.getReferralInfo, { referral_code: referralCode })
+
+    yield put(actions.updateReferralInfo({ code: referralCode, ...infoResponse.data }))
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
 function* logout(action) {
   const { onSuccess, onError } = action.payload
 
@@ -550,6 +562,7 @@ export default function* authSaga() {
 
   yield takeEvery(String(actions.getProfile), getProfile)
   yield takeEvery(String(actions.getExchangePhase), getExchangePhase)
+  yield takeEvery(String(actions.getReferralInfo), getReferralInfo)
 
   yield takeEvery(String(actions.logout), logout)
   yield takeEvery(String(actions.linkWallet), linkWallet)

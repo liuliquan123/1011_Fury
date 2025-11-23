@@ -5,10 +5,22 @@ import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useSearchParams } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
-const Invite = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
+const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, submissions, history }) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [referralCode, setReferralCode] = useState(searchParams.get('code'))
+  const info = referralInfo[referralCode] || { referrer: {} }
+  console.log('referralInfo', referralInfo, searchParams)
+
+  useEffect(() => {
+    const referralCode = searchParams.get('code')
+    setReferralCode(referralCode)
+    actions.getReferralInfo({ referralCode })
+  }, [searchParams])
+
   return (
     <div className={styles.invite}>
       <div className={styles.title}>
@@ -16,7 +28,7 @@ const Invite = ({ profile, userTokens, referralStats, actions, submissions, hist
           You’ve Been Invited!
         </div>
         <div className={styles.description}>
-          Join with referral code: DEMO123
+          Join with referral code: {referralCode}
         </div>
         <div className={styles.buttons}>
           <Link className={styles.button} to="/submit-loss">
@@ -36,14 +48,14 @@ const Invite = ({ profile, userTokens, referralStats, actions, submissions, hist
 
                 <div className={styles.info}>
                   <div className={styles.name}>
-                    Demo User
+                    {info.referrer.username}
                   </div>
                   <div className={styles.code}>
                     <div className={styles.label}>
                       Referral Code：
                     </div>
                     <div className={styles.value}>
-                      DEMO123
+                      {referralCode}
                     </div>
                   </div>
                 </div>
@@ -104,6 +116,7 @@ export default withRouter(
       userTokens: state.auth.userTokens,
       submissions: state.auth.submissions,
       referralStats: state.auth.referralStats,
+      referralInfo: state.auth.referralInfo,
     }),
     dispatch => ({
       actions: bindActionCreators({

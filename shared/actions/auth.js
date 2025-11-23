@@ -9,6 +9,7 @@ export const logout = createAction('auth/LOGOUT')
 
 export const getProfile = createAction('auth/GET_PROFILE')
 export const getExchangePhase = createAction('auth/GET_EXCHANGE_PHASE')
+export const getReferralInfo = createAction('auth/GET_REFERRAL_INFO')
 
 export const updateProfile = createAction('auth/UPDATE_PROFILE')
 export const updateUserTokens = createAction('auth/UPDATE_USER_TOKENS')
@@ -18,6 +19,7 @@ export const updateExchangePhase = createAction('auth/UPDATE_EXCHANGE_PHASE')
 
 export const updateEvidenceForm = createAction('auth/UPDATE_EVIDENCE_FORM')
 export const updateOcrForm = createAction('auth/UPDATE_SUBMIT_LOSS')
+export const updateReferralInfo = createAction('auth/UPDATE_REFERRAL_INFO')
 
 export const updateUser = createAction('auth/UPDATE_USER')
 

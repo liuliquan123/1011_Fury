@@ -17,8 +17,8 @@ const getInviteCode = (code, exchangeType) => {
     return `${code || ''}-BNB`
   } else if (exchangeType === 'okx') {
     return `${code || ''}-OKX`
-  } else if (exchangeType === 'BYB') {
-    return `${code || ''}-BYBIT`
+  } else if (exchangeType === 'bybit') {
+    return `${code || ''}-BYB`
   } else if (exchangeType === 'bitget') {
     return `${code || ''}-BGT`
   }
@@ -305,65 +305,65 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
           </div>
         </div>
       </div>
-      {/* <div className={styles.title}>
-          <div className={styles.text}>
+      <div className={styles.title}>
+        <div className={styles.text}>
           Inviter Tasks
-          </div>
-          <div className={styles.description}>
+        </div>
+        <div className={styles.description}>
           Unlock up to 300 USDC per month by inviting friends
-          </div>
-          </div>
-          <div className={styles.content}>
-          <div className={styles.taskOne}>
+        </div>
+      </div>
+      <div className={styles.content}>
+        <div className={styles.taskOne}>
           <div className={styles.contentTitle}>
-          Task 1:
+            Task 1:
           </div>
           <div className={styles.contentText}>
-          Unlock up to 300 USDC per month by inviting friends
+            Unlock up to 300 USDC per month by inviting friends
           </div>
-          <div className={styles.buttons}>
-          <div className={styles.inviteButton}>
-          invite
-          </div>
-          </div>
-          </div>
-          <div className={styles.taskMore}>
+          {/* <div className={styles.buttons}>
+              <div className={styles.inviteButton}>
+              invite
+              </div>
+              </div> */}
+        </div>
+        <div className={styles.taskMore}>
           <div className={styles.contentTitle}>
-          超级返佣
+            超级返佣
           </div>
           <div className={styles.contentStats}>
-          <div className={styles.contentStatsItem}>
-          <div className={styles.contentStatsItemName}>
-          解锁加快 X 天
+            <div className={styles.contentStatsItem}>
+              <div className={styles.contentStatsItemName}>
+                解锁加快 X 天
+              </div>
+              <div className={styles.contentStatsItemNumber}>
+                0-5人
+              </div>
+            </div>
+            <div className={styles.contentStatsItem}>
+              <div className={styles.contentStatsItemName}>
+                解锁加快 X+1 天
+              </div>
+              <div className={styles.contentStatsItemNumber}>
+                6-50人
+              </div>
+            </div>
+            <div className={styles.contentStatsItem}>
+              <div className={styles.contentStatsItemName}>
+                解锁
+              </div>
+              <div className={styles.contentStatsItemNumber}>
+                51人以上
+              </div>
+            </div>
           </div>
-          <div className={styles.contentStatsItemNumber}>
-          0-5人
-          </div>
-          </div>
-          <div className={styles.contentStatsItem}>
-          <div className={styles.contentStatsItemName}>
-          解锁加快 X+1 天
-          </div>
-          <div className={styles.contentStatsItemNumber}>
-          6-50人
-          </div>
-          </div>
-          <div className={styles.contentStatsItem}>
-          <div className={styles.contentStatsItemName}>
-          解锁
-          </div>
-          <div className={styles.contentStatsItemNumber}>
-          51人以上
-          </div>
-          </div>
-          </div>
-          <div className={styles.buttons}>
-          <div className={styles.inviteButton}>
-          INVITE MORE
-          </div>
-          </div>
-          </div>
-          </div> */}
+          {/* <div className={styles.buttons}>
+              <div className={styles.inviteButton}>
+              INVITE MORE
+              </div>
+              </div> */}
+        </div>
+      </div>
     </div>
   )
 }
