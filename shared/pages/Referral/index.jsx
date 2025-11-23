@@ -14,13 +14,13 @@ import styles from './style.css'
 
 const getInviteCode = (code, exchangeType) => {
   if (exchangeType === 'binance') {
-    return `${code || ''}-BINANCE`
+    return `${code || ''}-BNB`
   } else if (exchangeType === 'okx') {
     return `${code || ''}-OKX`
-  } else if (exchangeType === 'bybit') {
+  } else if (exchangeType === 'BYB') {
     return `${code || ''}-BYBIT`
   } else if (exchangeType === 'bitget') {
-    return `${code || ''}-BITGET`
+    return `${code || ''}-BGT`
   }
 
   return code
