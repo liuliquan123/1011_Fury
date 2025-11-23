@@ -8,6 +8,9 @@ import binanceLogo from 'resources/images/logos/binance-logo.svg'
 import okxLogo from 'resources/images/logos/okx-logo.svg'
 import bybitLogo from 'resources/images/logos/bybit-logo.svg'
 import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
+import Modal from 'react-modal'
+import LoginModal from 'components/Login'
+import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import binanceScreenshotStep1 from 'resources/images/screenshots/binance/binance-step1.jpeg'
@@ -99,12 +102,18 @@ const getExchangeScreenUrl = (exchangeType, stepIndex) => {
 }
 
 const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
+
+  const [uploadError, setUploadError] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [exchangeType, setExchangeType] = useState()
   const [file, setFile] = useState()
   const [previewUrl, setPreviewUrl] = useState()
   const [stepIndex, setStepIndex] = useState(0)
+  const [isOpen, setIsOpen] = useState(false)
+
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
 
@@ -113,6 +122,15 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
   }, [])
   console.log('exchangePhase', exchangePhase, phase, ocrForm)
+  console.log('isLoggedIn', isLoggedIn, profile)
+
+  const openModal = useCallback(() => {
+    setIsOpen(true)
+  }, [])
+
+  const closeModal = useCallback((event) => {
+    setIsOpen(false)
+  }, [])
 
   const nextStep = useCallback(() => {
     if (stepIndex < 3) {
@@ -148,30 +166,59 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
       onError: (message) => {
         setUploading(false)
         toast(message)
+        setUploadError(message)
       },
     })
-  }, [file])
+  }, [file, isLoggedIn])
 
   const submitLoss = useCallback(() => {
-    setSubmitting(true)
-    actions.submitLoss({
-      onSuccess: () => {
-        setSubmitting(false)
-        toast('Submit loss sucess!')
-        setFile()
-        history('/profile')
-      },
-      onError: (message) => {
-        setSubmitting(false)
-        toast(message)
-      },
-    })
-  }, [file])
+    console.log('submit isLoggedIn', isLoggedIn)
+    if (!isLoggedIn) {
+      setIsOpen(true)
+    } else {
+      setSubmitting(true)
+      actions.submitLoss({
+        onSuccess: () => {
+          setSubmitting(false)
+          toast('Submit loss sucess!')
+          setFile()
+          history('/profile')
+        },
+        onError: (message) => {
+          setSubmitting(false)
+          toast(message)
+        },
+      })
+    }
+  }, [file, isLoggedIn])
+
+  useEffect(() => {
+
+  }, [])
+
+  const onModalClick = useCallback((event) => {
+    event.preventDefault()
+    event.stopPropagation()
+  }, [])
+
+  const onLoggedIn = useCallback((event) => {
+    setIsOpen(false)
+    actions.getProfile()
+  }, [])
 
   const exchangeName = getExchangeName(exchangeType)
 
   return (
     <div className={styles.submitLoss}>
+      {(isOpen && !isLoggedIn) && (
+        <div className={styles.modal} onClick={closeModal}>
+          <LoginModal
+            code={referralCode}
+            onClick={onModalClick}
+            onLoggedIn={onLoggedIn}
+          />
+        </div>
+      )}
       {stepIndex === 0 && (
         <Fragment>
           <div className={styles.stepOne}>
@@ -452,7 +499,7 @@ const SubmitLoss = ({ actions, exchangePhase, profile, ocrForm, history }) => {
               Back
             </div>
             <div className={classNames(styles.nextButton, {
-              [styles.disabled]: uploading || !file
+              [styles.disabled]: uploading || !file || !!uploadError
             })}  onClick={uploadFile}>
               {uploading ? 'Uploading' : 'Continue'}
             </div>
@@ -556,6 +603,7 @@ export default withRouter(
   connect(
     state => ({
       exchangePhase: state.auth.exchangePhase,
+      profile: state.auth.profile,
       ocrForm: state.auth.ocrForm,
     }),
     dispatch => ({

@@ -4,10 +4,13 @@ import { withRouter } from 'utils/withRouter'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
+import { useSearchParams } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
 const Header = ({ profile, actions, history }) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const [showMenu, setShowMenu] = useState(true)
 
   useEffect(() => {
@@ -36,13 +39,13 @@ const Header = ({ profile, actions, history }) => {
         </div>
       </Link>
       <div className={classNames(styles.buttons)}>
-        <Link className={classNames(styles.button)} to="/submit-loss">
+        <Link className={classNames(styles.button)} to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}>
           <div className={classNames(styles.leftArrow)}>{">"}</div>
           <div className={classNames(styles.text)}>Submit</div>
           <div className={classNames(styles.rightArrow)}>{"<"}</div>
         </Link>
         {!profile.id && (
-          <Link className={classNames(styles.button)} to="/login">
+          <Link className={classNames(styles.button)} to={referralCode ? `/login?code=${referralCode}` : '/login'}>
             <div className={classNames(styles.text)}>Login</div>
           </Link>
         )}

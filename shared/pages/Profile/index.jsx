@@ -312,12 +312,12 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
             <Link className={styles.listItem} to="/submit-loss">
               submit new loss
             </Link>
-            <div className={styles.listItem}>
+            <Link className={styles.listItem} to="/referral">
               view referral program
-            </div>
-            <div className={styles.listItem}>
+            </Link>
+            <Link className={styles.listItem} to="/my-case">
               my cases
-            </div>
+            </Link>
           </div>
         </div>
       </div>

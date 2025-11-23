@@ -11,7 +11,7 @@ import styles from './style.css'
 
 const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, submissions, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [referralCode, setReferralCode] = useState(searchParams.get('code'))
+  const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const info = referralInfo[referralCode] || { referrer: {} }
   console.log('referralInfo', referralInfo, searchParams)
 
@@ -31,7 +31,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, sub
           Join with referral code: {referralCode}
         </div>
         <div className={styles.buttons}>
-          <Link className={styles.button} to="/submit-loss">
+          <Link className={styles.button} to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}>
             Create New Case
           </Link>
         </div>

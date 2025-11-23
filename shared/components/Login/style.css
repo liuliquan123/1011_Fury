@@ -1,0 +1,341 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+
+  .note {
+    background: #232326;
+    width: 460px;
+    padding: 24px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 30px;
+
+    .title {
+      color: #FFF;
+      font-family: "Google Sans Code";
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 32px;
+    }
+
+    .text {
+      color: #FFF;
+      text-align: center;
+      font-family: "Google Sans Code";
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
+      margin-bottom: 20px;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 20px;
+
+      step {
+        color: #FFF;
+        text-align: center;
+        font-family: "Google Sans Code";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+      }
+    }
+
+    .link {
+      color: #FFF;
+      text-align: center;
+      font-family: "Google Sans Code";
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
+      margin-top: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+
+      .copyButton {
+        width: 100%;
+        display: flex;
+        height: 40px;
+        padding: 20px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        flex: 1 0 0;
+        border: 1px solid #E9FD66;
+        white-space: pre;
+
+        color: #E9FD66;
+        font-family: "Google Sans Code";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        cursor: pointer;
+      }
+
+      .nextButton {
+        width: 100%;
+        display: flex;
+        height: 40px;
+        padding: 20px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        flex: 1 0 0;
+        border: 1px solid #E9FD66;
+        white-space: pre;
+
+        background: #E9FD66;
+        color: black;
+        font-family: "Google Sans Code";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.login {
+  background: #232326;
+  width: 460px;
+  padding: 24px;
+  margin: 0 auto;
+
+  .status {
+    font-family: "Google Sans Code";
+    font-size: 16px;
+    color: white;
+  }
+
+  .cancelButton {
+    color: white;
+    text-decoration: none;
+    color: black;
+    border: 1px solid black;
+    font-size: 16px;
+    padding: 2px 16px;
+    height: 48px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 32px;
+    background: #E9FD66;
+    border-color: #E9FD66;
+    color: black;
+    font-family: "Google Sans Code";
+  }
+
+  .title {
+    color: #FFF;
+    text-align: center;
+    font-family: "Jersey10";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 40px;
+  }
+
+  .subtitle {
+    color: #A7ADB9;
+    text-align: center;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+  }
+
+  .form {
+    .field {
+      padding: 20px 0;
+
+      .input {
+        width: 100%;
+        height: 48px;
+        position: relative;
+
+        input {
+          background: transparent;
+          width: 100%;
+          height: 100%;
+          border: none;
+          outline: none;
+          background: black;
+          color: white;
+          padding: 0 10px;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          line-height: 24px;
+          text-align: center;
+        }
+
+        .placeholder {
+          position: absolute;
+          pointer-events: none;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(255, 255, 255, 0.60);
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-style: normal;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+
+  .checks {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+
+    .inputIcon {
+      margin-right: 10px;
+
+      input {
+        cursor: pointer;
+      }
+    }
+
+    .inputText {
+      color: #828698;
+      font-family: "Google Sans Code";
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+
+      a {
+        color: white;
+      }
+    }
+  }
+
+  .separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 100%;
+    position: relative;
+    margin: 20px 0;
+
+    .separatorLine {
+      position: absolute;
+      top: 50%;
+      left: 0;;
+      background: rgba(255, 255, 255, 0.45);
+      height: 1px;
+      width: 100%;
+    }
+
+    .separatorText {
+      width: 40px;
+      height: 100%;
+      background: #232326;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+
+      color: #828698;
+      font-family: "Google Sans Code";
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+    }
+  }
+
+  .providers {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+
+    .provider {
+      width: 100%;
+      height: 48px;
+      background: black;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: #FFF;
+      font-family: "Google Sans Code";
+      font-size: 16px;
+      font-style: normal;
+      line-height: 24px;
+      text-transform: uppercase;
+
+      cursor: pointer;
+
+      .form {
+        width: 100%;
+
+        .input {
+          position: relative;
+          padding-right: 40px;
+
+          .submit {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &.disabled {
+              opacity: 0.5;
+              pointer-events: none;
+              cursor: not-allowed;
+            }
+          }
+        }
+      }
+    }
+  }
+}
