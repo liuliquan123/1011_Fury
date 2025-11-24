@@ -369,14 +369,17 @@ function* uploadEvidenceOcr(action) {
       }
     })
     console.log('evidenceResponse', evidenceResponse)
-
-    if (evidenceResponse.data && evidenceResponse.data.ocr_error) {
-      throw new Error(evidenceResponse.data.ocr_error)
+    
+    // 检查 OCR 是否成功
+    if (evidenceResponse.data.ocr) {
+      evidenceResponse.data.ocr.user_note = ''
+      yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
+      onSuccess()
+    } else {
+      // OCR 失败，传递 ocr_details
+      const errorDetails = evidenceResponse.data.ocr_details || evidenceResponse.data.ocr_error || 'OCR verification failed'
+      onError(errorDetails)
     }
-    evidenceResponse.data.ocr.user_note = ''
-
-    yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
-    onSuccess()
   } catch (error) {
     console.log('error', error)
     onError(error.message)
@@ -455,18 +458,17 @@ function* getProfile(action) {
 function* getExchangePhase(action) {
   try {
     const authToken = localStorage.getItem('auth_token')
-    const refreshToken = localStorage.getItem('refresh_token')
-    const userId = localStorage.getItem('user_id')
-
-    // if (userId && authToken && refreshToken) {
     const exchange = action.payload.exchange
 
-    const exchangePhaseResponse = yield call(api.getExchangePhase, { exchange })
+    // 支持未登录访问：如果有 token 则传递，如果没有也能正常调用
+    const exchangePhaseResponse = yield call(api.getExchangePhase, { exchange }, authToken ? {
+      requireAuth: false,
+      tokenFetcher: () => authToken
+    } : {})
 
     yield put(actions.updateExchangePhase({ exchange, phase: exchangePhaseResponse.data }))
-    // }
   } catch (error) {
-    console.log('error', error)
+    console.log('getExchangePhase error', error)
   }
 }
 
