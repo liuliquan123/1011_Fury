@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'utils/withRouter'
 import Title from 'components/DocumentTitle'
 import Header from 'components/Header'
+import MobileBottomNav from 'components/MobileBottomNav'
 import 'resources/fonts/style.css'
 import { Buffer } from 'safe-buffer'
 import darkThemeStyle from 'resources/themes/dark'
@@ -51,6 +52,7 @@ const Root = ({ location, history, theme, actions }) => {
           <Outlet />
           <ToastContainer />
         </div>
+        <MobileBottomNav />
       </div>
     </Fragment>
   )

@@ -130,12 +130,30 @@
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .header {
-    .branding {
-      .text {
-        display: none;
-      }
-    }
+    padding: 0 16px;
+  }
+  
+  .header .branding .text {
+    font-size: 24px;
+  }
+  
+  .header .buttons {
+    gap: 10px;
+  }
+  
+  .header .button {
+    padding: 6px 12px;
+    font-size: 14px;
+    height: 28px;
+  }
+  
+  .header .logoButton {
+    display: none;
+  }
+  
+  .header .loginButton {
+    display: none;
   }
 }
