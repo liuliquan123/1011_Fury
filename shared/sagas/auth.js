@@ -146,7 +146,7 @@ function* web3AuthLogin(web3auth, data) {
 }
 
 function* authByWallet(action) {
-  const { onSuccess, onError, referralCode } = action.payload
+  const { onSuccess, onError, referralCode, isWalletBrowser } = action.payload
 
   try {
     /* yield call(initWeb3Auth, { payload: {
@@ -156,11 +156,16 @@ function* authByWallet(action) {
 
     console.log('authByWallet start', web3auth, web3auth.status)
 
-    yield apply(web3auth, web3auth.connectTo, [
-      WALLET_CONNECTORS.METAMASK, {
-        chainNamespace: CHAIN_NAMESPACES.EIP155
-      }
-    ])
+    if (isWalletBrowser) {
+      yield apply(web3auth, web3auth.connect)
+    } else {
+      yield apply(web3auth, web3auth.connectTo, [
+        WALLET_CONNECTORS.METAMASK, {
+          chainNamespace: CHAIN_NAMESPACES.EIP155
+        }
+      ])
+    }
+
     // yield apply(web3auth, web3auth.connect)
 
     yield call(web3AuthLogin, web3auth, { referralCode })

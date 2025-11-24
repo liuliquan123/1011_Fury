@@ -32,7 +32,7 @@ const isWalletBrowser = () => {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
 
   // Known wallet identifiers (far from exhaustive, tweak for your user base)
-  const walletRegex = /(MetaMaskMobile|MetaMask|Trust Wallet|TrustWallet|imToken|TokenPocket|MathWallet|BitKeep|CoinbaseWallet|Rainbow|Phantom)/i;
+  const walletRegex = /(MetaMaskMobile|MetaMask|Trust Wallet|TrustWallet|imToken|TokenPocket|MathWallet|BitKeep|Bitget|OKX|CoinbaseWallet|Rainbow|Phantom|Binance|BinanceWallet|BinanceWeb3Wallet)/i;
 
   const hasInjectedProvider =
     typeof window.ethereum !== "undefined" ||
@@ -124,6 +124,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
 
       actions.authByWallet({
         referralCode,
+        isWalletBrowser: isWalletBrowser(),
         onSuccess: () => {
           toast('Wallet Login Success!')
           setConnectingWallet(false)
