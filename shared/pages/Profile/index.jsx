@@ -249,9 +249,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                   </div>
                 </div>
                 <div className={styles.actionButtons}>
-                  <div className={styles.actionButton}>
+                  <Link className={styles.actionButton} to="/referral">
                     Accelerate Unlock
-                  </div>
+                  </Link>
                   {profile && !profile.wallet_address && (
                     <div className={classNames(styles.actionButtonDark, {
                       [styles.disabled]: connectingWallet

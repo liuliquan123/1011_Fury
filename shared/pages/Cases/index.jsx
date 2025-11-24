@@ -73,9 +73,9 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                 <Link className={styles.inviteButton} to="/referral">
                   Invite
                 </Link>
-                <div className={styles.submitButton}>
+                <Link className={styles.submitButton} to="/submit-loss">
                   Submit New Loss
-                </div>
+                </Link>
               </div>
             </div>
             <div className={styles.bottom}>
