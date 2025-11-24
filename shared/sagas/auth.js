@@ -523,56 +523,27 @@ function* linkWallet(action) {
   const { onSuccess, onError } = action.payload
 
   try {
-    // Properly handle initWeb3Auth errors
-    let initSuccess = false
-    let initError = null
-    
     yield call(initWeb3Auth, { payload: {
-      onSuccess: () => { 
-        console.log('[linkWallet] initWeb3Auth success')
-        initSuccess = true 
-      },
-      onError: (err) => { 
-        console.error('[linkWallet] initWeb3Auth failed:', err)
-        initError = err
-      },
+      onSuccess: () => {},
+      onError: () => {},
     }})
 
-    // Check if initialization failed
-    if (initError) {
-      throw new Error(`Failed to initialize Web3Auth: ${initError}`)
-    }
-
-    if (!initSuccess) {
-      throw new Error('Web3Auth initialization did not complete successfully')
-    }
-
-    console.log('[linkWallet] Web3Auth status:', web3auth?.status)
-
-    // Verify Web3Auth is ready
-    if (!web3auth) {
-      throw new Error('Web3Auth instance is not available')
-    }
-
-    if (web3auth.status === 'not_ready') {
-      throw new Error('Web3Auth is not ready yet. Please try again in a moment.')
-    }
+    console.log('linkWallet start', web3auth, web3auth.status)
 
     const provider = yield apply(web3auth, web3auth.connectTo, [
       WALLET_CONNECTORS.METAMASK, {
         chainNamespace: CHAIN_NAMESPACES.EIP155
       }
     ])
-    console.log('[linkWallet] Provider connected:', !!provider)
-    
+    console.log('linkWallet 1', provider)
     const web3AuthResponse = yield apply(web3auth, web3auth.getIdentityToken)
     const web3AuthToken = web3AuthResponse.idToken
-    console.log('[linkWallet] Identity token obtained')
+    console.log('linkWallet 2', web3AuthToken)
 
     const ethersProvider = new ethers.BrowserProvider(provider)
     const signer = yield apply(ethersProvider, ethersProvider.getSigner)
     const walletAddress = yield apply(signer, signer.getAddress)
-    console.log('[linkWallet] Wallet address:', walletAddress)
+    console.log('linkWallet start3', walletAddress)
 
     const authToken = localStorage.getItem('auth_token')
 
@@ -583,17 +554,14 @@ function* linkWallet(action) {
       requireAuth: true,
       tokenFetcher: () => authToken
     })
-    console.log('[linkWallet] Link response:', linkResponse)
+    console.log('linkResponse', linkResponse)
 
     yield put(actions.getProfile())
 
     onSuccess()
   } catch (error) {
-    console.error('[linkWallet] Error:', error)
-    // Improved error message extraction
-    const message = error?.response?.data?.error 
-      || error?.message 
-      || 'Failed to connect wallet. Please try again.'
+    console.log('error', error)
+    const message = typeof error.message === 'string' ? error.message : (error.message && error.message.error)
     onError(message)
   }
 }
