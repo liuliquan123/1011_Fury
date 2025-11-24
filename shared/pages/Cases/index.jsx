@@ -6,6 +6,7 @@ import * as actions from 'actions/auth'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import classNames from 'classnames'
+import { formatDate, formatDateShort } from 'utils'
 import styles from './style.css'
 
 const Cases = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
@@ -84,7 +85,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                     <div className={styles.caseListItemTop}>
                       {submission.matched_case && (
                         <div className={styles.text}>
-                          {submission.matched_case.exchange} {submission.trading_pair} {submission.matched_case.matched_case} - {submission.loss_date}
+                          {submission.matched_case.exchange} {submission.trading_pair} {submission.matched_case.matched_case} - {formatDateShort(submission.loss_date)}
                         </div>
                       )}
                       <div className={styles.status}>
@@ -119,7 +120,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                         </div>
                         <div className={styles.statsListItem}>
                           <div className={styles.statsListItemNumber}>
-                            {submission.created_at}
+                            {formatDate(submission.created_at)}
                           </div>
                           <div className={styles.statsListItemName}>
                             Submitted
