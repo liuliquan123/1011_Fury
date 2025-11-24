@@ -276,6 +276,9 @@
               width: 40px;
               height: 40px;
               background: black;
+              display: flex;
+              align-items: center;
+              justify-content: center;
             }
 
             .featureTitle {
@@ -322,6 +325,9 @@
                 width: 40px;
                 height: 40px;
                 background: black;
+                display: flex;
+                align-items: center;
+                justify-content: center;
               }
 
               .socialAccountTitle {
