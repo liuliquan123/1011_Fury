@@ -140,7 +140,9 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
   const [showWalletSelector, setShowWalletSelector] = useState(false)
   const [detectedWallets, setDetectedWallets] = useState([])
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  const link = code ? `${baseUrl}/invite` : `${baseUrl}/invite?code=${code}`
+  const link = code 
+    ? `${baseUrl}/invite?code=${code}` 
+    : (typeof window !== 'undefined' ? window.location.href : baseUrl)
 
   const onModalContentClick = useCallback((event) => {
     event.preventDefault()
@@ -471,11 +473,6 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
             <div className={styles.text}>
               For the best experience, please open this page in your wallet app's built-in browser. We recommend OKX Wallet, Bitget Wallet, or TokenPocket.
             </div>
-            <div className={styles.steps}>
-              <div className={styles.step}>1. Tap the button to copy this link</div>
-              <div className={styles.step}>2. Copy your wallet app</div>
-              <div className={styles.step}>3. Paste the link in the wallet's browser</div>
-            </div>
             <div className={styles.link}>{link}</div>
             <div className={styles.buttons}>
               <div className={styles.copyButton} onClick={handleCopyLink}>
@@ -574,7 +571,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
           </div>
         )}
         {!showEmailInput && (
-          <div className={styles.provider} onClick={() => setShowEmailInput(true)}>
+          <div 
+            className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} 
+            onClick={isLoginDisabled ? null : () => setShowEmailInput(true)}
+          >
             EMAIL
           </div>
         )}

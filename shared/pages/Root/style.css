@@ -392,7 +392,7 @@ div, span, a, button, input {
 
 @media (max-width: 767px) {
   .root .content {
-    padding-bottom: calc(56px + env(safe-area-inset-bottom));
+    padding-bottom: calc(42px + env(safe-area-inset-bottom));
   }
 }
 
