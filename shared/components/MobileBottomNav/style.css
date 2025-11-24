@@ -1,0 +1,49 @@
+.mobileBottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #141519;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(42px + env(safe-area-inset-bottom));
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #767676;
+  transition: color 0.2s ease;
+}
+
+.navItem.active {
+  color: #E9FD66;
+}
+
+.icon {
+  width: 21px;
+  height: 21px;
+}
+
+.label {
+  font-family: "Google Sans Code";
+  font-size: 8px;
+  font-weight: 400;
+  line-height: 10px;
+}
+
+@media (min-width: 768px) {
+  .mobileBottomNav {
+    display: none;
+  }
+}
+

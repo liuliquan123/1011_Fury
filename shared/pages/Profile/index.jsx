@@ -6,6 +6,7 @@ import * as actions from 'actions/auth'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import classNames from 'classnames'
+import { formatDate } from 'utils'
 import styles from './style.css'
 
 // {
@@ -189,7 +190,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     Member Since
                   </div>
                   <div className={styles.listItemContent}>
-                    {profile.created_at}
+                    {formatDate(profile.created_at)}
                   </div>
                 </div>
               </div>

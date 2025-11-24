@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.75);
-  z-index: 9999;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -310,6 +310,14 @@
 
       cursor: pointer;
 
+      &.disabled {
+        opacity: 0.5;
+        background: #767676;
+        color: #666;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
       .form {
         width: 100%;
 
@@ -330,12 +338,85 @@
 
             &.disabled {
               opacity: 0.5;
-              pointer-events: none;
+              background: #767676;
               cursor: not-allowed;
+              pointer-events: none;
             }
           }
         }
       }
     }
+  }
+
+  .inputValid {
+    border-color: #4CAF50 !important;
+  }
+
+  .inputInvalid {
+    border-color: #f44336 !important;
+  }
+
+  .validationMessage {
+    margin-top: 8px;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .validationValidating {
+    color: #2196F3;
+  }
+
+  .validationValid {
+    color: #4CAF50;
+  }
+
+  .validationInvalid {
+    color: #f44336;
+  }
+
+  .validationError {
+    color: #FF9800;
+  }
+
+  .errorTip {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(244, 67, 54, 0.1);
+    border-left: 3px solid #f44336;
+    color: #f44336;
+    font-family: "Google Sans Code";
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 767px) {
+  .modal .note {
+    width: calc(100% - 32px);
+    max-width: 400px;
+    padding: 20px;
+  }
+  
+  .modal .note .title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+  
+  .modal .note .text {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  
+  .modal .note .steps {
+    padding: 10px;
+  }
+  
+  .modal .note .buttons .copyButton,
+  .modal .note .buttons .nextButton {
+    font-size: 14px;
+    padding: 16px 20px;
   }
 }

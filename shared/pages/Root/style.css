@@ -386,6 +386,13 @@ div, span, a, button, input {
 
   .content {
     padding-top: 60px;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .root .content {
+    padding-bottom: calc(42px + env(safe-area-inset-bottom));
   }
 }
 

@@ -1,13 +1,18 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react'
+import React, { useEffect, useState, useCallback, Fragment, useRef } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'utils/withRouter'
 import classNames from 'classnames'
 import * as actions from 'actions/auth'
 import Spinner from 'resources/icons/Spinner'
+import WalletSelector from 'components/WalletSelector'
 import { toast } from 'react-toastify'
 import { WALLET_CONNECTORS, AUTH_CONNECTION } from '@web3auth/modal'
+import { debounce } from 'utils'
+import { validateReferralCode } from 'utils/validateReferralCode'
 import styles from './style.css'
+
+const REFERRAL_CODE_REGEX = /^[A-Z0-9]{8}(?:-(?:BNB|OKX|BYB|BGT))?$/
 
 const isIOSBrowser = () => {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
@@ -32,7 +37,7 @@ const isWalletBrowser = () => {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
 
   // Known wallet identifiers (far from exhaustive, tweak for your user base)
-  const walletRegex = /(MetaMaskMobile|MetaMask|Trust Wallet|TrustWallet|imToken|TokenPocket|MathWallet|BitKeep|Bitget|OKX|CoinbaseWallet|Rainbow|Phantom|Binance|BinanceWallet|BinanceWeb3Wallet|base|Base|binance)/i;
+  const walletRegex = /(MetaMaskMobile|MetaMask|Trust Wallet|TrustWallet|imToken|TokenPocket|MathWallet|BitKeep|CoinbaseWallet|Rainbow|Phantom)/i;
 
   const hasInjectedProvider =
     typeof window.ethereum !== "undefined" ||
@@ -42,6 +47,71 @@ const isWalletBrowser = () => {
   console.log('isWalletBrowser', ua, walletRegex.test(ua))
   console.log('hasInjectedProvider', ua, hasInjectedProvider, /Android|iPhone|iPad/i.test(ua))
   return walletRegex.test(ua) // || (hasInjectedProvider && /Android|iPhone|iPad/i.test(ua));
+};
+
+const detectWalletBrowser = () => {
+  if (typeof window === 'undefined') {
+    return { inWallet: false, walletId: null, walletName: null }
+  }
+  
+  const ua = navigator.userAgent || navigator.vendor || window.opera
+  
+  if (window.okxwallet && /OKApp/i.test(ua)) {
+    return { inWallet: true, walletId: 'okx', walletName: 'OKX Wallet' }
+  }
+  
+  if ((window.trustwallet || /Trust/i.test(ua))) {
+    return { inWallet: true, walletId: 'trust', walletName: 'Trust Wallet' }
+  }
+  
+  if ((window.bitkeep?.ethereum || /BitKeep/i.test(ua))) {
+    return { inWallet: true, walletId: 'bitget', walletName: 'Bitget Wallet' }
+  }
+  
+  if (window.ethereum?.isCoinbaseWallet && /Coinbase/i.test(ua)) {
+    return { inWallet: true, walletId: 'coinbase', walletName: 'Coinbase Wallet' }
+  }
+  
+  if (window.BinanceChain && /Binance/i.test(ua)) {
+    return { inWallet: true, walletId: 'binance', walletName: 'Binance Wallet' }
+  }
+  
+  if (window.ethereum?.isMetaMask && /MetaMask/i.test(ua)) {
+    return { inWallet: true, walletId: 'metamask', walletName: 'MetaMask' }
+  }
+  
+  return { inWallet: false, walletId: null, walletName: null }
+};
+
+const detectAllWallets = () => {
+  if (typeof window === 'undefined') return []
+  
+  const wallets = []
+  
+  if (window.okxwallet) {
+    wallets.push({ id: 'okx', name: 'OKX Wallet', icon: '⭕' })
+  }
+  if (window.ethereum?.isMetaMask && !window.okxwallet) {
+    wallets.push({ id: 'metamask', name: 'MetaMask', icon: '🦊' })
+  }
+  if (window.trustwallet) {
+    wallets.push({ id: 'trust', name: 'Trust Wallet', icon: '🛡️' })
+  }
+  if (window.bitkeep?.ethereum) {
+    wallets.push({ id: 'bitget', name: 'Bitget Wallet', icon: '💼' })
+  }
+  if (window.ethereum?.isCoinbaseWallet) {
+    wallets.push({ id: 'coinbase', name: 'Coinbase Wallet', icon: '🟦' })
+  }
+  if (window.BinanceChain) {
+    wallets.push({ id: 'binance', name: 'Binance Wallet', icon: '🟡' })
+  }
+  
+  if (wallets.length === 0 && window.ethereum) {
+    wallets.push({ id: 'ethereum', name: 'Browser Wallet', icon: '🔐' })
+  }
+  
+  return wallets
 };
 
 const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
@@ -58,8 +128,21 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
   const [referralCode, setReferralCode] = useState(code || '')
   const [isOpen, setIsOpen] = useState(false)
   const [isNoted, setIsNoted] = useState(false)
+  
+  const [validationState, setValidationState] = useState({
+    status: 'idle',
+    message: '',
+    referrerName: undefined
+  })
+  const [isLoginDisabled, setIsLoginDisabled] = useState(false)
+  const referralCodeRef = useRef(referralCode)
+  
+  const [showWalletSelector, setShowWalletSelector] = useState(false)
+  const [detectedWallets, setDetectedWallets] = useState([])
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  const link = code ? `${baseUrl}/invite` : `${baseUrl}/invite?code=${code}`
+  const link = code 
+    ? `${baseUrl}/invite?code=${code}` 
+    : (typeof window !== 'undefined' ? window.location.href : baseUrl)
 
   const onModalContentClick = useCallback((event) => {
     event.preventDefault()
@@ -81,17 +164,79 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
     })
   }, [code])
 
+  const validateReferralCodeDebounced = useCallback(
+    debounce(async (codeToValidate) => {
+      if (!codeToValidate || codeToValidate.trim() === '') {
+        setValidationState({ status: 'idle', message: '' })
+        setIsLoginDisabled(false)
+        return
+      }
+      
+      if (!REFERRAL_CODE_REGEX.test(codeToValidate)) {
+        setValidationState({ 
+          status: 'invalid', 
+          message: 'Invalid format. Use 8 characters (e.g., ABC12345 or ABC12345-BNB)'
+        })
+        setIsLoginDisabled(true)
+        return
+      }
+      
+      setValidationState({ status: 'validating', message: 'Verifying referral code...' })
+      setIsLoginDisabled(true)
+      
+      try {
+        const validation = await validateReferralCode(codeToValidate)
+        
+        if (codeToValidate !== referralCodeRef.current) return
+        
+        if (validation.isValid) {
+          setValidationState({ 
+            status: 'valid', 
+            message: validation.referrerName 
+              ? `Valid code from @${validation.referrerName}` 
+              : 'Valid referral code',
+            referrerName: validation.referrerName
+          })
+          setIsLoginDisabled(false)
+        } else {
+          setValidationState({ 
+            status: 'invalid', 
+            message: validation.error || 'Referral code does not exist. Please check with your referrer.'
+          })
+          setIsLoginDisabled(true)
+        }
+      } catch (err) {
+        if (codeToValidate !== referralCodeRef.current) return
+        
+        console.error('[Register] Validation error:', err)
+        
+        // 所有验证失败（除了为空）都禁用登录
+        setValidationState({ 
+          status: 'invalid',
+          message: 'Cannot login with an invalid referral code'
+        })
+        setIsLoginDisabled(true)
+      }
+    }, 500),
+    []
+  )
+
   const onReferralCodeChange = useCallback((event) => {
     if (!code) {
-      setReferralCode(event.target.value)
+      const newCode = event.target.value.trim().toUpperCase()
+      setReferralCode(newCode)
+      referralCodeRef.current = newCode
+      validateReferralCodeDebounced(newCode)
     }
-  }, [code])
+  }, [code, validateReferralCodeDebounced])
 
   const onEmailChange = useCallback((event) => {
     setEmail(event.target.value)
   }, [])
 
   const authByEmail = useCallback(() => {
+    if (isLoginDisabled) return
+    
     setConnectingEmail(true)
 
     actions.authByEmail({
@@ -109,22 +254,19 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
         setEmail('')
       }
     })
-  }, [email, referralCode])
+  }, [email, referralCode, isLoginDisabled])
 
   const authByWallet = useCallback(() => {
-    console.log('isIOSBrowser', isIOSBrowser())
-    console.log('isWalletBrowser', isWalletBrowser())
-    console.log('isMobileBrowser', isMobileBrowser())
-
-    if (isMobileBrowser() && !isIOSBrowser() && !isWalletBrowser() && !isNoted) {
-      setIsOpen(true)
-      setIsNoted(true)
-    } else {
+    if (isLoginDisabled) return
+    
+    const walletInfo = detectWalletBrowser()
+    
+    if (walletInfo.inWallet) {
+      console.log('[Wallet] In-app browser detected:', walletInfo.walletName)
       setConnectingWallet(true)
-
       actions.authByWallet({
+        walletId: walletInfo.walletId,
         referralCode,
-        isWalletBrowser: isWalletBrowser(),
         onSuccess: () => {
           toast('Wallet Login Success!')
           setConnectingWallet(false)
@@ -135,10 +277,65 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
           setConnectingWallet(false)
         }
       })
+      return
     }
-  }, [referralCode, isNoted])
+    
+    if (isMobileBrowser() && !isIOSBrowser() && !isWalletBrowser() && !isNoted) {
+      setIsOpen(true)
+      setIsNoted(true)
+      return
+    }
+    
+    const wallets = detectAllWallets()
+    console.log('[Wallet] Detected', wallets.length, 'wallet(s) in browser')
+    
+    if (wallets.length === 0) {
+      toast('No wallet detected. Please install a Web3 wallet.')
+    } else if (wallets.length === 1) {
+      console.log('[Wallet] Auto-selecting:', wallets[0].name)
+      setConnectingWallet(true)
+      actions.authByWallet({
+        walletId: wallets[0].id,
+        referralCode,
+        onSuccess: () => {
+          toast('Wallet Login Success!')
+          setConnectingWallet(false)
+          if (onLoggedIn) onLoggedIn()
+        },
+        onError: (message) => {
+          toast(message)
+          setConnectingWallet(false)
+        }
+      })
+    } else {
+      console.log('[Wallet] Showing selector')
+      setDetectedWallets(wallets)
+      setShowWalletSelector(true)
+    }
+  }, [referralCode, isNoted, onLoggedIn, isLoginDisabled])
+
+  const onWalletSelected = useCallback((wallet) => {
+    console.log('[Wallet] User selected:', wallet.name)
+    setShowWalletSelector(false)
+    setConnectingWallet(true)
+    actions.authByWallet({
+      walletId: wallet.id,
+      referralCode,
+      onSuccess: () => {
+        toast('Wallet Login Success!')
+        setConnectingWallet(false)
+        if (onLoggedIn) onLoggedIn()
+      },
+      onError: (message) => {
+        toast(message)
+        setConnectingWallet(false)
+      }
+    })
+  }, [referralCode, onLoggedIn])
 
   const authByTwitter = useCallback(() => {
+    if (isLoginDisabled) return
+    
     setConnectingTwitter(true)
 
     actions.authByTwitter({
@@ -153,9 +350,11 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
         setConnectingTwitter(false)
       }
     })
-  }, [referralCode])
+  }, [referralCode, isLoginDisabled])
 
   const authByTelegram = useCallback(() => {
+    if (isLoginDisabled) return
+    
     setConnectingTelegram(true)
 
     actions.authByTelegram({
@@ -170,7 +369,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
         setConnectingTelegram(false)
       }
     })
-  }, [referralCode])
+  }, [referralCode, isLoginDisabled])
 
   useEffect(() => {
     setInitializing(true)
@@ -258,6 +457,13 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
 
   return (
     <div className={styles.login} onClick={onClick}>
+      {showWalletSelector && (
+        <WalletSelector
+          wallets={detectedWallets}
+          onSelect={onWalletSelected}
+          onClose={() => setShowWalletSelector(false)}
+        />
+      )}
       {(isOpen) && (
         <div className={styles.modal} onClick={closeModal}>
           <div className={styles.note} onClick={onModalContentClick}>
@@ -265,12 +471,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
               Open in Your Wallet App
             </div>
             <div className={styles.text}>
-              For the best experience. Please open this page in your wallet app's built-in browser (OKX Wallet, Binance Wallet, Trust Wallet, etc.)
-            </div>
-            <div className={styles.steps}>
-              <div className={styles.step}>1. Tap the button to copy this link</div>
-              <div className={styles.step}>2. Copy your wallet app</div>
-              <div className={styles.step}>3. Paste the link in the wallet's browser</div>
+              For the best experience, please open this page in your wallet app's built-in browser. We recommend OKX Wallet, Bitget Wallet, or TokenPocket.
             </div>
             <div className={styles.link}>{link}</div>
             <div className={styles.buttons}>
@@ -292,7 +493,11 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
       </div>
       <div className={styles.form}>
         <div className={classNames(styles.field, styles.referral)}>
-          <div className={styles.input}>
+          <div className={classNames(
+            styles.input,
+            validationState.status === 'valid' && styles.inputValid,
+            validationState.status === 'invalid' && styles.inputInvalid
+          )}>
             <input
               type="text"
               value={referralCode}
@@ -304,6 +509,20 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
               </div>
             )}
           </div>
+          {validationState.status !== 'idle' && validationState.message && (
+            <div className={classNames(
+              styles.validationMessage,
+              styles[`validation${validationState.status.charAt(0).toUpperCase() + validationState.status.slice(1)}`]
+            )}>
+              {validationState.status === 'validating' && <Spinner />}
+              {validationState.message}
+            </div>
+          )}
+          {validationState.status === 'invalid' && (
+            <div className={styles.errorTip}>
+              ⚠️ Cannot login with an invalid referral code
+            </div>
+          )}
         </div>
       </div>
       <div className={styles.checks} onClick={toggleAgreement}>
@@ -329,7 +548,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
                     value={email}
                     onChange={onEmailChange}
                   />
-                  <div className={classNames(styles.submit, { [styles.disabled]: !email })} onClick={authByEmail}>
+                  <div className={classNames(styles.submit, { [styles.disabled]: !email || isLoginDisabled })} onClick={authByEmail}>
                     {connectingEmail && (
                       <Spinner />
                     )}
@@ -352,17 +571,20 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
           </div>
         )}
         {!showEmailInput && (
-          <div className={styles.provider} onClick={() => setShowEmailInput(true)}>
+          <div 
+            className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} 
+            onClick={isLoginDisabled ? null : () => setShowEmailInput(true)}
+          >
             EMAIL
           </div>
         )}
-        <div className={styles.provider} onClick={authByWallet}>
+        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} onClick={authByWallet}>
           WALLET
         </div>
-        <div className={styles.provider} onClick={authByTwitter}>
+        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} onClick={authByTwitter}>
           X
         </div>
-        <div className={styles.provider} onClick={authByTelegram}>
+        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} onClick={authByTelegram}>
           TELEGRAM
         </div>
       </div>
