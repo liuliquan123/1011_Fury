@@ -481,3 +481,699 @@
     }
   }
 }
+
+/* 响应式设计 - 平板设备 */
+@media (max-width: 1024px) {
+  .referral {
+    padding: 40px;
+
+    .title {
+      margin-bottom: 40px;
+
+      .text {
+        font-size: 80px;
+        line-height: 100px;
+      }
+
+      .description {
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .buttons {
+        .button {
+          width: 220px;
+          font-size: 14px;
+          height: 44px;
+          padding: 16px 20px;
+        }
+      }
+    }
+
+    .content {
+      gap: 16px;
+
+      .myReferral {
+        padding: 30px;
+
+        .contentTitle {
+          font-size: 16px;
+          line-height: 24px;
+          margin-bottom: 16px;
+        }
+
+        .exchanges {
+          gap: 16px;
+          margin-bottom: 16px;
+
+          .exchange {
+            height: 180px;
+            min-width: 180px;
+            gap: 16px;
+
+            .exchangeLogo {
+              img {
+                height: 36px;
+              }
+            }
+
+            .exchangeName {
+              font-size: 18px;
+              line-height: 22px;
+            }
+          }
+        }
+
+        .code {
+          padding: 30px;
+          font-size: 32px;
+          line-height: 32px;
+          margin-bottom: 30px;
+        }
+
+        .buttons {
+          gap: 16px;
+
+          .shareButton,
+          .copyButton {
+            font-size: 14px;
+            height: 44px;
+            padding: 16px 20px;
+          }
+        }
+      }
+
+      .taskOne {
+        padding: 30px;
+
+        .contentTitle {
+          font-size: 16px;
+          line-height: 24px;
+          margin-bottom: 16px;
+        }
+
+        .contentText {
+          font-size: 13px;
+          line-height: 20px;
+          margin-bottom: 16px;
+        }
+
+        .buttons {
+          gap: 16px;
+
+          .inviteButton {
+            font-size: 14px;
+            height: 44px;
+            padding: 16px 20px;
+          }
+        }
+      }
+
+      .taskMore {
+        padding: 30px;
+
+        .contentTitle {
+          font-size: 16px;
+          line-height: 24px;
+          margin-bottom: 16px;
+        }
+
+        .contentStats {
+          gap: 16px;
+          margin-bottom: 16px;
+
+          .contentStatsItem {
+            padding: 16px;
+            gap: 8px;
+
+            .contentStatsItemName {
+              font-size: 32px;
+              line-height: 32px;
+            }
+
+            .contentStatsItemNumber {
+              font-size: 13px;
+              line-height: 20px;
+            }
+          }
+        }
+
+        .buttons {
+          gap: 16px;
+
+          .inviteButton {
+            font-size: 14px;
+            height: 44px;
+            padding: 16px 20px;
+          }
+        }
+      }
+
+      .myToken {
+        .exchange {
+          font-size: 14px;
+          padding: 8px;
+        }
+
+        .bottom {
+          padding: 30px;
+
+          .name {
+            font-size: 13px;
+            line-height: 20px;
+            padding: 16px;
+          }
+
+          .tokens {
+            .token {
+              gap: 12px;
+
+              .tokenLogo {
+                width: 36px;
+                height: 36px;
+                border-radius: 18px;
+              }
+
+              .tokenAmount {
+                font-size: 40px;
+                line-height: 40px;
+
+                .status {
+                  font-size: 18px;
+                  margin-left: 8px;
+                }
+              }
+
+              .tokenLockTime {
+                .tokenLockTimeName {
+                  font-size: 13px;
+                  line-height: 20px;
+                  margin-right: 8px;
+                }
+
+                .tokenLockTimeContent {
+                  .tokenLockTimeContentCellNumber,
+                  .tokenLockTimeContentCellText {
+                    width: 28px;
+                    height: 28px;
+                    font-size: 14px;
+                    line-height: 20px;
+                  }
+                }
+              }
+            }
+          }
+
+          .nav {
+            height: 36px;
+            gap: 8px;
+
+            .leftButton,
+            .rightButton {
+              width: 36px;
+              height: 36px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 响应式设计 - 小平板/大手机 */
+@media (max-width: 768px) {
+  .referral {
+    padding: 30px;
+
+    .title {
+      margin-bottom: 30px;
+
+      .text {
+        font-size: 60px;
+        line-height: 80px;
+      }
+
+      .description {
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .buttons {
+        padding: 16px;
+
+        .button {
+          width: 200px;
+          font-size: 13px;
+          height: 40px;
+          padding: 14px 18px;
+        }
+      }
+    }
+
+    .content {
+      gap: 16px;
+
+      .myReferral {
+        padding: 24px;
+
+        .contentTitle {
+          font-size: 15px;
+          line-height: 22px;
+          margin-bottom: 16px;
+        }
+
+        .exchanges {
+          gap: 12px;
+          margin-bottom: 16px;
+
+          .exchange {
+            height: 160px;
+            min-width: 150px;
+            gap: 12px;
+
+            .exchangeLogo {
+              img {
+                height: 32px;
+              }
+            }
+
+            .exchangeName {
+              font-size: 16px;
+              line-height: 20px;
+            }
+          }
+        }
+
+        .code {
+          padding: 24px;
+          font-size: 28px;
+          line-height: 28px;
+          margin-bottom: 24px;
+        }
+
+        .buttons {
+          flex-direction: column;
+          gap: 12px;
+
+          .shareButton,
+          .copyButton {
+            width: 100%;
+            font-size: 13px;
+            height: 40px;
+            padding: 14px 18px;
+          }
+        }
+      }
+
+      .taskOne {
+        padding: 24px;
+
+        .contentTitle {
+          font-size: 15px;
+          line-height: 22px;
+          margin-bottom: 16px;
+        }
+
+        .contentText {
+          font-size: 12px;
+          line-height: 18px;
+          margin-bottom: 16px;
+        }
+
+        .buttons {
+          flex-direction: column;
+          gap: 12px;
+
+          .inviteButton {
+            width: 100%;
+            font-size: 13px;
+            height: 40px;
+            padding: 14px 18px;
+          }
+        }
+      }
+
+      .taskMore {
+        padding: 24px;
+
+        .contentTitle {
+          font-size: 15px;
+          line-height: 22px;
+          margin-bottom: 16px;
+        }
+
+        .contentStats {
+          flex-direction: column;
+          gap: 12px;
+          margin-bottom: 16px;
+
+          .contentStatsItem {
+            width: 100%;
+            padding: 16px;
+            gap: 8px;
+
+            .contentStatsItemName {
+              font-size: 28px;
+              line-height: 28px;
+            }
+
+            .contentStatsItemNumber {
+              font-size: 12px;
+              line-height: 18px;
+            }
+          }
+        }
+
+        .buttons {
+          flex-direction: column;
+          gap: 12px;
+
+          .inviteButton {
+            width: 100%;
+            font-size: 13px;
+            height: 40px;
+            padding: 14px 18px;
+          }
+        }
+      }
+
+      .myToken {
+        .exchange {
+          font-size: 13px;
+          padding: 8px;
+        }
+
+        .bottom {
+          padding: 24px;
+
+          .name {
+            font-size: 12px;
+            line-height: 18px;
+            padding: 16px;
+          }
+
+          .tokens {
+            .token {
+              flex-wrap: wrap;
+              gap: 12px;
+
+              .tokenLogo {
+                width: 32px;
+                height: 32px;
+                border-radius: 16px;
+              }
+
+              .tokenAmount {
+                font-size: 36px;
+                line-height: 36px;
+
+                .status {
+                  font-size: 16px;
+                  margin-left: 6px;
+                }
+              }
+
+              .tokenLockTime {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 8px;
+                flex-wrap: wrap;
+
+                .tokenLockTimeName {
+                  font-size: 12px;
+                  line-height: 18px;
+                  margin-right: 8px;
+                  width: 100%;
+                  margin-bottom: 8px;
+                }
+
+                .tokenLockTimeContent {
+                  .tokenLockTimeContentCellNumber,
+                  .tokenLockTimeContentCellText {
+                    width: 26px;
+                    height: 26px;
+                    font-size: 13px;
+                    line-height: 18px;
+                  }
+                }
+              }
+            }
+          }
+
+          .nav {
+            height: 36px;
+            gap: 8px;
+
+            .leftButton,
+            .rightButton {
+              width: 36px;
+              height: 36px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 响应式设计 - 手机 */
+@media (max-width: 480px) {
+  .referral {
+    padding: 20px;
+
+    .title {
+      margin-bottom: 24px;
+
+      .text {
+        font-size: 40px;
+        line-height: 50px;
+      }
+
+      .description {
+        font-size: 11px;
+        line-height: 16px;
+      }
+
+      .buttons {
+        padding: 12px;
+
+        .button {
+          width: 100%;
+          max-width: 280px;
+          font-size: 12px;
+          height: 40px;
+          padding: 12px 16px;
+        }
+      }
+    }
+
+    .content {
+      gap: 12px;
+
+      .myReferral {
+        padding: 20px;
+
+        .contentTitle {
+          font-size: 14px;
+          line-height: 20px;
+          margin-bottom: 12px;
+        }
+
+        .exchanges {
+          gap: 10px;
+          margin-bottom: 12px;
+
+          .exchange {
+            height: 140px;
+            min-width: calc(50% - 5px);
+            gap: 10px;
+
+            .exchangeLogo {
+              img {
+                height: 28px;
+              }
+            }
+
+            .exchangeName {
+              font-size: 14px;
+              line-height: 18px;
+            }
+          }
+        }
+
+        .code {
+          padding: 20px;
+          font-size: 24px;
+          line-height: 24px;
+          margin-bottom: 20px;
+        }
+
+        .buttons {
+          flex-direction: column;
+          gap: 10px;
+
+          .shareButton,
+          .copyButton {
+            width: 100%;
+            font-size: 12px;
+            height: 40px;
+            padding: 12px 16px;
+          }
+        }
+      }
+
+      .taskOne {
+        padding: 20px;
+
+        .contentTitle {
+          font-size: 14px;
+          line-height: 20px;
+          margin-bottom: 12px;
+        }
+
+        .contentText {
+          font-size: 11px;
+          line-height: 16px;
+          margin-bottom: 12px;
+        }
+
+        .buttons {
+          flex-direction: column;
+          gap: 10px;
+
+          .inviteButton {
+            width: 100%;
+            font-size: 12px;
+            height: 40px;
+            padding: 12px 16px;
+          }
+        }
+      }
+
+      .taskMore {
+        padding: 20px;
+
+        .contentTitle {
+          font-size: 14px;
+          line-height: 20px;
+          margin-bottom: 12px;
+        }
+
+        .contentStats {
+          flex-direction: column;
+          gap: 10px;
+          margin-bottom: 12px;
+
+          .contentStatsItem {
+            width: 100%;
+            padding: 14px;
+            gap: 6px;
+
+            .contentStatsItemName {
+              font-size: 24px;
+              line-height: 24px;
+            }
+
+            .contentStatsItemNumber {
+              font-size: 11px;
+              line-height: 16px;
+            }
+          }
+        }
+
+        .buttons {
+          flex-direction: column;
+          gap: 10px;
+
+          .inviteButton {
+            width: 100%;
+            font-size: 12px;
+            height: 40px;
+            padding: 12px 16px;
+          }
+        }
+      }
+
+      .myToken {
+        .exchange {
+          font-size: 12px;
+          padding: 6px;
+        }
+
+        .bottom {
+          padding: 20px;
+
+          .name {
+            font-size: 11px;
+            line-height: 16px;
+            padding: 12px;
+          }
+
+          .tokens {
+            .token {
+              flex-wrap: wrap;
+              gap: 10px;
+
+              .tokenLogo {
+                width: 28px;
+                height: 28px;
+                border-radius: 14px;
+              }
+
+              .tokenAmount {
+                font-size: 32px;
+                line-height: 32px;
+
+                .status {
+                  font-size: 14px;
+                  margin-left: 4px;
+                }
+              }
+
+              .tokenLockTime {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 8px;
+                flex-wrap: wrap;
+
+                .tokenLockTimeName {
+                  font-size: 11px;
+                  line-height: 16px;
+                  margin-right: 6px;
+                  width: 100%;
+                  margin-bottom: 6px;
+                }
+
+                .tokenLockTimeContent {
+                  .tokenLockTimeContentCellNumber,
+                  .tokenLockTimeContentCellText {
+                    width: 24px;
+                    height: 24px;
+                    font-size: 12px;
+                    line-height: 16px;
+                  }
+                }
+              }
+            }
+          }
+
+          .progress {
+            margin-top: 16px;
+            height: 12px;
+          }
+
+          .nav {
+            height: 32px;
+            gap: 6px;
+
+            .leftButton,
+            .rightButton {
+              width: 32px;
+              height: 32px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

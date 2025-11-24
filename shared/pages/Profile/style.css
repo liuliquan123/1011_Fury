@@ -306,6 +306,7 @@
               border: 1px solid #E9FD66;
               color: #141519;
               cursor: pointer;
+              min-width: 300px;
             }
 
             .actionButtonDark {
@@ -412,6 +413,393 @@
           font-weight: 400;
           line-height: 24px;
           text-transform: capitalize;
+        }
+      }
+    }
+  }
+}
+
+/* 平板设备响应式 */
+@media (max-width: 1024px) {
+  .profile {
+    padding: 40px;
+
+    .title {
+      margin-bottom: 40px;
+
+      .text {
+        font-size: 80px;
+        line-height: 90px;
+      }
+    }
+
+    .content {
+      .account {
+        .user {
+          padding: 24px;
+
+          .top {
+            .name {
+              font-size: 36px;
+              line-height: 36px;
+            }
+          }
+        }
+
+        .tokenSection {
+          .locked {
+            padding: 24px;
+
+            .text {
+              font-size: 20px;
+              line-height: 28px;
+            }
+
+            .tokens {
+              .token {
+                .tokenAmount {
+                  font-size: 36px;
+                  line-height: 36px;
+
+                  .status {
+                    font-size: 16px;
+                  }
+                }
+              }
+            }
+          }
+
+          .statistic {
+            padding: 30px;
+
+            .statisticTitle {
+              font-size: 20px;
+              line-height: 28px;
+              margin-bottom: 30px;
+            }
+
+            .list {
+              .listItem {
+                .listItemNumber {
+                  font-size: 32px;
+                  line-height: 32px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .actions {
+        .actionTitle {
+          font-size: 20px;
+          line-height: 28px;
+        }
+      }
+    }
+  }
+}
+
+/* 移动设备响应式 */
+@media (max-width: 768px) {
+  .profile {
+    padding: 20px;
+
+    .title {
+      margin-bottom: 30px;
+
+      .text {
+        font-size: 48px;
+        line-height: 56px;
+      }
+
+      .description {
+        font-size: 12px;
+        line-height: 20px;
+      }
+    }
+
+    .content {
+      .account {
+        flex-direction: column;
+        gap: 16px;
+
+        .user {
+          flex: 1;
+          padding: 20px;
+
+          .top {
+            gap: 16px;
+
+            .logo {
+              width: 60px;
+              height: 60px;
+              border-radius: 30px;
+            }
+
+            .name {
+              font-size: 32px;
+              line-height: 32px;
+            }
+
+            .description {
+              font-size: 12px;
+              line-height: 20px;
+            }
+          }
+
+          .bottom {
+            padding: 16px;
+            margin-top: 16px;
+
+            .list {
+              gap: 16px;
+
+              .listItem {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+
+                .listItemName {
+                  font-size: 12px;
+                  line-height: 20px;
+                }
+
+                .listItemContent {
+                  font-size: 14px;
+                  line-height: 20px;
+                  word-break: break-all;
+                }
+              }
+            }
+
+            .button {
+              height: 44px;
+              padding: 16px 20px;
+              font-size: 14px;
+            }
+          }
+        }
+
+        .tokenSection {
+          flex: 1;
+
+          .locked {
+            padding: 20px;
+
+            .nav {
+              top: 16px;
+              right: 16px;
+              width: 80px;
+              height: 36px;
+              gap: 8px;
+
+              .leftButton, .rightButton {
+                width: 36px;
+                height: 36px;
+              }
+            }
+
+            .text {
+              font-size: 18px;
+              line-height: 24px;
+              margin-bottom: 16px;
+            }
+
+            .tokens {
+              .token {
+                flex-wrap: wrap;
+                gap: 12px;
+
+                .tokenLogo {
+                  width: 32px;
+                  height: 32px;
+                  border-radius: 16px;
+                }
+
+                .tokenAmount {
+                  font-size: 32px;
+                  line-height: 32px;
+
+                  .status {
+                    font-size: 14px;
+                    margin-left: 8px;
+                  }
+                }
+
+                .tokenLockTime {
+                  width: 100%;
+                  margin-left: 0;
+                  margin-top: 8px;
+                  flex-wrap: wrap;
+                  gap: 8px;
+
+                  .tokenLockTimeName {
+                    font-size: 12px;
+                    line-height: 20px;
+                    margin-right: 8px;
+                  }
+
+                  .tokenLockTimeContent {
+                    .tokenLockTimeContentCellNumber, .tokenLockTimeContentCellText {
+                      width: 28px;
+                      height: 28px;
+                    }
+
+                    .tokenLockTimeContentCellNumber {
+                      font-size: 14px;
+                      line-height: 20px;
+                    }
+
+                    .tokenLockTimeContentCellText {
+                      font-size: 14px;
+                      line-height: 20px;
+                    }
+                  }
+                }
+              }
+            }
+
+            .progress {
+              margin-top: 16px;
+              height: 12px;
+            }
+
+            .actionButtons {
+              flex-direction: column;
+              margin-top: 16px;
+              gap: 12px;
+
+              .actionButton, .actionButtonDark {
+                height: 48px;
+                padding: 16px;
+                font-size: 14px;
+                min-width: 200px;
+              }
+            }
+          }
+
+          .statistic {
+            padding: 20px;
+
+            .statisticTitle {
+              font-size: 18px;
+              line-height: 24px;
+              margin-bottom: 20px;
+            }
+
+            .list {
+              flex-direction: column;
+              gap: 12px;
+
+              .listItem {
+                padding: 12px;
+
+                .listItemNumber {
+                  font-size: 32px;
+                  line-height: 32px;
+                }
+
+                .listItemName {
+                  font-size: 12px;
+                  line-height: 20px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .actions {
+        padding: 16px;
+
+        .actionTitle {
+          font-size: 18px;
+          line-height: 24px;
+          margin-bottom: 16px;
+        }
+
+        .list {
+          gap: 8px;
+
+          .listItem {
+            padding: 12px 16px;
+            font-size: 14px;
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 小屏移动设备响应式 */
+@media (max-width: 480px) {
+  .profile {
+    padding: 16px;
+
+    .title {
+      margin-bottom: 24px;
+
+      .text {
+        font-size: 36px;
+        line-height: 42px;
+      }
+    }
+
+    .content {
+      .account {
+        .user {
+          padding: 16px;
+
+          .top {
+            .name {
+              font-size: 28px;
+              line-height: 28px;
+            }
+          }
+
+          .bottom {
+            padding: 12px;
+          }
+        }
+
+        .tokenSection {
+          .locked {
+            padding: 16px;
+
+            .text {
+              font-size: 16px;
+              line-height: 22px;
+            }
+
+            .tokens {
+              .token {
+                .tokenAmount {
+                  font-size: 28px;
+                  line-height: 28px;
+                }
+              }
+            }
+          }
+
+          .statistic {
+            padding: 16px;
+
+            .statisticTitle {
+              font-size: 16px;
+              line-height: 22px;
+            }
+
+            .list {
+              .listItem {
+                .listItemNumber {
+                  font-size: 28px;
+                  line-height: 28px;
+                }
+              }
+            }
+          }
         }
       }
     }

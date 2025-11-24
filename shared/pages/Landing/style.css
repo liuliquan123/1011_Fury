@@ -497,3 +497,313 @@
     }
   }
 }
+
+/* 响应式设计 - 平板设备 */
+@media (max-width: 1024px) {
+  .landing {
+    .banner {
+      height: 600px;
+
+      .content {
+        .title {
+          font-size: 64px;
+          line-height: 80px;
+        }
+
+        .button {
+          width: 280px;
+        }
+      }
+    }
+
+    .sections {
+      padding: 30px 40px;
+    }
+  }
+}
+
+/* 响应式设计 - 移动设备 */
+@media (max-width: 768px) {
+  .landing {
+    .banner {
+      height: 500px;
+
+      .content {
+        padding: 20px;
+
+        .title {
+          font-size: 36px;
+          line-height: 48px;
+        }
+
+        .text {
+          font-size: 14px;
+          line-height: 20px;
+          padding: 0 20px;
+        }
+
+        .button {
+          width: 100%;
+          max-width: 320px;
+          font-size: 14px;
+          padding: 2px 12px;
+          height: 44px;
+          margin-top: 24px;
+        }
+      }
+    }
+
+    .sections {
+      padding: 20px 16px;
+
+      .section {
+        .sectionTitle {
+          font-size: 24px;
+          line-height: 40px;
+        }
+
+        &.platform {
+          margin-bottom: 40px;
+
+          .sectionContent {
+            gap: 12px;
+
+            .statistic {
+              flex: 1 1 calc(50% - 6px);
+              min-width: calc(50% - 6px);
+              padding: 16px 20px;
+
+              .statisticNumber {
+                font-size: 36px;
+                line-height: 36px;
+              }
+
+              .statisticName {
+                font-size: 12px;
+                line-height: 18px;
+              }
+            }
+          }
+        }
+
+        &.featured {
+          margin-bottom: 40px;
+
+          .sectionContent {
+            .cases {
+              .case {
+                padding: 24px 16px;
+                gap: 24px;
+
+                .caseTitle {
+                  .text {
+                    font-size: 18px;
+                    line-height: 24px;
+                  }
+
+                  .status {
+                    font-size: 14px;
+                    padding: 8px;
+                  }
+                }
+
+                .caseCards {
+                  gap: 12px;
+
+                  .caseCard {
+                    flex: 1 1 calc(50% - 6px);
+                    min-width: calc(50% - 6px);
+                    padding: 12px;
+
+                    .caseContent {
+                      font-size: 28px;
+                      line-height: 28px;
+                    }
+
+                    .caseName {
+                      font-size: 12px;
+                      line-height: 20px;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        &.intro {
+          margin-bottom: 40px;
+
+          .sectionContent {
+            gap: 12px;
+
+            .feature {
+              flex: 1 1 100%;
+              padding: 16px;
+
+              .featureTitle {
+                font-size: 18px;
+                line-height: 24px;
+              }
+
+              .featureText {
+                font-size: 13px;
+                line-height: 18px;
+              }
+            }
+          }
+        }
+
+        &.community {
+          margin-bottom: 40px;
+
+          .sectionContent {
+            gap: 12px;
+
+            .socialAccount {
+              flex: 1 1 100%;
+              padding: 16px;
+
+              .socialAccountInfo {
+                .socialAccountTitle {
+                  font-size: 18px;
+                  line-height: 24px;
+                }
+
+                .socialAccountText {
+                  font-size: 13px;
+                  line-height: 18px;
+                }
+              }
+
+              .socialAccountAction {
+                padding: 16px 20px;
+                height: 44px;
+                font-size: 14px;
+              }
+            }
+          }
+        }
+
+        &.questions {
+          margin-bottom: 40px;
+
+          .sectionContent {
+            .question {
+              padding: 16px;
+
+              .questionTitle {
+                .questionTitleText {
+                  font-size: 18px;
+                  line-height: 24px;
+                }
+              }
+
+              .questionContent {
+                font-size: 14px;
+                line-height: 20px;
+                padding: 8px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .footer {
+      padding: 20px 16px 0;
+
+      .content {
+        flex-direction: column;
+        gap: 30px;
+        padding-top: 20px;
+        padding-bottom: 30px;
+
+        .branding {
+          .text {
+            font-size: 24px;
+          }
+        }
+
+        .social {
+          width: 100%;
+
+          .socialLinks {
+            justify-content: flex-start;
+            gap: 12px;
+          }
+        }
+      }
+
+      .bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px 0;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+/* 响应式设计 - 小屏移动设备 */
+@media (max-width: 480px) {
+  .landing {
+    .banner {
+      height: 400px;
+
+      .content {
+        .title {
+          font-size: 28px;
+          line-height: 36px;
+        }
+
+        .text {
+          font-size: 13px;
+          line-height: 18px;
+        }
+
+        .button {
+          height: 40px;
+          font-size: 13px;
+          margin-top: 20px;
+        }
+      }
+    }
+
+    .sections {
+      padding: 16px 12px;
+
+      .section {
+        .sectionTitle {
+          font-size: 20px;
+          line-height: 32px;
+        }
+
+        &.platform {
+          .sectionContent {
+            .statistic {
+              flex: 1 1 100%;
+              min-width: 100%;
+            }
+          }
+        }
+
+        &.featured {
+          .sectionContent {
+            .cases {
+              .case {
+                .caseCards {
+                  .caseCard {
+                    flex: 1 1 100%;
+                    min-width: 100%;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
