@@ -5,13 +5,12 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.75);
-  z-index: 99999;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 桌面版默认样式 */
 .submitLoss {
   color: white;
   padding: 40px 60px;
@@ -280,6 +279,19 @@
         }
       }
 
+      .warningText {
+        color: #EF4D12;
+        font-family: "Google Sans Code";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+        margin-bottom: 12px;
+        padding: 10px;
+        background: rgba(239, 77, 18, 0.2);
+        border-radius: 4px;
+      }
+
       .notificationContent {
         margin-top: 10px;
 
@@ -472,6 +484,23 @@
     }
   }
 
+  .ocrError {
+    background: rgba(239, 77, 18, 0.12);
+    border: 2px solid #EF4D12;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+
+    .ocrErrorMessage {
+      color: #EF4D12;
+      font-family: "Google Sans Code";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+    }
+  }
+
   .actions {
     margin-top: 20px;
     display: flex;
@@ -517,525 +546,92 @@
   }
 }
 
-/* 平板设备 (768px - 1023px) */
-@media (max-width: 1023px) {
-  .submitLoss {
-    padding: 30px 40px;
-
-    .stepTwo {
-      .title {
-        font-size: 52px;
-        line-height: 70px;
-      }
-
-      .sections {
-        padding: 30px 15px;
-
-        .section {
-          .sectionTitle {
-            font-size: 32px;
-            line-height: 36px;
-          }
-
-          .sectionDescription {
-            font-size: 15px;
-            line-height: 22px;
-          }
-
-          .sectionSteps {
-            gap: 15px;
-
-            .sectionStep {
-              min-width: 45%;
-              padding: 15px;
-
-              .sectionStepInfo {
-                .sectionStepTitle {
-                  font-size: 18px;
-                  line-height: 28px;
-                }
-
-                .sectionStepTitleDescription {
-                  font-size: 13px;
-                  line-height: 22px;
-                }
-              }
-
-              .sectionStepTitleScreenShot {
-                height: 250px;
-              }
-            }
-          }
-        }
-
-        .warning {
-          padding: 8px 15px;
-
-          .warningTitle {
-            font-size: 16px;
-          }
-
-          .warningContent {
-            .warningContentItem {
-              font-size: 13px;
-              line-height: 22px;
-            }
-          }
-        }
-      }
-
-      .questions {
-        padding: 30px 15px;
-        margin-top: 30px;
-
-        .questionsTitle {
-          font-size: 22px;
-          line-height: 28px;
-        }
-
-        .list {
-          .listItem {
-            padding: 8px 15px;
-
-            .listItemTitle {
-              font-size: 18px;
-              line-height: 28px;
-            }
-
-            .listItemDescription {
-              font-size: 13px;
-              line-height: 22px;
-            }
-          }
-        }
-      }
-    }
-
-    .stepOne {
-      .title {
-        font-size: 52px;
-        line-height: 70px;
-      }
-
-      .sections {
-        padding: 30px 15px;
-
-        .section {
-          .sectionTitle {
-            font-size: 32px;
-            line-height: 36px;
-          }
-        }
-      }
-
-      .exchanges {
-        gap: 15px;
-
-        .exchange {
-          height: 180px;
-          min-width: 180px;
-          gap: 15px;
-
-          .exchangeLogo {
-            img {
-              height: 35px;
-            }
-          }
-
-          .exchangeName {
-            font-size: 18px;
-            line-height: 22px;
-          }
-        }
-      }
-
-      .notification {
-        padding: 8px 15px;
-
-        .notificationTitle {
-          font-size: 16px;
-        }
-
-        .notificationContent {
-          .notificationContentItem {
-            font-size: 13px;
-            line-height: 22px;
-          }
-        }
-      }
-    }
-
-    .stepThree {
-      .title {
-        font-size: 52px;
-        line-height: 70px;
-      }
-
-      .sections {
-        padding: 30px 15px;
-
-        .section {
-          .sectionTitle {
-            font-size: 32px;
-            line-height: 36px;
-          }
-
-          .input {
-            padding: 30px;
-
-            .inputButton {
-              font-size: 15px;
-            }
-
-            .imagePreview {
-              img {
-                max-height: 350px;
-              }
-            }
-
-            .inputDescription {
-              font-size: 13px;
-              line-height: 22px;
-            }
-          }
-
-          .tip {
-            padding: 8px 15px;
-
-            .tipContent {
-              .tipContentItem {
-                font-size: 13px;
-                line-height: 22px;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .stepFour {
-      .title {
-        font-size: 52px;
-        line-height: 70px;
-      }
-
-      .sections {
-        padding: 30px 15px;
-
-        .section {
-          .sectionTitle {
-            font-size: 32px;
-            line-height: 36px;
-          }
-
-          .form {
-            gap: 15px;
-
-            .field {
-              gap: 15px;
-            }
-          }
-        }
-      }
-    }
-
-    .actions {
-      .backButton {
-        width: 100px;
-        height: 44px;
-        padding: 18px 20px;
-      }
-
-      .nextButton {
-        width: 280px;
-        height: 44px;
-        padding: 18px 20px;
-      }
-    }
-  }
-}
-
-/* 移动设备 (最大宽度 767px) */
 @media (max-width: 767px) {
   .submitLoss {
     padding: 20px 16px;
-
-    .stepTwo {
-      .title {
-        font-size: 36px;
-        line-height: 50px;
-      }
-
-      .sections {
-        padding: 20px 12px;
-
-        .section {
-          .sectionTitle {
-            font-size: 24px;
-            line-height: 30px;
-            margin-bottom: 15px;
-          }
-
-          .sectionDescription {
-            font-size: 14px;
-            line-height: 20px;
-            margin-bottom: 15px;
-          }
-
-          .sectionSteps {
-            gap: 12px;
-            flex-direction: column;
-
-            .sectionStep {
-              min-width: 100%;
-              padding: 12px;
-
-              .sectionStepInfo {
-                .sectionStepTitle {
-                  font-size: 16px;
-                  line-height: 24px;
-                  margin-bottom: 8px;
-                }
-
-                .sectionStepTitleDescription {
-                  font-size: 12px;
-                  line-height: 20px;
-                  margin-bottom: 8px;
-                }
-              }
-
-              .sectionStepTitleScreenShot {
-                height: 200px;
-              }
-            }
-          }
-        }
-
-        .warning {
-          padding: 8px 12px;
-          margin-top: 15px;
-
-          .warningTitle {
-            font-size: 14px;
-            line-height: 20px;
-          }
-
-          .warningContent {
-            margin-top: 8px;
-
-            .warningContentItem {
-              font-size: 12px;
-              line-height: 20px;
-            }
-          }
-        }
-      }
-
-      .questions {
-        padding: 20px 12px;
-        margin-top: 20px;
-
-        .questionsTitle {
-          font-size: 18px;
-          line-height: 24px;
-          margin-bottom: 15px;
-        }
-
-        .list {
-          gap: 8px;
-
-          .listItem {
-            padding: 8px 12px;
-
-            .listItemTitle {
-              font-size: 16px;
-              line-height: 24px;
-            }
-
-            .listItemDescription {
-              font-size: 12px;
-              line-height: 20px;
-            }
-          }
-        }
-      }
-    }
-
-    .stepOne {
-      .title {
-        font-size: 36px;
-        line-height: 50px;
-      }
-
-      .sections {
-        padding: 20px 12px;
-
-        .section {
-          .sectionTitle {
-            font-size: 24px;
-            line-height: 30px;
-            margin-bottom: 15px;
-          }
-        }
-      }
-
-      .exchanges {
-        gap: 12px;
-        flex-direction: column;
-
-        .exchange {
-          width: 100%;
-          height: 150px;
-          min-width: 100%;
-          gap: 12px;
-
-          .exchangeLogo {
-            img {
-              height: 30px;
-            }
-          }
-
-          .exchangeName {
-            font-size: 16px;
-            line-height: 20px;
-          }
-        }
-      }
-
-      .notification {
-        padding: 8px 12px;
-        margin-top: 15px;
-
-        .notificationTitle {
-          font-size: 14px;
-          line-height: 20px;
-        }
-
-        .notificationContent {
-          margin-top: 8px;
-
-          .notificationContentItem {
-            font-size: 12px;
-            line-height: 20px;
-          }
-        }
-      }
-    }
-
-    .stepThree {
-      .title {
-        font-size: 36px;
-        line-height: 50px;
-      }
-
-      .sections {
-        padding: 20px 12px;
-
-        .section {
-          .sectionTitle {
-            font-size: 24px;
-            line-height: 30px;
-            margin-bottom: 15px;
-          }
-
-          .input {
-            padding: 20px 12px;
-            gap: 12px;
-
-            .inputButton {
-              font-size: 14px;
-              line-height: 20px;
-            }
-
-            .imagePreview {
-              img {
-                max-height: 250px;
-              }
-            }
-
-            .inputDescription {
-              font-size: 12px;
-              line-height: 18px;
-              text-align: center;
-            }
-          }
-
-          .tip {
-            padding: 8px 12px;
-            margin-top: 15px;
-
-            .tipContent {
-              margin-top: 8px;
-
-              .tipContentItem {
-                font-size: 12px;
-                line-height: 20px;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .stepFour {
-      .title {
-        font-size: 36px;
-        line-height: 50px;
-      }
-
-      .sections {
-        padding: 20px 12px;
-
-        .section {
-          .sectionTitle {
-            font-size: 24px;
-            line-height: 30px;
-            margin-bottom: 15px;
-          }
-
-          .form {
-            gap: 15px;
-
-            .field {
-              gap: 12px;
-
-              .name {
-                font-size: 14px;
-              }
-
-              .input {
-                height: 44px;
-
-                input {
-                  height: 44px;
-                  padding: 0 12px;
-                  font-size: 14px;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .actions {
-      margin-top: 15px;
-      flex-direction: column;
-      gap: 12px;
-
-      .backButton {
-        margin-top: 0;
-        width: 100%;
-        height: 44px;
-        padding: 12px 20px;
-      }
-
-      .nextButton {
-        margin-top: 0;
-        width: 100%;
-        height: 44px;
-        padding: 12px 20px;
-      }
-    }
+  }
+  
+  .submitLoss .stepOne .title,
+  .submitLoss .stepTwo .title,
+  .submitLoss .stepThree .title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  
+  .submitLoss .stepOne .sections .section .sectionTitle {
+    font-size: 16px;
+    line-height: 24px;
+  }
+  
+  /* 交易所选择区域 - 改为单列 */
+  .submitLoss .stepOne .sections .section .exchanges {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .submitLoss .stepOne .sections .section .exchanges .exchange {
+    width: 100%;
+  }
+  
+  /* Step 2: 上传区域 */
+  .submitLoss .stepTwo .description {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  
+  .submitLoss .stepTwo .upload {
+    padding: 30px 16px;
+  }
+  
+  .submitLoss .stepTwo .upload .uploadTitle {
+    font-size: 14px;
+  }
+  
+  /* Step 3: 表单区域 */
+  .submitLoss .stepThree .form .row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .submitLoss .stepThree .form .row .field {
+    width: 100%;
+  }
+  
+  /* 按钮区域 */
+  .submitLoss .actions {
+    flex-direction: row;
+    gap: 12px;
+  }
+  
+  .submitLoss .actions .backButton,
+  .submitLoss .actions .nextButton,
+  .submitLoss .actions .submitButton {
+    flex: 1;
+    min-height: 44px;
+    font-size: 16px;
+  }
+  
+  /* iOS 输入框优化 */
+  .submitLoss input[type="text"],
+  .submitLoss input[type="number"],
+  .submitLoss textarea {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+  
+  /* Warning 和 Error 消息 */
+  .submitLoss .warningText {
+    font-size: 13px;
+    line-height: 18px;
+    padding: 8px;
+  }
+  
+  .submitLoss .ocrError {
+    padding: 12px;
+    margin-top: 16px;
+  }
+  
+  .submitLoss .ocrErrorMessage {
+    font-size: 13px;
   }
 }

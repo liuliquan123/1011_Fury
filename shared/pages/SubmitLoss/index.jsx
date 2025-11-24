@@ -109,6 +109,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [exchangeType, setExchangeType] = useState()
+  const [loadingPhase, setLoadingPhase] = useState(false)
   const [file, setFile] = useState()
   const [previewUrl, setPreviewUrl] = useState()
   const [stepIndex, setStepIndex] = useState(0)
@@ -117,9 +118,15 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
   const phaseLocked = phasesLocked[getExchangeName(exchangeType)]
+  
+  // 检查当前阶段是否已提交
+  const hasSubmittedInCurrentPhase = phase && phase.user_submission_status && isLoggedIn
+    ? phase.user_submission_status[`phase_${phase.current_phase}`]
+    : false
 
   const selectExchange = useCallback((exchangeType) => () => {
     setExchangeType(exchangeType)
+    setLoadingPhase(true)
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
   }, [])
 
@@ -153,6 +160,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
 
   const updateFile = useCallback((file) => {
     setFile(file)
+    setUploadError(false)
     const previewUrl = URL.createObjectURL(file)
     setPreviewUrl(previewUrl)
     console.log('set file', file, previewUrl)
@@ -196,8 +204,11 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   }, [file, isLoggedIn])
 
   useEffect(() => {
-
-  }, [])
+    // 当 phase 数据加载完成时，取消 loading 状态
+    if (exchangeType && phase) {
+      setLoadingPhase(false)
+    }
+  }, [phase, exchangeType])
 
   const onModalClick = useCallback((event) => {
     event.preventDefault()
@@ -279,10 +290,15 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     <div className={styles.exchangeName}>Bitget</div>
                   </div>
                 </div>
-                {phase && !phaseLocked && (
+                {phase && (
                   <div className={classNames(styles.notification, {
-                    [styles.error]: !!phaseLocked
+                    [styles.error]: !!phaseLocked || hasSubmittedInCurrentPhase
                   })}>
+                    {hasSubmittedInCurrentPhase && (
+                      <div className={styles.warningText}>
+                        You've already submitted for this exchange in Phase {phase.current_phase}. Please wait for the next phase to submit again.
+                      </div>
+                    )}
                     <div className={styles.notificationTitle}>
                       {phase.phase_info.description}
                     </div>
@@ -296,15 +312,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     </div>
                   </div>
                 )}
-                {phase && !!phaseLocked && (
-                  <div className={classNames(styles.notification, {
-                    [styles.error]:!!phaseLocked
-                  })}>
-                    <div className={styles.notificationTitle}>
-                      You have already submitted a loss for {getExchangeName(exchangeType)} in Phase X. You can submit again when Phase {phase.current_phase + 1} begins.
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -313,9 +320,9 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               Back
             </div>
             <div className={classNames(styles.nextButton, {
-              [styles.disabled]: !exchangeType || !!phaseLocked
-            })} onClick={nextStep}>
-              Continue
+              [styles.disabled]: !exchangeType || loadingPhase || !!phaseLocked || hasSubmittedInCurrentPhase
+            })} onClick={!exchangeType || loadingPhase || !!phaseLocked || hasSubmittedInCurrentPhase ? null : nextStep}>
+              {loadingPhase ? 'Loading...' : 'Continue'}
             </div>
           </div>
         </Fragment>
@@ -503,6 +510,13 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     </div>
                   </div>
                 </div>
+                {uploadError && (
+                  <div className={styles.ocrError}>
+                    <div className={styles.ocrErrorMessage}>
+                      ❌ Image Verification Failed: {uploadError}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -512,7 +526,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
             </div>
             <div className={classNames(styles.nextButton, {
               [styles.disabled]: uploading || !file || !!uploadError
-            })}  onClick={uploadFile}>
+            })} onClick={uploading || !file || !!uploadError ? null : uploadFile}>
               {uploading ? 'Uploading' : 'Continue'}
             </div>
           </div>

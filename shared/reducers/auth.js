@@ -35,7 +35,8 @@ export default handleActions({
 
     const currentPhase = phase.current_phase
     const userSubmissionStatus = phase.user_submission_status
-    const isLocked = userSubmissionStatus[`phase_${currentPhase}`]
+    // Safely check userSubmissionStatus for null (未登录用户)
+    const isLocked = userSubmissionStatus ? userSubmissionStatus[`phase_${currentPhase}`] : false
     state.phasesLocked[exchange] = isLocked
   },
   [actions.updateEvidenceForm] (state, action) {
