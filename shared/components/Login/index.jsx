@@ -237,6 +237,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
   const authByEmail = useCallback(() => {
     if (isLoginDisabled) return
     
+    console.log('[Referral] Email login with code:', referralCode)
     setConnectingEmail(true)
 
     actions.authByEmail({
@@ -263,10 +264,12 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
     
     if (walletInfo.inWallet) {
       console.log('[Wallet] In-app browser detected:', walletInfo.walletName)
+      console.log('[Referral] Wallet login with code:', referralCode)
       setConnectingWallet(true)
       actions.authByWallet({
         walletId: walletInfo.walletId,
         referralCode,
+        isWalletBrowser: true,
         onSuccess: () => {
           toast('Wallet Login Success!')
           setConnectingWallet(false)
@@ -293,10 +296,12 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
       toast('No wallet detected. Please install a Web3 wallet.')
     } else if (wallets.length === 1) {
       console.log('[Wallet] Auto-selecting:', wallets[0].name)
+      console.log('[Referral] Wallet login with code:', referralCode)
       setConnectingWallet(true)
       actions.authByWallet({
         walletId: wallets[0].id,
         referralCode,
+        isWalletBrowser: false,
         onSuccess: () => {
           toast('Wallet Login Success!')
           setConnectingWallet(false)
@@ -316,11 +321,13 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
 
   const onWalletSelected = useCallback((wallet) => {
     console.log('[Wallet] User selected:', wallet.name)
+    console.log('[Referral] Wallet login with code:', referralCode)
     setShowWalletSelector(false)
     setConnectingWallet(true)
     actions.authByWallet({
       walletId: wallet.id,
       referralCode,
+      isWalletBrowser: false,
       onSuccess: () => {
         toast('Wallet Login Success!')
         setConnectingWallet(false)
@@ -383,6 +390,12 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
       }
     })
   }, [])
+
+  useEffect(() => {
+    if (code) {
+      console.log('[Referral] Code from URL:', code)
+    }
+  }, [code])
 
   const openModal = useCallback(() => {
     setIsOpen(true)

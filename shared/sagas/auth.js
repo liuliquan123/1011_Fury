@@ -119,6 +119,10 @@ function* web3AuthLogin(web3auth, data) {
   if (web3AuthToken) {
     localStorage.setItem('web3Auth_token', web3AuthToken)
 
+    console.log('[Referral] Calling web3AuthLogin API with:', {
+      referred_by: data.referralCode || null
+    })
+
     const authResponse = yield call(api.web3AuthLogin, {
       id_token: web3AuthToken,
       wallet_address: '',
@@ -154,6 +158,7 @@ function* authByWallet(action) {
      *   onError: () => {},
      * }}) */
 
+    console.log('[Referral] authByWallet received:', { referralCode, isWalletBrowser })
     console.log('authByWallet start', web3auth, web3auth.status)
 
     if (isWalletBrowser) {
@@ -185,6 +190,7 @@ function* authByEmail(action) {
 
   try {
     // const web3auth = yield call(initWeb3Auth)
+    console.log('[Referral] authByEmail received:', { email, referralCode })
     console.log('authByEmail start', web3auth, web3auth.status)
 
     yield apply(web3auth, web3auth.connectTo, [
