@@ -32,7 +32,7 @@ const isWalletBrowser = () => {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
 
   // Known wallet identifiers (far from exhaustive, tweak for your user base)
-  const walletRegex = /(MetaMaskMobile|MetaMask|Trust Wallet|TrustWallet|imToken|TokenPocket|MathWallet|BitKeep|Bitget|OKX|CoinbaseWallet|Rainbow|Phantom|Binance|BinanceWallet|BinanceWeb3Wallet)/i;
+  const walletRegex = /(MetaMaskMobile|MetaMask|Trust Wallet|TrustWallet|imToken|TokenPocket|MathWallet|BitKeep|Bitget|OKX|CoinbaseWallet|Rainbow|Phantom|Binance|BinanceWallet|BinanceWeb3Wallet|base|Base|binance)/i;
 
   const hasInjectedProvider =
     typeof window.ethereum !== "undefined" ||
