@@ -265,7 +265,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut }) => {
               Open in Your Wallet App
             </div>
             <div className={styles.text}>
-              For the best experience. Please open this page in your wallet app's built-in browser (MetaMask, Trust Wallet, etc.)
+              For the best experience. Please open this page in your wallet app's built-in browser (OKX Wallet, Binance Wallet, Trust Wallet, etc.)
             </div>
             <div className={styles.steps}>
               <div className={styles.step}>1. Tap the button to copy this link</div>
