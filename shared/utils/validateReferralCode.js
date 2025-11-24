@@ -20,19 +20,20 @@ export async function validateReferralCode(code) {
     console.log('[Referral] API response', { 
       info,
       hasInfo: !!info,
-      hasReferrer: !!(info && info.referrer)
+      hasData: !!(info && info.data),
+      hasReferrer: !!(info && info.data && info.data.referrer)
     })
 
-    if (info && info.referrer) {
+    if (info && info.data && info.data.referrer) {
       console.log('[Referral] Valid referral code', {
         code,
-        referrer: info.referrer.username,
-        stats: info.stats
+        referrer: info.data.referrer.username,
+        stats: info.data.stats
       })
       return {
         isValid: true,
         reason: 'valid',
-        referrerName: info.referrer.username
+        referrerName: info.data.referrer.username
       }
     }
 
