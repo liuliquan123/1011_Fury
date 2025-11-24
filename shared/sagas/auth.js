@@ -30,6 +30,7 @@ const API_BASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co/functions/v1"
 const TELEGRAM_BOT_USERNAME = "xreceivebot"
 const APP_URL = "https://satoshis-fury-nextjs.vercel.app"
 
+// console.log('WALLET_CONNECTORS', WALLET_CONNECTORS)
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     autoRefreshToken: true,
@@ -73,15 +74,16 @@ function* initWeb3Auth(action) {
     // if (!web3auth) {
     // localStorage.removeItem('auth_store')
 
-    web3auth = new Web3AuthNoModal({
+    web3auth = new Web3Auth({
       clientId: WEB3AUTH_CLIENT_ID,
       web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
       sessionTime: 86400 * 7,
       storageType: 'local'
     })
+
     // }
 
-    console.log('initWeb3Auth load', web3auth, web3auth.status)
+    console.log('initWeb3Auth load', web3auth, web3auth.status, web3auth.configureAdapter)
 
     if (
       web3auth.status !== 'connected'
@@ -147,10 +149,10 @@ function* authByWallet(action) {
   const { onSuccess, onError, referralCode } = action.payload
 
   try {
-    yield call(initWeb3Auth, { payload: {
-      onSuccess: () => {},
-      onError: () => {},
-    }})
+    /* yield call(initWeb3Auth, { payload: {
+     *   onSuccess: () => {},
+     *   onError: () => {},
+     * }}) */
 
     console.log('authByWallet start', web3auth, web3auth.status)
 
@@ -159,6 +161,7 @@ function* authByWallet(action) {
         chainNamespace: CHAIN_NAMESPACES.EIP155
       }
     ])
+    // yield apply(web3auth, web3auth.connect)
 
     yield call(web3AuthLogin, web3auth, { referralCode })
 
@@ -361,6 +364,10 @@ function* uploadEvidenceOcr(action) {
       }
     })
     console.log('evidenceResponse', evidenceResponse)
+
+    if (evidenceResponse.data && evidenceResponse.data.ocr_error) {
+      throw new Error(evidenceResponse.data.ocr_error)
+    }
     evidenceResponse.data.ocr.user_note = ''
 
     yield put(actions.updateOcrForm(evidenceResponse.data.ocr))

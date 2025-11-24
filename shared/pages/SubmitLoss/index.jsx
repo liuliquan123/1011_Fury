@@ -279,9 +279,9 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     <div className={styles.exchangeName}>Bitget</div>
                   </div>
                 </div>
-                {phase && (
+                {phase && !phaseLocked && (
                   <div className={classNames(styles.notification, {
-                    [styles.error]:!!phaseLocked
+                    [styles.error]: !!phaseLocked
                   })}>
                     <div className={styles.notificationTitle}>
                       {phase.phase_info.description}
@@ -293,6 +293,15 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                       <div className={styles.notificationContentItem}>
                         Submissions in this stage: {phase.phase_info.current_submissions}/{phase.phase_info.max_submissions}
                       </div>
+                    </div>
+                  </div>
+                )}
+                {phase && !!phaseLocked && (
+                  <div className={classNames(styles.notification, {
+                    [styles.error]:!!phaseLocked
+                  })}>
+                    <div className={styles.notificationTitle}>
+                      You have already submitted a loss for {getExchangeName(exchangeType)} in Phase X. You can submit again when Phase {phase.current_phase + 1} begins.
                     </div>
                   </div>
                 )}
