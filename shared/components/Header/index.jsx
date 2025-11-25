@@ -39,12 +39,27 @@ const Header = ({ profile, actions, history }) => {
         </div>
       </Link>
       <div className={classNames(styles.buttons)}>
-        <Link className={classNames(styles.button)} to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}>
+        <Link
+          className={classNames(styles.button, styles.large)}
+          to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}
+        >
           <div className={classNames(styles.leftArrow)}>{">"}</div>
-          <div className={classNames(styles.text)}>Submit</div>
+          <div className={classNames(styles.text)}>
+            SUBMIT YOUR LOSS
+          </div>
           <div className={classNames(styles.rightArrow)}>{"<"}</div>
         </Link>
-        {!profile.id && (
+        <Link
+          className={classNames(styles.button, styles.small)}
+          to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}
+        >
+          <div className={classNames(styles.leftArrow)}>{">"}</div>
+          <div className={classNames(styles.text)}>
+            Submit
+          </div>
+          <div className={classNames(styles.rightArrow)}>{"<"}</div>
+        </Link>
+        {!profile.id && false && (
           <Link className={classNames(styles.button, styles.loginButton)} to={referralCode ? `/login?code=${referralCode}` : '/login'}>
             <div className={classNames(styles.text)}>Login</div>
           </Link>

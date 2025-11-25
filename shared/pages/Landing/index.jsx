@@ -152,7 +152,7 @@ const Landing = () => {
             <div className={styles.feature}>
               <div className={styles.featureIcon}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 37 27" fill="none">
-                  <rect x="6.5" y="7" width="24" height="18" stroke="white" stroke-width="3"/>
+                  <rect x="6.5" y="7" width="24" height="18" stroke="white" strokeWidth="3"/>
                   <rect x="12" y="12.5" width="3" height="3" fill="white"/>
                   <rect x="22" y="12.5" width="3" height="3" fill="white"/>
                   <rect x="34" y="10.5" width="3" height="11" fill="white"/>

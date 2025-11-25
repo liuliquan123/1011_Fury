@@ -60,7 +60,7 @@
         /* transition: all 0.2s ease; */
 
         .text {
-          margin: 0 10px;
+          margin: 0 5px;
           white-space: pre;
           color: black;
           font-size: 16px;
@@ -68,10 +68,12 @@
 
         .leftArrow {
           opacity: 0;
+          margin-right: 10px;
         }
 
         .rightArrow {
           opacity: 0;
+          margin-left: 10px;
         }
 
         &:hover {
@@ -81,6 +83,20 @@
 
           .rightArrow {
             opacity: 1;
+          }
+        }
+
+        &:focus {
+          .leftArrow {
+            opacity: 1;
+            margin-right: 0px;
+            transition: all 0.3s ease;
+          }
+
+          .rightArrow {
+            opacity: 1;
+            margin-left: 0px;
+            transition: all 0.3s ease;
           }
         }
       }

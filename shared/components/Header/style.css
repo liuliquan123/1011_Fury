@@ -92,37 +92,58 @@
       font-size: 16px;
       padding: 2px 16px;
       height: 32px;
-      display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 500;
       cursor: pointer;
       font-family: "Google Sans Code";
-      /* transition: all 0.2s ease; */
+      display: none;
+
+      &.large {
+        width: 230px;
+        display: flex;
+      }
+
+      &.small {
+        width: 150px;
+      }
 
       .text {
-        margin: 0 10px;
+        margin: 0 5px;
         white-space: pre;
       }
 
       .leftArrow {
         opacity: 0;
+        margin-right: 10px;
       }
 
       .rightArrow {
         opacity: 0;
+        margin-left: 10px;
       }
 
       &:hover {
-        background: black;
-        color: #E9FD66;
-
         .leftArrow {
           opacity: 1;
         }
 
         .rightArrow {
           opacity: 1;
+        }
+      }
+
+      &:focus {
+        .leftArrow {
+          opacity: 1;
+          margin-right: 0px;
+          transition: all 0.3s ease;
+        }
+
+        .rightArrow {
+          opacity: 1;
+          margin-left: 0px;
+          transition: all 0.3s ease;
         }
       }
     }
@@ -134,26 +155,40 @@
   .header {
     padding: 0 16px;
   }
-  
+
   .header .branding .text {
     font-size: 24px;
   }
-  
+
   .header .buttons {
     gap: 10px;
   }
-  
+
   .header .button {
     padding: 6px 12px;
     font-size: 14px;
     height: 28px;
   }
-  
+
   .header .logoButton {
     display: none;
   }
-  
+
   .header .loginButton {
     display: none;
+  }
+
+  .header {
+    .buttons {
+      .button {
+        &.large {
+          display: none;
+        }
+
+        &.small {
+          display: flex;
+        }
+      }
+    }
   }
 }

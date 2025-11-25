@@ -270,6 +270,7 @@
             }
 
             .submitButton {
+              text-decoration: none;
               width: 200px;
               background: #E9FD66;
               border: 1px solid #E9FD66;

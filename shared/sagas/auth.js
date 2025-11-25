@@ -375,7 +375,7 @@ function* uploadEvidenceOcr(action) {
       }
     })
     console.log('evidenceResponse', evidenceResponse)
-    
+
     // 检查 OCR 是否成功
     if (evidenceResponse.data.ocr) {
       evidenceResponse.data.ocr.user_note = ''
@@ -523,11 +523,20 @@ function* linkWallet(action) {
   const { onSuccess, onError } = action.payload
 
   try {
+    if (web3auth) {
+      try {
+        yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
+      } catch (error) {
+        console.log('error', error)
+      }
+    }
+
     yield call(initWeb3Auth, { payload: {
       onSuccess: () => {},
       onError: () => {},
     }})
 
+    yield delay(2000)
     console.log('linkWallet start', web3auth, web3auth.status)
 
     const provider = yield apply(web3auth, web3auth.connectTo, [
