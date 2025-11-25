@@ -23,7 +23,9 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
         </div>
         <div className={styles.buttons}>
           <Link className={styles.button} to="/submit-loss">
-            Create New Case
+            <div className={classNames(styles.leftArrow)}>{">"}</div>
+            <div className={classNames(styles.buttonText)}>Create New Case</div>
+            <div className={classNames(styles.rightArrow)}>{"<"}</div>
           </Link>
         </div>
       </div>
@@ -71,10 +73,14 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
               </div>
               <div className={styles.buttons}>
                 <Link className={styles.inviteButton} to="/referral">
-                  Invite
+                  <div className={classNames(styles.leftArrow)}>{">"}</div>
+                  <div className={classNames(styles.buttonText)}>Invite</div>
+                  <div className={classNames(styles.rightArrow)}>{"<"}</div>
                 </Link>
                 <Link className={styles.submitButton} to="/submit-loss">
-                  Submit New Loss
+                  <div className={classNames(styles.leftArrow)}>{">"}</div>
+                  <div className={classNames(styles.buttonText)}>Submit New Loss</div>
+                  <div className={classNames(styles.rightArrow)}>{"<"}</div>
                 </Link>
               </div>
             </div>

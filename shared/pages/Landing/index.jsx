@@ -189,9 +189,11 @@ const Landing = () => {
                   Get the latest updates on cases, announcements, and compensation progress
                 </div>
               </div>
-              <div className={styles.socialAccountAction}>
-                Go
-              </div>
+              <button className={styles.socialAccountAction}>
+                <div className={classNames(styles.leftArrow)}>{">"}</div>
+                <div className={classNames(styles.text)}>go</div>
+                <div className={classNames(styles.rightArrow)}>{"<"}</div>
+              </button>
             </div>
             <div className={styles.socialAccount}>
               <div className={styles.socialAccountInfo}>
@@ -207,9 +209,11 @@ const Landing = () => {
                   Connect with other users, get instant support, and participate in community discussions
                 </div>
               </div>
-              <div className={styles.socialAccountAction}>
-                Go
-              </div>
+              <button className={styles.socialAccountAction}>
+                <div className={classNames(styles.leftArrow)}>{">"}</div>
+                <div className={classNames(styles.text)}>go</div>
+                <div className={classNames(styles.rightArrow)}>{"<"}</div>
+              </button>
             </div>
             <div className={styles.socialAccount}>
               <div className={styles.socialAccountInfo}>
@@ -226,9 +230,11 @@ const Landing = () => {
                   Chat with the community, get support, and participate in governance
                 </div>
               </div>
-              <div className={styles.socialAccountAction}>
-                Go
-              </div>
+              <button className={styles.socialAccountAction}>
+                <div className={classNames(styles.leftArrow)}>{">"}</div>
+                <div className={classNames(styles.text)}>go</div>
+                <div className={classNames(styles.rightArrow)}>{"<"}</div>
+              </button>
             </div>
             <div className={styles.socialAccount}>
               <div className={styles.socialAccountInfo}>
@@ -245,9 +251,11 @@ const Landing = () => {
                   In-depth articles, case studies, and legal insights
                 </div>
               </div>
-              <div className={styles.socialAccountAction}>
-                Go
-              </div>
+              <button className={styles.socialAccountAction}>
+                <div className={classNames(styles.leftArrow)}>{">"}</div>
+                <div className={classNames(styles.text)}>go</div>
+                <div className={classNames(styles.rightArrow)}>{"<"}</div>
+              </button>
             </div>
           </div>
         </div>

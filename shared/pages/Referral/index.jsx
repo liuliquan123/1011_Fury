@@ -293,15 +293,21 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
             {inviteCode}
           </div>
           <div className={styles.buttons}>
-            <div className={styles.shareButton} onClick={handleShareTwitter}>
-              share on X（Twitter）
-            </div>
-            <div className={styles.shareButton} onClick={handleShareTelegram}>
-              share on Telegram
-            </div>
-            <div className={styles.copyButton} onClick={handleCopyLink}>
-              Copy referral link
-            </div>
+            <button className={styles.shareButton} onClick={handleShareTwitter}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.buttonText)}>share on X（Twitter）</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
+            <button className={styles.shareButton} onClick={handleShareTelegram}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.buttonText)}>share on Telegram</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
+            <button className={styles.copyButton} onClick={handleCopyLink}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.buttonText)}>Copy referral link</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
           </div>
         </div>
       </div>

@@ -194,9 +194,11 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                   </div>
                 </div>
               </div>
-              <div className={styles.button} onClick={logout}>
-                LOGOUT
-              </div>
+              <button className={styles.button} onClick={logout}>
+                <div className={classNames(styles.leftArrow)}>{">"}</div>
+                <div className={classNames(styles.buttonText)}>LOGOUT</div>
+                <div className={classNames(styles.rightArrow)}>{"<"}</div>
+              </button>
             </div>
           </div>
           <div className={styles.tokenSection}>
@@ -218,13 +220,13 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     </svg>
                   </div>
                 </div>
-                <div className={styles.text}>{reward.exchange}</div>
+                <div className={styles.text}>{reward && reward.exchange}</div>
                 <div className={styles.tokens}>
                   <div className={styles.token}>
                     <div className={styles.tokenLogo}></div>
                     <div className={styles.tokenAmount}>
-                      {reward.token_amount || 0}
-                      <span className={styles.status}>{reward.status}</span>
+                      {(reward && reward.token_amount) || 0}
+                      <span className={styles.status}>{reward && reward.status}</span>
                     </div>
                     <div className={styles.tokenLockTime}>
                       <div className={styles.tokenLockTimeName}>
@@ -250,14 +252,18 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 </div>
                 <div className={styles.actionButtons}>
                   <Link className={styles.actionButton} to="/referral">
-                    Accelerate Unlock
+                    <div className={classNames(styles.leftArrow)}>{">"}</div>
+                    <div className={classNames(styles.buttonText)}>Accelerate Unlock</div>
+                    <div className={classNames(styles.rightArrow)}>{"<"}</div>
                   </Link>
                   {profile && !profile.wallet_address && (
-                    <div className={classNames(styles.actionButtonDark, {
+                    <button className={classNames(styles.actionButtonDark, {
                       [styles.disabled]: connectingWallet
                     })} onClick={linkWallet}>
-                      {connectingWallet ? 'Connecting Wallet' : 'Connect Wallet'}
-                    </div>
+                      <div className={classNames(styles.leftArrow)}>{">"}</div>
+                      <div className={classNames(styles.buttonText)}>{connectingWallet ? 'Connecting Wallet' : 'Connect Wallet'}</div>
+                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                    </button>
                   )}
                 </div>
               </div>
@@ -266,7 +272,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
               <div className={styles.locked}>
                 <div className={styles.actionButtons}>
                   <Link className={styles.actionButton} to="/submit-loss">
-                    SUBMIT LOSS
+                    <div className={classNames(styles.leftArrow)}>{">"}</div>
+                    <div className={classNames(styles.buttonText)}>SUBMIT LOSS</div>
+                    <div className={classNames(styles.rightArrow)}>{"<"}</div>
                   </Link>
                 </div>
               </div>

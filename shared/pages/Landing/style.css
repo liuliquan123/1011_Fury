@@ -378,6 +378,7 @@
               align-self: stretch;
               border: 1px solid #E9FD66;
               cursor: pointer;
+              background: transparent;
 
               color: #E9FD66;
               font-family: "Google Sans Code";
@@ -385,7 +386,56 @@
               font-style: normal;
               font-weight: 500;
               line-height: 24px; /* 150% */
-              text-transform: lowercase;
+
+              .text {
+                margin: 0 5px;
+                white-space: pre;
+                color: black;
+                font-size: 16px;
+                color: #E9FD66;
+              }
+
+              .leftArrow {
+                opacity: 0;
+                margin-right: 10px;
+              }
+
+              .rightArrow {
+                opacity: 0;
+                margin-left: 10px;
+              }
+
+              &:hover {
+                background: #E9FD66;
+
+                .text {
+                  color: black;
+                }
+
+                .leftArrow {
+                  opacity: 1;
+                  color: black;
+                }
+
+                .rightArrow {
+                  opacity: 1;
+                  color: black;
+                }
+              }
+
+              &:focus {
+                .leftArrow {
+                  opacity: 1;
+                  margin-right: 0px;
+                  transition: all 0.3s ease;
+                }
+
+                .rightArrow {
+                  opacity: 1;
+                  margin-left: 0px;
+                  transition: all 0.3s ease;
+                }
+              }
             }
           }
         }
