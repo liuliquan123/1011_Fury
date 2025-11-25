@@ -59,7 +59,7 @@
         font-family: "Google Sans Code";
         /* transition: all 0.2s ease; */
 
-        .text {
+        .buttonText {
           margin: 0 5px;
           white-space: pre;
           color: black;
@@ -622,6 +622,8 @@
 /* 响应式设计 - 移动设备 */
 @media (max-width: 768px) {
   .landing {
+    padding-bottom: 68px;
+
     .banner {
       height: 500px;
 
@@ -854,8 +856,6 @@
 /* 响应式设计 - 小屏移动设备 */
 @media (max-width: 480px) {
   .landing {
-    padding-bottom: 68px;
-
     .banner {
       height: 300px;
       margin: 12px;

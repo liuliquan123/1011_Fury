@@ -16,7 +16,7 @@ const Landing = () => {
           </div>
           <Link className={styles.button} to="/submit-loss">
             <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.text)}>SUBMIT YOUR LOSS</div>
+            <div className={classNames(styles.buttonText)}>SUBMIT YOUR LOSS</div>
             <div className={classNames(styles.rightArrow)}>{"<"}</div>
           </Link>
         </div>
