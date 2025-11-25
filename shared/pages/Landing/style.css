@@ -518,6 +518,81 @@
       }
     }
   }
+
+  .bottomButtons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    position: fixed;
+    bottom: calc(42px + env(safe-area-inset-bottom));
+    left: 0;
+    background: #141519;
+    width: 100%;
+    border: none;
+    display: none;
+
+    .button {
+      text-decoration: none;
+      color: black;
+      border: 1px solid black;
+      font-size: 16px;
+      padding: 2px 16px;
+      height: 48px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      cursor: pointer;
+      background: #E9FD66;
+      border-color: #E9FD66;
+      color: black;
+      font-family: "Google Sans Code";
+      /* transition: all 0.2s ease; */
+
+      .text {
+        margin: 0 5px;
+        white-space: pre;
+        color: black;
+        font-size: 16px;
+      }
+
+      .leftArrow {
+        opacity: 0;
+        margin-right: 10px;
+      }
+
+      .rightArrow {
+        opacity: 0;
+        margin-left: 10px;
+      }
+
+      &:hover {
+        .leftArrow {
+          opacity: 1;
+        }
+
+        .rightArrow {
+          opacity: 1;
+        }
+      }
+
+      &:focus {
+        .leftArrow {
+          opacity: 1;
+          margin-right: 0px;
+          transition: all 0.3s ease;
+        }
+
+        .rightArrow {
+          opacity: 1;
+          margin-left: 0px;
+          transition: all 0.3s ease;
+        }
+      }
+    }
+  }
 }
 
 /* 响应式设计 - 平板设备 */
@@ -765,12 +840,22 @@
         font-size: 14px;
       }
     }
+
+    .footer {
+      display: none;
+    }
+
+    .bottomButtons {
+      display: flex;
+    }
   }
 }
 
 /* 响应式设计 - 小屏移动设备 */
 @media (max-width: 480px) {
   .landing {
+    padding-bottom: 68px;
+
     .banner {
       height: 300px;
       margin: 12px;
@@ -839,10 +924,6 @@
           }
         }
       }
-    }
-
-    .footer {
-      display: none;
     }
   }
 }

@@ -360,6 +360,13 @@ const Landing = () => {
           </div>
         </div>
       </div>
+      <div className={styles.bottomButtons}>
+        <Link className={styles.button} to="/submit-loss">
+          <div className={classNames(styles.leftArrow)}>{">"}</div>
+          <div className={classNames(styles.text)}>SUBMIT YOUR LOSS</div>
+          <div className={classNames(styles.rightArrow)}>{"<"}</div>
+        </Link>
+      </div>
     </div>
   )
 }
