@@ -316,14 +316,18 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
             </div>
           </div>
           <div className={styles.actions}>
-            <div className={styles.backButton} onClick={prevStep}>
-              Back
-            </div>
-            <div className={classNames(styles.nextButton, {
+            <button className={styles.backButton} onClick={prevStep}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
+            <button className={classNames(styles.nextButton, {
               [styles.disabled]: !exchangeType || loadingPhase || !!phaseLocked || hasSubmittedInCurrentPhase
             })} onClick={!exchangeType || loadingPhase || !!phaseLocked || hasSubmittedInCurrentPhase ? null : nextStep}>
-              {loadingPhase ? 'Loading...' : 'Continue'}
-            </div>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>{loadingPhase ? 'LOADING...' : 'CONTINUE'}</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
           </div>
         </Fragment>
       )}
@@ -451,12 +455,16 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
             </div>
           </div>
           <div className={styles.actions}>
-            <div className={styles.backButton} onClick={prevStep}>
-              Back
-            </div>
-            <div className={styles.nextButton} onClick={nextStep}>
-              Continue
-            </div>
+            <button className={styles.backButton} href="" tabIndex={0} role="button " onClick={prevStep}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
+            <button className={styles.nextButton} onClick={nextStep}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>CONTINUE</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
           </div>
         </Fragment>
       )}
@@ -521,14 +529,18 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
             </div>
           </div>
           <div className={styles.actions}>
-            <div className={styles.backButton} onClick={prevStep}>
-              Back
-            </div>
-            <div className={classNames(styles.nextButton, {
+            <button className={styles.backButton} onClick={prevStep}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
+            <button className={classNames(styles.nextButton, {
               [styles.disabled]: uploading || !file || !!uploadError
             })} onClick={uploading || !file || !!uploadError ? null : uploadFile}>
-              {uploading ? 'Uploading' : 'Continue'}
-            </div>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>{uploading ? 'Uploading' : 'Continue'}</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
           </div>
         </Fragment>
       )}
@@ -609,14 +621,18 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
             </div>
           </div>
           <div className={styles.actions}>
-            <div className={styles.backButton} onClick={prevStep}>
-              Back
-            </div>
-            <div className={classNames(styles.nextButton, {
+            <button className={styles.backButton} onClick={prevStep}>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
+            <button className={classNames(styles.nextButton, {
               [styles.disabled]: submitting
             })} onClick={submitLoss}>
-              {uploading ? 'Submitting' : 'Submit'}
-            </div>
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.text)}>{uploading ? 'SUBMITTING' : 'SUBMIT'}</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
           </div>
         </Fragment>
       )}
