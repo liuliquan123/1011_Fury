@@ -35,6 +35,29 @@
     }
   }
 
+  .topMenu {
+    display: flex;
+    margin-left: 200px;
+
+    .topMenuItem {
+      text-decoration: none;
+      margin-right: 40px;
+      color: rgba(0, 0, 0, 0.68);
+      text-align: center;
+      font-family: "Google Sans Code";
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
+      text-transform: capitalize;
+      white-space: pre;
+
+      &.active {
+        font-weight: bold;
+      }
+    }
+  }
+
   .buttons {
     margin-left: auto;
     display: flex;
@@ -66,7 +89,7 @@
         top: 50px;
         right: 0;
         width: 200px;
-        height: 160px;
+        height: 40px;
         background: #E9FD66;
         border: 1px solid black;
         cursor: pointer;
@@ -150,6 +173,37 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .header {
+    .topMenu {
+      margin-left: 20px;
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .header {
+    .topMenu {
+      margin-left: 0;
+
+      .topMenuItem {
+        margin-right: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .header {
+    .topMenu {
+      margin-left: 0;
+
+      .topMenuItem {
+        margin-right: 0px;
+      }
+    }
+  }
+}
 
 @media (max-width: 767px) {
   .header {
@@ -179,6 +233,10 @@
   }
 
   .header {
+    .topMenu {
+      display: none;
+    }
+
     .buttons {
       .button {
         &.large {

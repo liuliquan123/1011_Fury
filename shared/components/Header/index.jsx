@@ -4,7 +4,7 @@ import { withRouter } from 'utils/withRouter'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
@@ -12,6 +12,7 @@ const Header = ({ profile, actions, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const [showMenu, setShowMenu] = useState(true)
+  const location = useLocation()
 
   useEffect(() => {
     actions.getProfile()
@@ -38,6 +39,34 @@ const Header = ({ profile, actions, history }) => {
           Satoshi's Fury
         </div>
       </Link>
+      {(profile.id || true) && (
+        <div className={classNames(styles.topMenu)}>
+          <Link
+            className={classNames(styles.topMenuItem, {
+              [styles.active]: location.pathname.indexOf('my-case') !== -1
+            })}
+            to={profile.id ? `/my-case` : `/login`}
+          >
+            My Case
+          </Link>
+          <Link
+            className={classNames(styles.topMenuItem, {
+              [styles.active]: location.pathname.indexOf('profile') !== -1
+            })}
+            to={profile.id ? `/profile` : `/login`}
+          >
+            Profile
+          </Link>
+          <Link
+            className={classNames(styles.topMenuItem, {
+              [styles.active]: location.pathname.indexOf('referral') !== -1
+            })}
+            to={profile.id ? `/referral` : `/login`}
+          >
+            Referral
+          </Link>
+        </div>
+      )}
       <div className={classNames(styles.buttons)}>
         <Link
           className={classNames(styles.button, styles.large)}
@@ -65,7 +94,7 @@ const Header = ({ profile, actions, history }) => {
           </Link>
         )}
         {profile.id && (
-          <Link className={classNames(styles.logoButton)}>
+          <Link className={classNames(styles.logoButton)} to={profile.id ? `/profile` : `/login`}>
             <div className={classNames(styles.logo)}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
                 <path d="M4 9H5V10H11V9H12V8H13V2H12V1H11V0H5V1H4V2H3V8H4V9ZM5 4H6V3H7V2H9V3H10V4H11V6H10V7H9V8H7V7H6V6H5V4Z" fill="black"/>
@@ -73,15 +102,15 @@ const Header = ({ profile, actions, history }) => {
               </svg>
             </div>
             <div className={classNames(styles.menu)}>
-              <Link className={classNames(styles.menuItem)} to="/profile">
-                Profile
-              </Link>
-              <Link className={classNames(styles.menuItem)} to="/referral">
-                Referral
-              </Link>
-              <Link className={classNames(styles.menuItem)} to="/my-case">
-                My Case
-              </Link>
+              {/* <Link className={classNames(styles.menuItem)} to={profile.id ? `/profile` : `/login`}>
+                  Profile
+                  </Link>
+                  <Link className={classNames(styles.menuItem)} to={profile.id ? `/referral` : `/login`}>
+                  Referral
+                  </Link>
+                  <Link className={classNames(styles.menuItem)} to={profile.id ? `/my-case` : `/login`}>
+                  My Case
+                  </Link> */}
               <div className={classNames(styles.menuItem)} onClick={logout}>
                 Logout
               </div>

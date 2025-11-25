@@ -29,7 +29,7 @@ const MobileBottomNav = ({ profile }) => {
 
       {/* My Case - 始终指向目标页面，由页面自己处理登录保护 */}
       <Link
-        to="/my-case"
+        to={profile.id ? `/my-case` : `/login`}
         className={classNames(styles.navItem, { [styles.active]: isMyCaseActive })}
       >
         <MyCaseIcon className={styles.icon} />
@@ -38,7 +38,7 @@ const MobileBottomNav = ({ profile }) => {
 
       {/* Profile - 始终指向目标页面，由页面自己处理登录保护 */}
       <Link
-        to="/profile"
+        to={profile.id ? `/profile` : `/login`}
         className={classNames(styles.navItem, { [styles.active]: isProfileActive })}
       >
         <ProfileIcon className={styles.icon} />
@@ -47,7 +47,7 @@ const MobileBottomNav = ({ profile }) => {
 
       {/* Referral - 始终指向目标页面，由页面自己处理登录保护 */}
       <Link
-        to="/referral"
+        to={profile.id ? `/referral` : `/login`}
         className={classNames(styles.navItem, { [styles.active]: isReferralActive })}
       >
         <ReferralIcon className={styles.icon} />
