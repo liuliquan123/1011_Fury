@@ -91,7 +91,7 @@
       border: 1px solid black;
       font-size: 16px;
       padding: 2px 16px;
-      height: 32px;
+      height: 40px;
       align-items: center;
       justify-content: center;
       font-weight: 500;
@@ -167,7 +167,7 @@
   .header .button {
     padding: 6px 12px;
     font-size: 14px;
-    height: 32px;
+    height: 40px;
   }
 
   .header .logoButton {

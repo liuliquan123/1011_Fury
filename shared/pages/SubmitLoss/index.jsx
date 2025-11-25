@@ -538,7 +538,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               [styles.disabled]: uploading || !file || !!uploadError
             })} onClick={uploading || !file || !!uploadError ? null : uploadFile}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>{uploading ? 'Uploading' : 'Continue'}</div>
+              <div className={classNames(styles.text)}>{uploading ? 'UPLOADING' : 'CONTINUE'}</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
           </div>

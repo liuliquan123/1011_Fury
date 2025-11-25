@@ -6,7 +6,7 @@
   background: #141519;
   background: #E9FD66;
   z-index: 90;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   padding: 0 32px;
@@ -43,9 +43,9 @@
   line-height: 10px;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .mobileBottomNav {
-    display: none;
+    display: flex;
   }
 }
 

@@ -764,6 +764,7 @@
     padding: 16px;
 
     .backButton, .nextButton {
+      width: calc(50% - 40px);
       margin-top: 0;
     }
   }
