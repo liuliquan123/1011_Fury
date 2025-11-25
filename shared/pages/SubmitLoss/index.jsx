@@ -118,7 +118,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
   const phaseLocked = phasesLocked[getExchangeName(exchangeType)]
-  
+
   // 检查当前阶段是否已提交
   const hasSubmittedInCurrentPhase = phase && phase.user_submission_status && isLoggedIn
     ? phase.user_submission_status[`phase_${phase.current_phase}`]

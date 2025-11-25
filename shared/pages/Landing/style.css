@@ -523,7 +523,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 10px 16px;
     position: fixed;
     bottom: calc(42px + env(safe-area-inset-bottom));
     left: 0;
@@ -692,7 +692,7 @@
             .cases {
               .case {
                 padding: 24px 16px;
-                gap: 24px;
+                gap: 10px;
 
                 .caseTitle {
                   .text {
@@ -703,6 +703,10 @@
                   .status {
                     font-size: 14px;
                     padding: 8px;
+                    margin: 0 auto;
+                    width: 100%;
+                    margin-top: 10px;
+                    text-align: center;
                   }
                 }
 
@@ -902,17 +906,6 @@
           .sectionContent {
             .cases {
               .case {
-                gap: 10px;
-
-                .caseTitle {
-                  .status {
-                    margin: 0 auto;
-                    width: 100%;
-                    margin-top: 10px;
-                    text-align: center;
-                  }
-                }
-
                 .caseCards {
                   .caseCard {
                     flex: 1 1 100%;

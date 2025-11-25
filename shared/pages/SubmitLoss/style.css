@@ -549,60 +549,86 @@
 @media (max-width: 767px) {
   .submitLoss {
     padding: 20px 16px;
+    padding-bottom: 68px;
   }
-  
+
   .submitLoss .stepOne .title,
   .submitLoss .stepTwo .title,
   .submitLoss .stepThree .title {
     font-size: 28px;
     line-height: 36px;
   }
-  
+
+  .submitLoss .stepOne .sections {
+    padding: 10px;
+  }
+
   .submitLoss .stepOne .sections .section .sectionTitle {
     font-size: 16px;
     line-height: 24px;
   }
-  
+
+  .submitLoss .stepTwo .sections .sectionSteps {
+    flex-direction: column;
+
+    .sectionStep {
+      min-width: 100%;
+      width: 100%;
+
+      .sectionStepTitleScreenShot {
+        height: fit-content !important;
+
+        img {
+          width: 100%;
+          max-height: auto;
+        }
+      }
+    }
+  }
+
   /* 交易所选择区域 - 改为单列 */
   .submitLoss .stepOne .sections .section .exchanges {
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 12px;
   }
-  
+
   .submitLoss .stepOne .sections .section .exchanges .exchange {
-    width: 100%;
+    padding: 10px;
+    min-width: calc(50% - 20px);
+    width: calc(50% - 20px);
+    height: 140px;
   }
-  
+
   /* Step 2: 上传区域 */
   .submitLoss .stepTwo .description {
     font-size: 14px;
     line-height: 20px;
   }
-  
+
   .submitLoss .stepTwo .upload {
     padding: 30px 16px;
   }
-  
+
   .submitLoss .stepTwo .upload .uploadTitle {
     font-size: 14px;
   }
-  
+
   /* Step 3: 表单区域 */
   .submitLoss .stepThree .form .row {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .submitLoss .stepThree .form .row .field {
     width: 100%;
   }
-  
+
   /* 按钮区域 */
   .submitLoss .actions {
     flex-direction: row;
     gap: 12px;
   }
-  
+
   .submitLoss .actions .backButton,
   .submitLoss .actions .nextButton,
   .submitLoss .actions .submitButton {
@@ -610,7 +636,7 @@
     min-height: 44px;
     font-size: 16px;
   }
-  
+
   /* iOS 输入框优化 */
   .submitLoss input[type="text"],
   .submitLoss input[type="number"],
@@ -618,20 +644,33 @@
     font-size: 16px !important;
     min-height: 44px;
   }
-  
+
   /* Warning 和 Error 消息 */
   .submitLoss .warningText {
     font-size: 13px;
     line-height: 18px;
     padding: 8px;
   }
-  
+
   .submitLoss .ocrError {
     padding: 12px;
     margin-top: 16px;
   }
-  
+
   .submitLoss .ocrErrorMessage {
     font-size: 13px;
+  }
+
+  .submitLoss .actions {
+    background: black;
+    position: fixed;
+    left: 0;
+    bottom: calc(42px + env(safe-area-inset-bottom));
+    width: 100%;
+    padding: 16px;
+
+    .backButton, .nextButton {
+      margin-top: 0;
+    }
   }
 }
