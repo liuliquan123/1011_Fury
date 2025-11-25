@@ -55,7 +55,7 @@ const Header = ({ profile, actions, history }) => {
         >
           <div className={classNames(styles.leftArrow)}>{">"}</div>
           <div className={classNames(styles.text)}>
-            Submit
+            SUBMIT
           </div>
           <div className={classNames(styles.rightArrow)}>{"<"}</div>
         </Link>

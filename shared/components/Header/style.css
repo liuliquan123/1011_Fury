@@ -105,7 +105,7 @@
       }
 
       &.small {
-        width: 150px;
+        width: 120px;
       }
 
       .text {
@@ -167,7 +167,7 @@
   .header .button {
     padding: 6px 12px;
     font-size: 14px;
-    height: 28px;
+    height: 32px;
   }
 
   .header .logoButton {

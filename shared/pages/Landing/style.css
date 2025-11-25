@@ -772,7 +772,9 @@
 @media (max-width: 480px) {
   .landing {
     .banner {
-      height: 400px;
+      height: 300px;
+      margin: 12px;
+      margin-top: 12px;
 
       .content {
         .title {
@@ -805,8 +807,8 @@
         &.platform {
           .sectionContent {
             .statistic {
-              flex: 1 1 100%;
-              min-width: 100%;
+              flex: 1 1 calc(50% - 12px);
+              min-width: calc(50% - 12px);
             }
           }
         }
@@ -815,6 +817,17 @@
           .sectionContent {
             .cases {
               .case {
+                gap: 10px;
+
+                .caseTitle {
+                  .status {
+                    margin: 0 auto;
+                    width: 100%;
+                    margin-top: 10px;
+                    text-align: center;
+                  }
+                }
+
                 .caseCards {
                   .caseCard {
                     flex: 1 1 100%;
@@ -826,6 +839,10 @@
           }
         }
       }
+    }
+
+    .footer {
+      display: none;
     }
   }
 }
