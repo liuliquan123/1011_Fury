@@ -526,7 +526,8 @@
 
         .user {
           flex: 1;
-          padding: 20px;
+          padding: 0px !important;
+          background: transparent;
 
           .top {
             gap: 16px;
@@ -551,6 +552,7 @@
           .bottom {
             padding: 16px;
             margin-top: 16px;
+            background: #232326;
 
             .list {
               gap: 16px;
@@ -690,11 +692,13 @@
             }
 
             .list {
-              flex-direction: column;
+              flex-direction: row;
               gap: 12px;
 
               .listItem {
                 padding: 12px;
+                width: calc(30% - 10px);
+
 
                 .listItemNumber {
                   font-size: 32px;
@@ -741,6 +745,7 @@
 
     .title {
       margin-bottom: 24px;
+      display: none;
 
       .text {
         font-size: 36px;
@@ -761,7 +766,7 @@
           }
 
           .bottom {
-            padding: 12px;
+
           }
         }
 
