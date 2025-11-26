@@ -532,7 +532,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                       ❌ Image Verification Failed: {uploadError}
                     </div>
                     <div className={styles.ocrErrorHint}>
-                      💡 Click "Select Another File" below to choose a different screenshot.
+                      💡 Click "Retry" below to choose a different screenshot.
                     </div>
                   </div>
                 )}
@@ -554,7 +554,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               (!file ? null : uploadFile))
             }>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>{uploading ? 'UPLOADING' : (uploadError ? 'SELECT ANOTHER FILE' : 'CONTINUE')}</div>
+              <div className={classNames(styles.text)}>{uploading ? 'UPLOADING' : (uploadError ? 'RETRY' : 'CONTINUE')}</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
           </div>
