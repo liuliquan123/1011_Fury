@@ -9,16 +9,31 @@ import { useSearchParams } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
-const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, submissions, history }) => {
+const parseExchangeFromCode = (code) => {
+  if (!code) return 'Binance'
+  
+  if (code.endsWith('-BNB')) return 'Binance'
+  if (code.endsWith('-OKX')) return 'OKX'
+  if (code.endsWith('-BYB')) return 'Bybit'
+  if (code.endsWith('-BGT')) return 'Bitget'
+  
+  return 'Binance'
+}
+
+const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actions, submissions, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const info = referralInfo[referralCode] || { referrer: {} }
+  const exchangePool = cases?.cases?.[0] || {}
   console.log('referralInfo', referralInfo, searchParams)
 
   useEffect(() => {
     const referralCode = searchParams.get('code')
     setReferralCode(referralCode)
     actions.getReferralInfo({ referralCode })
+    
+    const exchange = parseExchangeFromCode(referralCode)
+    actions.getCases({ exchange })
   }, [searchParams])
 
   return (
@@ -78,7 +93,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, sub
               <div className={styles.list}>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {exchangePool.participant_count || 0}
                   </div>
                   <div className={styles.listItemName}>
                     Participants
@@ -86,7 +101,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, sub
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {exchangePool.total_damage || 0}
                   </div>
                   <div className={styles.listItemName}>
                     Total Damage
@@ -94,7 +109,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, sub
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {exchangePool.participant_count || 0}
                   </div>
                   <div className={styles.listItemName}>
                     Evidence
@@ -117,6 +132,7 @@ export default withRouter(
       submissions: state.auth.submissions,
       referralStats: state.auth.referralStats,
       referralInfo: state.auth.referralInfo,
+      cases: state.auth.cases,
     }),
     dispatch => ({
       actions: bindActionCreators({

@@ -575,6 +575,34 @@ function* linkWallet(action) {
   }
 }
 
+function* getCases(action) {
+  try {
+    const { exchange, onSuccess, onError } = action.payload || {}
+    
+    const params = {}
+    if (exchange) {
+      params.exchange = exchange
+    }
+    
+    const response = yield call(api.getCases, params)
+    
+    if (!response.success) {
+      throw new Error(response.error)
+    }
+    
+    yield put(actions.updateCases(response.data))
+    
+    if (onSuccess) {
+      onSuccess(response.data)
+    }
+  } catch (error) {
+    console.error('getCases error', error)
+    if (action.payload?.onError) {
+      action.payload.onError(error.message)
+    }
+  }
+}
+
 export default function* authSaga() {
   yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
 
@@ -589,6 +617,7 @@ export default function* authSaga() {
   yield takeEvery(String(actions.getProfile), getProfile)
   yield takeEvery(String(actions.getExchangePhase), getExchangePhase)
   yield takeEvery(String(actions.getReferralInfo), getReferralInfo)
+  yield takeEvery(String(actions.getCases), getCases)
 
   yield takeEvery(String(actions.logout), logout)
   yield takeEvery(String(actions.linkWallet), linkWallet)

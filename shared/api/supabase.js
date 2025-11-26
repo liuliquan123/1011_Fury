@@ -9,6 +9,7 @@ export const getReferralStats = (params, options) => supabaseApi('GET', '/get-re
 export const getReferralInfo = (params, options) => supabaseApi('GET', '/get-referrer-info', params, options)
 
 export const getExchangePhase = (params, options) => supabaseApi('GET', '/get-exchange-phase', params, options)
+export const getCases = (params, options) => supabaseApi('GET', '/get-cases', params, options)
 
 export const uploadEvidenceOcr = (params, options) => supabaseApi('POST', '/upload-evidence-ocr', params, options)
 export const submitLoss = (params, options) => supabaseApi('POST', '/submit-loss', params, options)

@@ -114,7 +114,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const [previewUrl, setPreviewUrl] = useState()
   const [stepIndex, setStepIndex] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
-  const fileInputRef = useRef(null)
 
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
@@ -165,12 +164,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     const previewUrl = URL.createObjectURL(file)
     setPreviewUrl(previewUrl)
     console.log('set file', file, previewUrl)
-  }, [])
-
-  const triggerFileSelect = useCallback(() => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click()
-    }
   }, [])
 
   const uploadFile = useCallback(() => {
@@ -488,7 +481,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 </div>
                 <div className={styles.input}>
                   <input
-                    ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     onChange={(e) => updateFile(e.target.files[0])}
@@ -518,6 +510,19 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                       </div>
                     </Fragment>
                   )}
+                  
+                  {uploadError && (
+                    <div className={styles.uploadErrorOverlay}>
+                      <div className={styles.overlayContent}>
+                        <div className={styles.overlayErrorIcon}>❌</div>
+                        <div className={styles.overlayErrorTitle}>Upload Failed</div>
+                        <div className={styles.overlayErrorMessage}>{uploadError}</div>
+                        <button className={styles.overlayRetryButton}>
+                          Retry
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className={styles.tip}>
                   <div className={styles.tipContent}>
@@ -526,16 +531,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     </div>
                   </div>
                 </div>
-                {uploadError && (
-                  <div className={styles.ocrError}>
-                    <div className={styles.ocrErrorMessage}>
-                      ❌ Image Verification Failed: {uploadError}
-                    </div>
-                    <div className={styles.ocrErrorHint}>
-                      💡 Click "Retry" below to choose a different screenshot.
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -546,15 +541,10 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
-              [styles.disabled]: uploading || (!file && !uploadError),
-              [styles.retryButton]: !!uploadError && !uploading
-            })} onClick={
-              uploading ? null :
-              (uploadError ? triggerFileSelect :
-              (!file ? null : uploadFile))
-            }>
+              [styles.disabled]: uploading || !file
+            })} onClick={uploading ? null : (!file ? null : uploadFile)}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>{uploading ? 'UPLOADING' : (uploadError ? 'RETRY' : 'CONTINUE')}</div>
+              <div className={classNames(styles.text)}>{uploading ? 'UPLOADING' : 'CONTINUE'}</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
           </div>
