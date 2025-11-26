@@ -500,6 +500,18 @@
       font-weight: 400;
       line-height: 24px;
     }
+
+    .ocrErrorHint {
+      margin-top: 12px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: rgba(255, 152, 0, 0.9);
+      background: rgba(255, 152, 0, 0.1);
+      border-radius: 4px;
+      border-left: 3px solid #FF9800;
+      font-family: "Google Sans Code";
+      line-height: 20px;
+    }
   }
 
   .actions {
@@ -590,6 +602,7 @@
       border: 1px solid #E9FD66;
       background: #E9FD66;
       cursor: pointer;
+      transition: all 0.3s ease;
 
       &.disabled {
         opacity: 0.5;
@@ -634,6 +647,22 @@
           opacity: 1;
           margin-left: 0px;
           transition: all 0.3s ease;
+        }
+      }
+
+      &.retryButton {
+        background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        border: 2px solid #FF9800;
+        color: white;
+
+        .text {
+          color: white;
+        }
+
+        &:hover {
+          background: linear-gradient(135deg, #FB8C00 0%, #EF6C00 100%);
+          transform: scale(1.02);
+          box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
         }
       }
     }

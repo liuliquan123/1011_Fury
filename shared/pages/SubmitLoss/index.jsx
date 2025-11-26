@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react'
+import React, { useEffect, useState, useCallback, useRef, Fragment } from 'react'
 import classNames from 'classnames'
 import { withRouter } from 'utils/withRouter'
 import { bindActionCreators } from 'redux'
@@ -114,6 +114,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const [previewUrl, setPreviewUrl] = useState()
   const [stepIndex, setStepIndex] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
+  const fileInputRef = useRef(null)
 
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
@@ -164,6 +165,12 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     const previewUrl = URL.createObjectURL(file)
     setPreviewUrl(previewUrl)
     console.log('set file', file, previewUrl)
+  }, [])
+
+  const triggerFileSelect = useCallback(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
   }, [])
 
   const uploadFile = useCallback(() => {
@@ -481,6 +488,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 </div>
                 <div className={styles.input}>
                   <input
+                    ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     onChange={(e) => updateFile(e.target.files[0])}
@@ -523,6 +531,9 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     <div className={styles.ocrErrorMessage}>
                       ❌ Image Verification Failed: {uploadError}
                     </div>
+                    <div className={styles.ocrErrorHint}>
+                      💡 Click "Select Another File" below to choose a different screenshot.
+                    </div>
                   </div>
                 )}
               </div>
@@ -535,10 +546,15 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
-              [styles.disabled]: uploading || !file || !!uploadError
-            })} onClick={uploading || !file || !!uploadError ? null : uploadFile}>
+              [styles.disabled]: uploading || (!file && !uploadError),
+              [styles.retryButton]: !!uploadError && !uploading
+            })} onClick={
+              uploading ? null :
+              (uploadError ? triggerFileSelect :
+              (!file ? null : uploadFile))
+            }>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>{uploading ? 'UPLOADING' : 'CONTINUE'}</div>
+              <div className={classNames(styles.text)}>{uploading ? 'UPLOADING' : (uploadError ? 'SELECT ANOTHER FILE' : 'CONTINUE')}</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
           </div>
