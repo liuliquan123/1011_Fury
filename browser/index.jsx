@@ -17,33 +17,37 @@ const browserHistory = createBrowserHistory()
 const store = configure(preloadedState, browserHistory)
 store.runSaga(sagas)
 
-// 监听路由变化，自动滚动到页面顶部
-console.log('[ScrollReset] Initializing scroll reset listener...')
-console.log('[ScrollReset] - window exists:', typeof window !== 'undefined')
-console.log('[ScrollReset] - browserHistory exists:', !!browserHistory)
-console.log('[ScrollReset] - browserHistory.listen type:', typeof browserHistory?.listen)
-
-if (typeof window !== 'undefined' && browserHistory && typeof browserHistory.listen === 'function') {
-  console.log('[ScrollReset] ✅ Registering history listener')
+// 监听 Redux store 变化，自动滚动到页面顶部
+if (typeof window !== 'undefined') {
+  console.log('[ScrollReset] Initializing scroll reset via Redux store subscription...')
   
-  browserHistory.listen((location, action) => {
-    console.log('[ScrollReset] 🔔 Route changed!')
-    console.log('[ScrollReset] - New location:', location)
-    console.log('[ScrollReset] - Action:', action)
-    console.log('[ScrollReset] - Current scroll position:', window.scrollY)
-    console.log('[ScrollReset] - Executing window.scrollTo(0, 0)...')
+  let lastPathname = null
+  
+  store.subscribe(() => {
+    const state = store.getState()
+    const currentPathname = state.router?.location?.pathname
     
-    window.scrollTo(0, 0)
+    console.log('[ScrollReset] Store updated, checking pathname...')
+    console.log('[ScrollReset] - Last pathname:', lastPathname)
+    console.log('[ScrollReset] - Current pathname:', currentPathname)
     
-    // 验证滚动是否成功
-    setTimeout(() => {
-      console.log('[ScrollReset] - Scroll position after reset:', window.scrollY)
-    }, 100)
+    if (currentPathname && currentPathname !== lastPathname) {
+      console.log('[ScrollReset] 🔔 Route changed! Pathname changed from', lastPathname, 'to', currentPathname)
+      console.log('[ScrollReset] - Current scroll position:', window.scrollY)
+      console.log('[ScrollReset] - Executing window.scrollTo(0, 0)...')
+      
+      window.scrollTo(0, 0)
+      
+      // 验证滚动是否成功
+      setTimeout(() => {
+        console.log('[ScrollReset] - Scroll position after reset:', window.scrollY)
+      }, 100)
+      
+      lastPathname = currentPathname
+    }
   })
   
-  console.log('[ScrollReset] ✅ History listener registered successfully')
-} else {
-  console.error('[ScrollReset] ❌ Failed to register listener - conditions not met')
+  console.log('[ScrollReset] ✅ Redux store subscription registered successfully')
 }
 
 const renderApp = (Routes) => {
