@@ -9,37 +9,59 @@ import styles from './style.css'
 
 // 基础数字格式化（内部使用）
 const formatNumberWithUnit = (num) => {
-  if (!num || num === 0) return '0'
-  
+  // 1. 处理空值 / 零
+  if (num === null || num === undefined || isNaN(num)) return '0'
+  if (num === 0) return '0'
+
   const absNum = Math.abs(num)
   const sign = num < 0 ? '-' : ''
-  
-  // < 1,000: 不使用缩写
+
+  // 2. < 1000：使用智能小数（去掉无意义的 0）
   if (absNum < 1000) {
-    return sign + absNum.toFixed(0)
+    const s = Number(absNum.toFixed(2)).toString()
+    return sign + s
   }
-  
-  // 1,000 ~ 1,000,000: 使用 K
+
+  // 工具函数：带进位处理的缩写生成
+  const buildWithUnit = (value, divisor, suffix, next) => {
+    const short = value / divisor
+    let digits
+    if (short < 10) digits = 2
+    else if (short < 100) digits = 1
+    else digits = 0
+
+    let rounded = Number(short.toFixed(digits))
+
+    // 如果四舍五入后变成 1000，说明应该进位到下一单位
+    if (rounded >= 1000 && next) {
+      return buildWithUnit(value, next.divisor, next.suffix, next.next)
+    }
+
+    return sign + rounded.toString() + suffix
+  }
+
+  // 3. K / M / B 分段 + 进位处理
   if (absNum < 1000000) {
-    const numShort = absNum / 1000
-    if (numShort < 10) return sign + numShort.toFixed(2) + 'K'
-    if (numShort < 100) return sign + numShort.toFixed(1) + 'K'
-    return sign + numShort.toFixed(0) + 'K'
+    return buildWithUnit(absNum, 1000, 'K', {
+      divisor: 1000000,
+      suffix: 'M',
+      next: {
+        divisor: 1000000000,
+        suffix: 'B',
+        next: null
+      }
+    })
   }
-  
-  // 1,000,000 ~ 1,000,000,000: 使用 M
+
   if (absNum < 1000000000) {
-    const numShort = absNum / 1000000
-    if (numShort < 10) return sign + numShort.toFixed(2) + 'M'
-    if (numShort < 100) return sign + numShort.toFixed(1) + 'M'
-    return sign + numShort.toFixed(0) + 'M'
+    return buildWithUnit(absNum, 1000000, 'M', {
+      divisor: 1000000000,
+      suffix: 'B',
+      next: null
+    })
   }
-  
-  // >= 1,000,000,000: 使用 B
-  const numShort = absNum / 1000000000
-  if (numShort < 10) return sign + numShort.toFixed(2) + 'B'
-  if (numShort < 100) return sign + numShort.toFixed(1) + 'B'
-  return sign + numShort.toFixed(0) + 'B'
+
+  return buildWithUnit(absNum, 1000000000, 'B', null)
 }
 
 // 金额格式化（带 $ 符号）
