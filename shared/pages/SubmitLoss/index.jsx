@@ -116,6 +116,11 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const [isOpen, setIsOpen] = useState(false)
   const fileInputRef = useRef(null)
 
+  // 每次步骤发生变化时，自动滚动到页面顶部
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [stepIndex])
+
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
   const phaseLocked = phasesLocked[getExchangeName(exchangeType)]
