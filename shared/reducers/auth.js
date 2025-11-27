@@ -10,7 +10,8 @@ const initialState = {
   exchangePhase: {},
   evidenceForm: {},
   ocrForm: {},
-  phasesLocked: {}
+  phasesLocked: {},
+  cases: {}
 }
 
 export default handleActions({
@@ -52,6 +53,9 @@ export default handleActions({
     const code = info.code
     state.referralInfo[code] = info
   },
+  [actions.updateCases] (state, action) {
+    state.cases = action.payload
+  },
   [actions.resetAuth] (state, action) {
     state.profile = {}
     state.userTokens = {}
@@ -63,5 +67,6 @@ export default handleActions({
     state.exchangePhase = {}
     state.evidenceForm = {}
     state.ocrForm = {}
+    state.cases = {}
   }
 }, initialState)

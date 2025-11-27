@@ -9,16 +9,100 @@ import { useSearchParams } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
-const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, submissions, history }) => {
+// 基础数字格式化（内部使用）
+const formatNumberWithUnit = (num) => {
+  // 1. 处理空值 / 零
+  if (num === null || num === undefined || isNaN(num)) return '0'
+  if (num === 0) return '0'
+
+  const absNum = Math.abs(num)
+  const sign = num < 0 ? '-' : ''
+
+  // 2. < 1000：使用智能小数（去掉无意义的 0）
+  if (absNum < 1000) {
+    const s = Number(absNum.toFixed(2)).toString()
+    return sign + s
+  }
+
+  // 工具函数：带进位处理的缩写生成
+  const buildWithUnit = (value, divisor, suffix, next) => {
+    const short = value / divisor
+    let digits
+    if (short < 10) digits = 2
+    else if (short < 100) digits = 1
+    else digits = 0
+
+    let rounded = Number(short.toFixed(digits))
+
+    // 如果四舍五入后变成 1000，说明应该进位到下一单位
+    if (rounded >= 1000 && next) {
+      return buildWithUnit(value, next.divisor, next.suffix, next.next)
+    }
+
+    return sign + rounded.toString() + suffix
+  }
+
+  // 3. K / M / B 分段 + 进位处理
+  if (absNum < 1000000) {
+    return buildWithUnit(absNum, 1000, 'K', {
+      divisor: 1000000,
+      suffix: 'M',
+      next: {
+        divisor: 1000000000,
+        suffix: 'B',
+        next: null
+      }
+    })
+  }
+
+  if (absNum < 1000000000) {
+    return buildWithUnit(absNum, 1000000, 'M', {
+      divisor: 1000000000,
+      suffix: 'B',
+      next: null
+    })
+  }
+
+  return buildWithUnit(absNum, 1000000000, 'B', null)
+}
+
+// 金额格式化（带 $ 符号）
+const formatAmount = (amount) => {
+  return '$' + formatNumberWithUnit(amount)
+}
+
+// 数字格式化（不带 $ 符号）
+const formatNumber = (num) => {
+  return formatNumberWithUnit(num)
+}
+
+const parseExchangeFromCode = (code) => {
+  if (!code) return 'Binance'
+  
+  if (code.endsWith('-BNB')) return 'Binance'
+  if (code.endsWith('-OKX')) return 'OKX'
+  if (code.endsWith('-BYB')) return 'Bybit'
+  if (code.endsWith('-BGT')) return 'Bitget'
+  
+  return 'Binance'
+}
+
+const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actions, submissions, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const info = referralInfo[referralCode] || { referrer: {} }
+  const exchange = parseExchangeFromCode(referralCode)
+  const caseList = Array.isArray(cases) ? cases : []
+  const exchangePool = caseList.find(c => c.exchange === exchange) || {}
   console.log('referralInfo', referralInfo, searchParams)
 
   useEffect(() => {
     const referralCode = searchParams.get('code')
     setReferralCode(referralCode)
     actions.getReferralInfo({ referralCode })
+    
+    const exchange = parseExchangeFromCode(referralCode)
+    actions.getCases({ exchange })
   }, [searchParams])
 
   return (
@@ -78,7 +162,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, sub
               <div className={styles.list}>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {formatNumber(exchangePool.participant_count || 0)}
                   </div>
                   <div className={styles.listItemName}>
                     Participants
@@ -86,7 +170,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, sub
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {formatAmount(exchangePool.total_damage || 0)}
                   </div>
                   <div className={styles.listItemName}>
                     Total Damage
@@ -94,7 +178,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, actions, sub
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    0
+                    {formatNumber(exchangePool.participant_count || 0)}
                   </div>
                   <div className={styles.listItemName}>
                     Evidence
@@ -117,6 +201,7 @@ export default withRouter(
       submissions: state.auth.submissions,
       referralStats: state.auth.referralStats,
       referralInfo: state.auth.referralInfo,
+      cases: state.auth.cases,
     }),
     dispatch => ({
       actions: bindActionCreators({
