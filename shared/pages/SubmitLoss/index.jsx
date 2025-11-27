@@ -231,6 +231,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
             code={referralCode}
             onClick={onModalClick}
             onLoggedIn={onLoggedIn}
+            onClose={closeModal}
           />
         </div>
       )}

@@ -126,6 +126,30 @@
   width: 460px;
   padding: 24px;
   margin: 0 auto;
+  position: relative;
+
+  .closeButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #828698;
+    transition: color 0.2s;
+    
+    &:hover {
+      color: #E9FD66;
+    }
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
 
   .status {
     font-family: "Google Sans Code";
