@@ -157,8 +157,11 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const prevStep = useCallback(() => {
     if (stepIndex > 0) {
       setStepIndex(stepIndex - 1)
+    } else {
+      // 在 Step 0 (Select Exchange)，返回首页
+      history('/')
     }
-  }, [stepIndex])
+  }, [stepIndex, history])
 
   const updateEvidenceForm = useCallback(({ name, value }) => {
 
