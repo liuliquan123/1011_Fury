@@ -14,7 +14,7 @@ const Landing = ({ cases, actions }) => {
     actions.getCases({})
   }, [])
 
-  const caseList = cases?.cases || []
+  const caseList = Array.isArray(cases) ? cases : []
   const activeCases = caseList.length
   const totalParticipants = caseList.reduce((sum, c) => sum + (c.participant_count || 0), 0)
   const totalDamage = caseList.reduce((sum, c) => sum + (c.total_damage || 0), 0)

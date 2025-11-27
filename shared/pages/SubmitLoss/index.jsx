@@ -114,6 +114,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const [previewUrl, setPreviewUrl] = useState()
   const [stepIndex, setStepIndex] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
+  const fileInputRef = useRef(null)
 
   const isLoggedIn = !!profile && !!profile.id
   const phase = exchangePhase[getExchangeName(exchangeType)]
@@ -481,6 +482,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 </div>
                 <div className={styles.input}>
                   <input
+                    ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     onChange={(e) => updateFile(e.target.files[0])}
@@ -517,7 +519,13 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                         <div className={styles.overlayErrorIcon}>❌</div>
                         <div className={styles.overlayErrorTitle}>Upload Failed</div>
                         <div className={styles.overlayErrorMessage}>{uploadError}</div>
-                        <button className={styles.overlayRetryButton}>
+                        <button 
+                          className={styles.overlayRetryButton}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            fileInputRef.current?.click()
+                          }}
+                        >
                           Retry
                         </button>
                       </div>
