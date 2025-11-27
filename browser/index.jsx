@@ -34,14 +34,21 @@ if (typeof window !== 'undefined') {
     if (currentPathname && currentPathname !== lastPathname) {
       console.log('[ScrollReset] 🔔 Route changed! Pathname changed from', lastPathname, 'to', currentPathname)
       console.log('[ScrollReset] - Current scroll position:', window.scrollY)
-      console.log('[ScrollReset] - Executing window.scrollTo(0, 0)...')
       
-      window.scrollTo(0, 0)
-      
-      // 验证滚动是否成功
-      setTimeout(() => {
-        console.log('[ScrollReset] - Scroll position after reset:', window.scrollY)
-      }, 100)
+      // 使用 requestAnimationFrame + setTimeout 确保在 DOM 渲染完成后再滚动
+      // 这样可以避免浏览器的默认滚动恢复行为
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          console.log('[ScrollReset] - Executing window.scrollTo(0, 0) after DOM render...')
+          console.log('[ScrollReset] - Scroll position before reset:', window.scrollY)
+          window.scrollTo(0, 0)
+          
+          // 验证滚动是否成功
+          setTimeout(() => {
+            console.log('[ScrollReset] - Scroll position after reset:', window.scrollY)
+          }, 50)
+        }, 0)
+      })
       
       lastPathname = currentPathname
     }
