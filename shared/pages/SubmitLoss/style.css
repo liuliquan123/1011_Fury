@@ -781,6 +781,32 @@
     font-size: 14px;
   }
 
+  /* Step 3: 上传区域优化 - 压缩尺寸让内容在一屏显示 */
+  .submitLoss .stepThree .upload .uploadTitle {
+    font-size: 20px;      /* 从 40px 压缩到 20px */
+    line-height: 28px;    /* 对应标题行高 */
+    margin-bottom: 12px;  /* 从 20px 压缩到 12px */
+  }
+
+  .submitLoss .stepThree .upload .input {
+    min-height: 280px;    /* 从 500px 压缩到 280px */
+    padding: 20px;        /* 从 40px 压缩到 20px */
+    gap: 12px;            /* 从 20px 压缩到 12px */
+  }
+
+  .submitLoss .stepThree .upload .input .imagePreview {
+    max-height: 200px;    /* 从 420px 压缩到 200px */
+  }
+
+  .submitLoss .stepThree .upload .input .imagePreview img {
+    max-height: 200px;    /* 保持和容器一致 */
+  }
+
+  .submitLoss .stepThree .upload .input .inputDescription {
+    font-size: 12px;      /* 从 14px 压缩到 12px */
+    line-height: 18px;    /* 从 24px 压缩到 18px */
+  }
+
   /* Step 3: 表单区域 */
   .submitLoss .stepThree .form .row {
     flex-direction: column;
