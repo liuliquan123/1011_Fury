@@ -43,14 +43,6 @@ const Root = ({ location, history, theme, actions }) => {
     }
   }, [theme])
 
-  // 路由切换时重置滚动位置到顶部
-  useEffect(() => {
-    // 使用可选链防止 location 为 undefined 时崩溃
-    if (typeof window !== 'undefined' && location?.pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [location?.pathname])
-
   return (
     <Fragment>
       <Title render={title} />

@@ -17,6 +17,13 @@ const browserHistory = createBrowserHistory()
 const store = configure(preloadedState, browserHistory)
 store.runSaga(sagas)
 
+// 监听路由变化，自动滚动到页面顶部
+if (typeof window !== 'undefined' && browserHistory && typeof browserHistory.listen === 'function') {
+  browserHistory.listen(() => {
+    window.scrollTo(0, 0)
+  })
+}
+
 const renderApp = (Routes) => {
   if (isPreloaded) {
     ReactDOM.hydrateRoot(
