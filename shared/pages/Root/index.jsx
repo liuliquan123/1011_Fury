@@ -43,11 +43,6 @@ const Root = ({ location, history, theme, actions }) => {
     }
   }, [theme])
 
-  // 路由切换时重置滚动位置到顶部
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
-
   return (
     <Fragment>
       <Title render={title} />
