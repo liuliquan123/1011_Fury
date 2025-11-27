@@ -17,6 +17,12 @@ const browserHistory = createBrowserHistory()
 const store = configure(preloadedState, browserHistory)
 store.runSaga(sagas)
 
+// 禁用浏览器的自动滚动恢复功能
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual'
+  console.log('[ScrollReset] Disabled browser scroll restoration')
+}
+
 // 监听 Redux store 变化，自动滚动到页面顶部
 if (typeof window !== 'undefined') {
   console.log('[ScrollReset] Initializing scroll reset via Redux store subscription...')
