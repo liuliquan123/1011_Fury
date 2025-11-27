@@ -24,8 +24,9 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
   const [searchParams, setSearchParams] = useSearchParams()
   const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const info = referralInfo[referralCode] || { referrer: {} }
+  const exchange = parseExchangeFromCode(referralCode)
   const caseList = Array.isArray(cases) ? cases : []
-  const exchangePool = caseList[0] || {}
+  const exchangePool = caseList.find(c => c.exchange === exchange) || {}
   console.log('referralInfo', referralInfo, searchParams)
 
   useEffect(() => {

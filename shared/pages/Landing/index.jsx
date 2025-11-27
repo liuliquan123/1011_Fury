@@ -7,6 +7,18 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
+const formatAmount = (amount) => {
+  if (!amount || amount === 0) return '0'
+  
+  if (amount < 1000) {
+    return amount.toFixed(0)
+  } else if (amount < 1000000) {
+    return `${(amount / 1000).toFixed(2)}K`
+  } else {
+    return `${(amount / 1000000).toFixed(2)}M`
+  }
+}
+
 const Landing = ({ cases, actions }) => {
   const [activeIdx, setActiveIdx] = useState(0)
 
@@ -70,7 +82,7 @@ const Landing = ({ cases, actions }) => {
             </div>
             <div className={styles.statistic}>
               <div className={styles.statisticNumber}>
-                ${((totalDamage || 0) / 1000000).toFixed(1)}M
+                ${formatAmount(totalDamage)}
               </div>
               <div className={styles.statisticName}>
                 Total Damage
@@ -116,7 +128,7 @@ const Landing = ({ cases, actions }) => {
                   </div>
                   <div className={styles.caseCard}>
                     <div className={styles.caseContent}>
-                      ${((featuredCase.total_damage || 0) / 1000000).toFixed(1)}M
+                      ${formatAmount(featuredCase.total_damage || 0)}
                     </div>
                     <div className={styles.caseName}>
                       Total Damage
