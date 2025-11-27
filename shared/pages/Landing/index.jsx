@@ -115,7 +115,7 @@ const Landing = ({ cases, actions }) => {
             </div>
             <div className={styles.statistic}>
               <div className={styles.statisticNumber}>
-                ${formatAmount(totalDamage)}
+                {formatAmount(totalDamage)}
               </div>
               <div className={styles.statisticName}>
                 Total Damage
@@ -161,7 +161,7 @@ const Landing = ({ cases, actions }) => {
                   </div>
                   <div className={styles.caseCard}>
                     <div className={styles.caseContent}>
-                      ${formatAmount(featuredCase.total_damage || 0)}
+                      {formatAmount(featuredCase.total_damage || 0)}
                     </div>
                     <div className={styles.caseName}>
                       Total Damage
