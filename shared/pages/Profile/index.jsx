@@ -9,6 +9,42 @@ import classNames from 'classnames'
 import { formatDate } from 'utils'
 import styles from './style.css'
 
+// 基础数字格式化（内部使用）
+const formatNumberWithUnit = (num) => {
+  if (!num || num === 0) return '0'
+  
+  const absNum = Math.abs(num)
+  const sign = num < 0 ? '-' : ''
+  
+  if (absNum < 1000) {
+    return sign + absNum.toFixed(0)
+  }
+  
+  if (absNum < 1000000) {
+    const numShort = absNum / 1000
+    if (numShort < 10) return sign + numShort.toFixed(2) + 'K'
+    if (numShort < 100) return sign + numShort.toFixed(1) + 'K'
+    return sign + numShort.toFixed(0) + 'K'
+  }
+  
+  if (absNum < 1000000000) {
+    const numShort = absNum / 1000000
+    if (numShort < 10) return sign + numShort.toFixed(2) + 'M'
+    if (numShort < 100) return sign + numShort.toFixed(1) + 'M'
+    return sign + numShort.toFixed(0) + 'M'
+  }
+  
+  const numShort = absNum / 1000000000
+  if (numShort < 10) return sign + numShort.toFixed(2) + 'B'
+  if (numShort < 100) return sign + numShort.toFixed(1) + 'B'
+  return sign + numShort.toFixed(0) + 'B'
+}
+
+// 金额格式化（带 $ 符号）
+const formatAmount = (amount) => {
+  return '$' + formatNumberWithUnit(amount)
+}
+
 // {
 //   created_at: "2025-11-21T11:18:42.279562+00:00",
 //   exchange: "Binance",
@@ -295,7 +331,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {(submissions && submissions.statistics && submissions.statistics.total_loss_amount) || 0}
+                    {formatAmount((submissions && submissions.statistics && submissions.statistics.total_loss_amount) || 0)}
                   </div>
                   <div className={styles.listItemName}>
                     Evidence
@@ -349,3 +385,4 @@ export default withRouter(
     })
   )(Profile)
 )
+

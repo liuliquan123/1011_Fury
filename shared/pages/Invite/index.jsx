@@ -9,6 +9,47 @@ import { useSearchParams } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
+// 基础数字格式化（内部使用）
+const formatNumberWithUnit = (num) => {
+  if (!num || num === 0) return '0'
+  
+  const absNum = Math.abs(num)
+  const sign = num < 0 ? '-' : ''
+  
+  if (absNum < 1000) {
+    return sign + absNum.toFixed(0)
+  }
+  
+  if (absNum < 1000000) {
+    const numShort = absNum / 1000
+    if (numShort < 10) return sign + numShort.toFixed(2) + 'K'
+    if (numShort < 100) return sign + numShort.toFixed(1) + 'K'
+    return sign + numShort.toFixed(0) + 'K'
+  }
+  
+  if (absNum < 1000000000) {
+    const numShort = absNum / 1000000
+    if (numShort < 10) return sign + numShort.toFixed(2) + 'M'
+    if (numShort < 100) return sign + numShort.toFixed(1) + 'M'
+    return sign + numShort.toFixed(0) + 'M'
+  }
+  
+  const numShort = absNum / 1000000000
+  if (numShort < 10) return sign + numShort.toFixed(2) + 'B'
+  if (numShort < 100) return sign + numShort.toFixed(1) + 'B'
+  return sign + numShort.toFixed(0) + 'B'
+}
+
+// 金额格式化（带 $ 符号）
+const formatAmount = (amount) => {
+  return '$' + formatNumberWithUnit(amount)
+}
+
+// 数字格式化（不带 $ 符号）
+const formatNumber = (num) => {
+  return formatNumberWithUnit(num)
+}
+
 const parseExchangeFromCode = (code) => {
   if (!code) return 'Binance'
   
@@ -95,7 +136,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
               <div className={styles.list}>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {exchangePool.participant_count || 0}
+                    {formatNumber(exchangePool.participant_count || 0)}
                   </div>
                   <div className={styles.listItemName}>
                     Participants
@@ -103,7 +144,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {exchangePool.total_damage || 0}
+                    {formatAmount(exchangePool.total_damage || 0)}
                   </div>
                   <div className={styles.listItemName}>
                     Total Damage
@@ -111,7 +152,7 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {exchangePool.participant_count || 0}
+                    {formatNumber(exchangePool.participant_count || 0)}
                   </div>
                   <div className={styles.listItemName}>
                     Evidence

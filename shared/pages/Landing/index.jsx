@@ -7,16 +7,49 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
 
-const formatAmount = (amount) => {
-  if (!amount || amount === 0) return '0'
+// 基础数字格式化（内部使用）
+const formatNumberWithUnit = (num) => {
+  if (!num || num === 0) return '0'
   
-  if (amount < 1000) {
-    return amount.toFixed(0)
-  } else if (amount < 1000000) {
-    return `${(amount / 1000).toFixed(2)}K`
-  } else {
-    return `${(amount / 1000000).toFixed(2)}M`
+  const absNum = Math.abs(num)
+  const sign = num < 0 ? '-' : ''
+  
+  // < 1,000: 不使用缩写
+  if (absNum < 1000) {
+    return sign + absNum.toFixed(0)
   }
+  
+  // 1,000 ~ 1,000,000: 使用 K
+  if (absNum < 1000000) {
+    const numShort = absNum / 1000
+    if (numShort < 10) return sign + numShort.toFixed(2) + 'K'
+    if (numShort < 100) return sign + numShort.toFixed(1) + 'K'
+    return sign + numShort.toFixed(0) + 'K'
+  }
+  
+  // 1,000,000 ~ 1,000,000,000: 使用 M
+  if (absNum < 1000000000) {
+    const numShort = absNum / 1000000
+    if (numShort < 10) return sign + numShort.toFixed(2) + 'M'
+    if (numShort < 100) return sign + numShort.toFixed(1) + 'M'
+    return sign + numShort.toFixed(0) + 'M'
+  }
+  
+  // >= 1,000,000,000: 使用 B
+  const numShort = absNum / 1000000000
+  if (numShort < 10) return sign + numShort.toFixed(2) + 'B'
+  if (numShort < 100) return sign + numShort.toFixed(1) + 'B'
+  return sign + numShort.toFixed(0) + 'B'
+}
+
+// 金额格式化（带 $ 符号）
+const formatAmount = (amount) => {
+  return '$' + formatNumberWithUnit(amount)
+}
+
+// 数字格式化（不带 $ 符号）
+const formatNumber = (num) => {
+  return formatNumberWithUnit(num)
 }
 
 const Landing = ({ cases, actions }) => {
@@ -74,7 +107,7 @@ const Landing = ({ cases, actions }) => {
             </div>
             <div className={styles.statistic}>
               <div className={styles.statisticNumber}>
-                {totalParticipants.toLocaleString() || 0}
+                {formatNumber(totalParticipants)}
               </div>
               <div className={styles.statisticName}>
                 Participants
@@ -120,7 +153,7 @@ const Landing = ({ cases, actions }) => {
                   </div>
                   <div className={styles.caseCard}>
                     <div className={styles.caseContent}>
-                      {(featuredCase.participant_count || 0).toLocaleString()}
+                      {formatNumber(featuredCase.participant_count || 0)}
                     </div>
                     <div className={styles.caseName}>
                       Participants
