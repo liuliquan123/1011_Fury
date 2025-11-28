@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 10px;
 
     .desktopLoginButton {
       text-decoration: none;
@@ -248,7 +248,7 @@
   }
 
   .header .desktopLoginButton {
-    display: none;
+    display: none !important;
   }
 
   .header .loginButton {
