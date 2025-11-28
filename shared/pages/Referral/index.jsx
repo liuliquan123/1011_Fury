@@ -315,30 +315,6 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
           </div>
         </div>
       </div>
-      <div className={styles.title}>
-        <div className={styles.text}>
-          Advocate Action Hub
-        </div>
-        <div className={styles.description}>
-          Spread awareness. Build momentum. Unlock your rewards.
-        </div>
-      </div>
-      <div className={styles.content}>
-        <div className={styles.impactReturns}>
-          <div className={styles.contentTitle}>
-            Your Impact Returns
-          </div>
-          <div className={styles.contentText}>
-            Accelerated Unlock Window (X Days)
-          </div>
-          <div className={styles.contentText}>
-            Instant Unlock
-          </div>
-          <div className={styles.contentText}>
-            Help X - Y victims bring their proof on-chain
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

@@ -333,15 +333,42 @@ const Landing = ({ cases, actions }) => {
           </div>
           <div className={styles.sectionContent}>
             {[
-              { q: "What is Satoshi's Fury?", a: "A decentralized platform that lets users report fraud, share proof, and surface the truth about crypto trading losses." },
-              { q: "Why was this created?", a: "To empower victims of trading fraud and give them a voice to collectively seek justice." },
-              { q: "How does the AI verification system work?", a: "Our AI analyzes your trading screenshots to extract loss details and verify authenticity automatically." },
-              { q: "What do I earn by contributing to a case?", a: "You receive exchange-specific tokens tied to the case, which are tradable and connected to future case payouts." },
-              { q: "Can I sell the token anytime?", a: "Yes, tokens are tradable, but locked tokens will unlock according to the schedule shown in your profile." },
-              { q: "Why is KYC required in the legal phase?", a: "KYC is necessary to verify your identity for legal proceedings and ensure legitimate case participants." },
-              { q: "Who decides which cases move forward?", a: "Cases are evaluated based on evidence strength, participant count, and legal viability by our legal team." },
-              { q: "What types of cases can be submitted?", a: "Malicious liquidations, unfair fees, trading manipulation, and other documented losses on supported exchanges." },
-              { q: "Is my data safe?", a: "Yes. All evidence is encrypted and stored securely on-chain. Your privacy is protected throughout the process." }
+              { 
+                q: "What is Satoshi's Fury?", 
+                a: "Satoshi's Fury is a decentralized rights-protection network built by volunteers and users. It uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
+              },
+              { 
+                q: "Why was this created?", 
+                a: "In Web3, scams, abnormal liquidations, and vanishing projects have become routine — and victims are usually left with no path forward. We believe justice in crypto should be community-driven, transparent, and enforced by code, not centralized institutions." 
+              },
+              { 
+                q: "How does the AI verification system work?", 
+                a: "All submitted proof (tx hashes, screenshots, statements) goes through: AI risk-model assessment (detecting anomalies, address linkage, fund flow), AI text/image authenticity checks, and community multi-sig voting for transparent final approval. Once your evidence is verified: ✔ You receive token rewards for verified contribution ✔ The evidence enters the case pool for future legal escalation" 
+              },
+              { 
+                q: "What do I earn by contributing to a case?", 
+                a: "You receive two types of rewards: A. Verification Rewards (Immediate) - Once your evidence passes AI + community verification, you earn Contributor Tokens instantly. B. Legal Recovery Rewards (Post-Case) - If the case proceeds to legal action and funds are recovered: 50% goes to verified victims involved in the case, 50% (after legal fees) is injected into the token pool, driving token value growth. Tokens can be sold at any time." 
+              },
+              { 
+                q: "Can I sell the token anytime?", 
+                a: "Yes. There is no lockup and no mandatory holding period. Users can sell, trade, or exit at any time." 
+              },
+              { 
+                q: "Why is KYC required in the legal phase?", 
+                a: "Courts require verified personal identity to: Confirm you are a legitimate victim, Enable you to legally receive recovered funds, Prevent impersonation and claim fraud. KYC is required only when a case enters the formal legal phase — not during submission." 
+              },
+              { 
+                q: "Who decides which cases move forward?", 
+                a: "Decisions are fully community-driven. Token holders vote on-chain to determine: Which cases advance to legal action, How resources are allocated, Adjustments to reward or governance models" 
+              },
+              { 
+                q: "What types of cases can be submitted?", 
+                a: "Any case traceable on-chain is eligible, including: Forced liquidations / abnormal margin wipes, DeFi hacks and exploits, NFT rug pulls, Centralized exchange irregularities, Market manipulation evidence, Influencer-driven scams, Token project abandonment" 
+              },
+              { 
+                q: "Is my data safe?", 
+                a: "Yes. Privacy is protected through a zero-knowledge-based, layered verification flow: No identity is required during evidence submission, AI and voters verify content only, KYC is required only in the legal phase, All sensitive data is encrypted and deletable upon request" 
+              }
             ].map((faq, index) => (
               <div key={index} className={styles.question}>
                 <div className={styles.questionTitle} onClick={() => toggleFAQ(index)}>

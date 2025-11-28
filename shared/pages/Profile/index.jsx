@@ -362,7 +362,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
                   </div>
                   <div className={styles.listItemName}>
-                    Cases Submitted
+                    Your Cases Submitted
                   </div>
                 </div>
                 <div className={styles.listItem}>

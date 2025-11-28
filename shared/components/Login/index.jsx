@@ -512,52 +512,6 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       <div className={styles.subtitle}>
         Login to continue
       </div>
-      <div className={styles.form}>
-        <div className={classNames(styles.field, styles.referral)}>
-          <div className={classNames(
-            styles.input,
-            validationState.status === 'valid' && styles.inputValid,
-            validationState.status === 'invalid' && styles.inputInvalid
-          )}>
-            <input
-              type="text"
-              value={referralCode}
-              onChange={onReferralCodeChange}
-            />
-            {!referralCode && (
-              <div className={styles.placeholder}>
-                Advocate’s Code
-              </div>
-            )}
-          </div>
-          {validationState.status !== 'idle' && validationState.message && (
-            <div className={classNames(
-              styles.validationMessage,
-              styles[`validation${validationState.status.charAt(0).toUpperCase() + validationState.status.slice(1)}`]
-            )}>
-              {validationState.status === 'validating' && <Spinner />}
-              {validationState.message}
-            </div>
-          )}
-          {validationState.status === 'invalid' && (
-            <div className={styles.errorTip}>
-              ⚠️ Cannot login with an invalid referral code
-            </div>
-          )}
-        </div>
-      </div>
-      <div className={styles.checks} onClick={toggleAgreement}>
-        <div className={styles.inputIcon}>
-          <input type="checkbox" checked={checked} onChange={toggleAgreement} />
-        </div>
-        <div className={styles.inputText}>
-          I agree to the <a>Terms of Service</a> and <a>Privacy Policy</a>
-        </div>
-      </div>
-      <div className={styles.separator}>
-        <div className={styles.separatorLine}></div>
-        <div className={styles.separatorText}>or</div>
-      </div>
       <div className={styles.loginMethodLabel}>
         Login Method
       </div>
@@ -610,6 +564,52 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         </div>
         <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} onClick={authByTelegram}>
           TELEGRAM
+        </div>
+      </div>
+      <div className={styles.separator}>
+        <div className={styles.separatorLine}></div>
+        <div className={styles.separatorText}>or</div>
+      </div>
+      <div className={styles.form}>
+        <div className={classNames(styles.field, styles.referral)}>
+          <div className={classNames(
+            styles.input,
+            validationState.status === 'valid' && styles.inputValid,
+            validationState.status === 'invalid' && styles.inputInvalid
+          )}>
+            <input
+              type="text"
+              value={referralCode}
+              onChange={onReferralCodeChange}
+            />
+            {!referralCode && (
+              <div className={styles.placeholder}>
+                Advocate's Code
+              </div>
+            )}
+          </div>
+          {validationState.status !== 'idle' && validationState.message && (
+            <div className={classNames(
+              styles.validationMessage,
+              styles[`validation${validationState.status.charAt(0).toUpperCase() + validationState.status.slice(1)}`]
+            )}>
+              {validationState.status === 'validating' && <Spinner />}
+              {validationState.message}
+            </div>
+          )}
+          {validationState.status === 'invalid' && (
+            <div className={styles.errorTip}>
+              ⚠️ Cannot login with an invalid referral code
+            </div>
+          )}
+        </div>
+      </div>
+      <div className={styles.checks} onClick={toggleAgreement}>
+        <div className={styles.inputIcon}>
+          <input type="checkbox" checked={checked} onChange={toggleAgreement} />
+        </div>
+        <div className={styles.inputText}>
+          I agree to the <a>Terms of Service</a> and <a>Privacy Policy</a>
         </div>
       </div>
     </div>
