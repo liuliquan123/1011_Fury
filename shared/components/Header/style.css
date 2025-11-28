@@ -71,17 +71,22 @@
       font-size: 16px;
       padding: 2px 16px;
       height: 52px;
-      display: flex !important;
+      display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 500;
       cursor: pointer;
       background: #E9FD66;
       border: 1px solid black;
+      font-family: "Google Sans Code";
 
       svg path {
         fill: black;
       }
+    }
+
+    .mobileLoginButton {
+      display: none;
     }
 
     .logoButton {
@@ -248,7 +253,7 @@
   }
 
   .header .desktopLoginButton {
-    display: none !important; /* Fixed: hide on mobile */
+    display: none !important;
   }
 
   .header .loginButton {
@@ -264,6 +269,8 @@
     justify-content: center;
     background: transparent;
     border: none;
+    text-decoration: none;
+    cursor: pointer;
   }
   
   .header .mobileLoginButton svg {
