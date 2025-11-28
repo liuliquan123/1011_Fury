@@ -101,10 +101,6 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   const [exchangeType, setExchangeType] = useState('binance')
   const [inviteCode, setInviteCode] = useState(getInviteCode(referralStats.referral_code, exchangeType))
 
-  console.log('formattedTime', formattedTime)
-  console.log('percentage', percentage)
-  console.log('inviteCode', inviteCode)
-
   const selectExchange = useCallback((exchangeType) => () => {
     setExchangeType(exchangeType)
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })

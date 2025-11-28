@@ -95,7 +95,6 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
   const exchange = parseExchangeFromCode(referralCode)
   const caseList = Array.isArray(cases) ? cases : []
   const exchangePool = caseList.find(c => c.exchange === exchange) || {}
-  console.log('referralInfo', referralInfo, searchParams)
 
   const toggleFAQ = (index) => {
     setExpandedFAQ(expandedFAQ === index ? null : index)

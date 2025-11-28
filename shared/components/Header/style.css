@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* Fixed: reduced from 20px to 10px */
+    gap: 10px;
 
     .desktopLoginButton {
       text-decoration: none;

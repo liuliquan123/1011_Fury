@@ -72,8 +72,6 @@ const formatAmount = (amount) => {
 }
 
 const Cases = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
-  console.log('submissions', submissions)
-
   return (
     <div className={styles.cases}>
       <div className={styles.title}>

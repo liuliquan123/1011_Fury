@@ -150,14 +150,6 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
   const [percentage, setPercentage] = useState(getPercentage(reward))
 
-  console.log('profile', profile)
-  console.log('userTokens', userTokens)
-  console.log('referralStats', referralStats)
-  console.log('submissions', submissions)
-
-  console.log('formattedTime', formattedTime)
-  console.log('percentage', percentage)
-
   useEffect(() => {
     const iv = setInterval(() => {
       setDate(+new Date())

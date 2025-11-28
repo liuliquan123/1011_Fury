@@ -166,7 +166,7 @@ const Landing = ({ cases, actions }) => {
             <div className={styles.cases}>
               <div className={styles.case}>
                 <div className={styles.caseTitle}>
-                  <div className={styles.text}>{featuredCase.exchange || 'Binance'} {featuredCase.trading_pair || 'BTC/USDT'} - Malicious Liquidation</div>
+                  <div className={styles.text}>{featuredCase.exchange || 'Binance'} {featuredCase.trading_pair || ''} - Malicious Liquidation</div>
                 </div>
                 <div className={styles.caseCards}>
                   <div className={styles.caseCard}>

@@ -136,10 +136,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
   }, [])
 
-  console.log('exchangePhase', exchangePhase, phase, ocrForm)
-  console.log('isLoggedIn', isLoggedIn, profile)
-  console.log('phaseLocked', phasesLocked, getExchangeName(exchangeType), !!phaseLocked)
-
   const openModal = useCallback(() => {
     setIsOpen(true)
   }, [])
@@ -172,7 +168,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     setUploadError(false)
     const previewUrl = URL.createObjectURL(file)
     setPreviewUrl(previewUrl)
-    console.log('set file', file, previewUrl)
   }, [])
 
   const uploadFile = useCallback(() => {
@@ -192,7 +187,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   }, [file, isLoggedIn])
 
   const submitLoss = useCallback(() => {
-    console.log('submit isLoggedIn', isLoggedIn)
     if (!isLoggedIn) {
       setIsOpen(true)
     } else {
