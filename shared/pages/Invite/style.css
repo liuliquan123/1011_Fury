@@ -148,6 +148,7 @@
               .code {
                 display: flex;
                 align-items: center;
+                gap: 10px;
 
                 .label {
                   color: #A7ADB9;
@@ -803,7 +804,6 @@
               }
             }
           }
-        }
       }
     }
   }

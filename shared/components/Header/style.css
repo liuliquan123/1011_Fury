@@ -65,6 +65,25 @@
     justify-content: center;
     gap: 20px;
 
+    .desktopLoginButton {
+      text-decoration: none;
+      color: black;
+      font-size: 16px;
+      padding: 2px 16px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      cursor: pointer;
+      background: #E9FD66;
+      border: 1px solid black;
+
+      svg path {
+        fill: black;
+      }
+    }
+
     .logoButton {
       text-decoration: none;
       color: black;
@@ -225,6 +244,10 @@
   }
 
   .header .logoButton {
+    display: none;
+  }
+
+  .header .desktopLoginButton {
     display: none;
   }
 

@@ -301,13 +301,14 @@
     }
 
     .separatorText {
-      width: 40px;
+      width: 100px;
       height: 100%;
       background: #232326;
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
       z-index: 2;
 
       color: #828698;

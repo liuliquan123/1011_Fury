@@ -349,10 +349,8 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
-                <div className={styles.sectionTitle}>
-                  Tips For Evidence Gathering
-                </div>
                 <div className={styles.sectionDescription}>
+                  <strong>Tips For Evidence Gathering</strong><br />
                   Follow these steps to capture your trading loss evidence from CEX and submit.
                 </div>
                 <div className={styles.sectionSteps}>
@@ -416,17 +414,17 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                   </div>
                   <div className={styles.warningContent}>
                     <div className={styles.warningContentItem}>
-                      Only image uploads are supported for now.
+                      1. Only image uploads are supported for now.
                     </div>
                     <div className={styles.warningContentItem}>
-                      The screenshot must clearly show negative PnL (a real loss).
+                      2. The screenshot must clearly show negative PnL (a real loss).
                     </div>
                     <div className={styles.warningContentItem}>
-                      Blurry, cropped, or edited images may fail verification.
+                      3. Blurry, cropped, or edited images may fail verification.
                     </div>
-                    <div className={styles.warningContentItem}>
+                    {/* <div className={styles.warningContentItem}>
                       Use "Share Order" feature for best OCR recognition
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
