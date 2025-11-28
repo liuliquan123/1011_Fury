@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 10px; /* Fixed: reduced from 20px to 10px */
 
     .desktopLoginButton {
       text-decoration: none;
@@ -248,7 +248,7 @@
   }
 
   .header .desktopLoginButton {
-    display: none !important;
+    display: none !important; /* Fixed: hide on mobile */
   }
 
   .header .loginButton {
