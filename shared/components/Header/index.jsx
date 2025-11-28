@@ -63,7 +63,7 @@ const Header = ({ profile, actions, history }) => {
             })}
             to={profile.id ? `/referral` : `/login`}
           >
-            Referral
+            Advocate Hub
           </Link>
         </div>
       )}
@@ -109,7 +109,7 @@ const Header = ({ profile, actions, history }) => {
                   Profile
                   </Link>
                   <Link className={classNames(styles.menuItem)} to={profile.id ? `/referral` : `/login`}>
-                  Referral
+                  Advocate Hub
                   </Link>
                   <Link className={classNames(styles.menuItem)} to={profile.id ? `/my-case` : `/login`}>
                   My Case

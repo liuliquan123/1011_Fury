@@ -16,6 +16,53 @@
   color: white;
   padding: 40px 60px;
 
+  .questions {
+    background: #232326;
+    padding: 40px 20px;
+    margin-top: 40px;
+
+    .questionsTitle {
+      color: #FFF;
+      font-family: "Google Sans Code";
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 32px;
+      margin-bottom: 20px;
+    }
+
+    .list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .listItem {
+        padding: 10px 20px;
+        background: #141519;
+        width: 100%;
+
+        .listItemTitle {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 20px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 32px;
+        }
+
+        .listItemDescription {
+          color: #A7ADB9;
+          font-family: "Google Sans Code";
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+
   .stepTwo {
     .title {
       color: #FFF;
@@ -131,53 +178,6 @@
 
           .warningContentItem {
             color: #FFF;
-            font-family: "Google Sans Code";
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 24px;
-          }
-        }
-      }
-    }
-
-    .questions {
-      background: #232326;
-      padding: 40px 20px;
-      margin-top: 40px;
-
-      .questionsTitle {
-        color: #FFF;
-        font-family: "Google Sans Code";
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 32px;
-        margin-bottom: 20px;
-      }
-
-      .list {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        .listItem {
-          padding: 10px 20px;
-          background: #141519;
-          width: 100%;
-
-          .listItemTitle {
-            color: #FFF;
-            font-family: "Google Sans Code";
-            font-size: 20px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: 32px;
-          }
-
-          .listItemDescription {
-            color: #A7ADB9;
             font-family: "Google Sans Code";
             font-size: 14px;
             font-style: normal;

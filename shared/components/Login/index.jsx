@@ -507,10 +507,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         </div>
       )}
       <div className={styles.title}>
-        They Took Control. We Take It Back
+        Your loss has been validated on-chain
       </div>
       <div className={styles.subtitle}>
-        Login to continue
+        Register to claim your rights
       </div>
       <div className={styles.loginMethodLabel}>
         Login Method
@@ -568,7 +568,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       </div>
       <div className={styles.separator}>
         <div className={styles.separatorLine}></div>
-        <div className={styles.separatorText}>or</div>
+        <div className={styles.separatorText}>Optional</div>
       </div>
       <div className={styles.form}>
         <div className={classNames(styles.field, styles.referral)}>
