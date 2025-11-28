@@ -76,6 +76,7 @@ const formatNumber = (num) => {
 
 const Landing = ({ cases, actions }) => {
   const [activeIdx, setActiveIdx] = useState(0)
+  const [expandedFAQ, setExpandedFAQ] = useState(null)
 
   useEffect(() => {
     actions.getCases({})
@@ -94,6 +95,10 @@ const Landing = ({ cases, actions }) => {
 
   const nextCase = () => {
     setActiveIdx((prev) => (prev === caseList.length - 1 ? 0 : prev + 1))
+  }
+
+  const toggleFAQ = (index) => {
+    setExpandedFAQ(expandedFAQ === index ? null : index)
   }
 
   return (
@@ -162,7 +167,6 @@ const Landing = ({ cases, actions }) => {
               <div className={styles.case}>
                 <div className={styles.caseTitle}>
                   <div className={styles.text}>{featuredCase.exchange || 'Binance'} {featuredCase.trading_pair || 'BTC/USDT'} - Malicious Liquidation</div>
-                  <div className={styles.status}>{featuredCase.status === 'open' ? 'Under Legal Review' : 'Closed'}</div>
                 </div>
                 <div className={styles.caseCards}>
                   <div className={styles.caseCard}>
@@ -328,114 +332,41 @@ const Landing = ({ cases, actions }) => {
             _> Decode the Fury
           </div>
           <div className={styles.sectionContent}>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  What is Satoshi's Fury?
+            {[
+              { q: "What is Satoshi's Fury?", a: "A decentralized platform that lets users report fraud, share proof, and surface the truth about crypto trading losses." },
+              { q: "Why was this created?", a: "To empower victims of trading fraud and give them a voice to collectively seek justice." },
+              { q: "How does the AI verification system work?", a: "Our AI analyzes your trading screenshots to extract loss details and verify authenticity automatically." },
+              { q: "What do I earn by contributing to a case?", a: "You receive exchange-specific tokens tied to the case, which are tradable and connected to future case payouts." },
+              { q: "Can I sell the token anytime?", a: "Yes, tokens are tradable, but locked tokens will unlock according to the schedule shown in your profile." },
+              { q: "Why is KYC required in the legal phase?", a: "KYC is necessary to verify your identity for legal proceedings and ensure legitimate case participants." },
+              { q: "Who decides which cases move forward?", a: "Cases are evaluated based on evidence strength, participant count, and legal viability by our legal team." },
+              { q: "What types of cases can be submitted?", a: "Malicious liquidations, unfair fees, trading manipulation, and other documented losses on supported exchanges." },
+              { q: "Is my data safe?", a: "Yes. All evidence is encrypted and stored securely on-chain. Your privacy is protected throughout the process." }
+            ].map((faq, index) => (
+              <div key={index} className={styles.question}>
+                <div className={styles.questionTitle} onClick={() => toggleFAQ(index)}>
+                  <div className={styles.questionTitleText}>
+                    {faq.q}
+                  </div>
+                  <div className={styles.questionTitleIcon}>
+                    {expandedFAQ === index ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="2" viewBox="0 0 14 2" fill="none">
+                        <path d="M14 2H0V0H14V2Z" fill="white"/>
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
+                      </svg>
+                    )}
+                  </div>
                 </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
+                {expandedFAQ === index && (
+                  <div className={styles.questionContent}>
+                    {faq.a}
+                  </div>
+                )}
               </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  Why was this created?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  How does the AI verification system work?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  What do I earn by contributing to a case?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  Can I sell the token anytime?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  Why is KYC required in the legal phase?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  Who decides which cases move forward?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  What types of cases can be submitted?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  Is my data safe?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

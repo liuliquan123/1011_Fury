@@ -234,12 +234,18 @@
 
   .header .mobileLoginButton {
     display: flex !important;
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 8px;
+    width: 40px;
     height: 40px;
-    background: #E4FF00;
-    color: #000;
-    border: 1px solid #000;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+  }
+  
+  .header .mobileLoginButton svg {
+    width: 16px;
+    height: 18px;
   }
 
   .header {

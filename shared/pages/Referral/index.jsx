@@ -219,7 +219,11 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
 
                 </div>
               </div>
-              <div className={styles.name}>withdrawal</div>
+              <button className={classNames(styles.withdrawalButton, {
+                [styles.disabled]: formattedTime.d > 0 || formattedTime.h > 0 || formattedTime.m > 0 || formattedTime.s > 0
+              })} disabled={formattedTime.d > 0 || formattedTime.h > 0 || formattedTime.m > 0 || formattedTime.s > 0}>
+                withdrawal
+              </button>
               <div className={styles.nav}>
                 <div className={classNames(styles.leftButton, {
                   [styles.disabled]: activeIdx === 0
@@ -241,7 +245,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
         )}
         <div className={styles.myReferral}>
           <div className={styles.contentTitle}>
-            Your Participated Cases
+            Pick & Spread
           </div>
           <div className={styles.exchanges}>
             <div
@@ -313,61 +317,26 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
       </div>
       <div className={styles.title}>
         <div className={styles.text}>
-          Inviter Tasks
+          Advocate Action Hub
         </div>
         <div className={styles.description}>
-          Unlock up to 300 USDC per month by inviting friends
+          Spread awareness. Build momentum. Unlock your rewards.
         </div>
       </div>
       <div className={styles.content}>
-        <div className={styles.taskOne}>
+        <div className={styles.impactReturns}>
           <div className={styles.contentTitle}>
-            Task 1:
+            Your Impact Returns
           </div>
           <div className={styles.contentText}>
-            Unlock up to 300 USDC per month by inviting friends
+            Accelerated Unlock Window (X Days)
           </div>
-          {/* <div className={styles.buttons}>
-              <div className={styles.inviteButton}>
-              invite
-              </div>
-              </div> */}
-        </div>
-        <div className={styles.taskMore}>
-          <div className={styles.contentTitle}>
-            超级返佣
+          <div className={styles.contentText}>
+            Instant Unlock
           </div>
-          <div className={styles.contentStats}>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁加快 X 天
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                0-5人
-              </div>
-            </div>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁加快 X+1 天
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                6-50人
-              </div>
-            </div>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                51人以上
-              </div>
-            </div>
+          <div className={styles.contentText}>
+            Help X - Y victims bring their proof on-chain
           </div>
-          {/* <div className={styles.buttons}>
-              <div className={styles.inviteButton}>
-              INVITE MORE
-              </div>
-              </div> */}
         </div>
       </div>
     </div>

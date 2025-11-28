@@ -431,6 +431,38 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 </div>
               </div>
             </div>
+
+            <div className={styles.questions}>
+              <div className={styles.questionsTitle}>
+                What Happens Next?
+              </div>
+              <div className={styles.list}>
+                <div className={styles.listItem}>
+                  <div className={styles.listItemTitle}>
+                    1. AI Evidence Check
+                  </div>
+                  <div className={styles.listItemDescritipn}>
+                    AI will verify whether your screenshot is valid.
+                  </div>
+                </div>
+                <div className={styles.listItem}>
+                  <div className={styles.listItemTitle}>
+                    2. Confirm & Submit
+                  </div>
+                  <div className={styles.listItemDescritipn}>
+                    If AI passes, confirm extracted details and submit to file your case.
+                  </div>
+                </div>
+                <div className={styles.listItem}>
+                  <div className={styles.listItemTitle}>
+                    3. Waiting For Claim
+                  </div>
+                  <div className={styles.listItemDescritipn}>
+                    Get the exchange-specific token — tradable and tied to future case payouts.
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div className={styles.actions}>
             <button className={styles.backButton} href="" tabIndex={0} role="button " onClick={prevStep}>
@@ -609,38 +641,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                         })}
                       />
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.questions}>
-              <div className={styles.questionsTitle}>
-                What Happens Next?
-              </div>
-              <div className={styles.list}>
-                <div className={styles.listItem}>
-                  <div className={styles.listItemTitle}>
-                    1. AI Evidence Check
-                  </div>
-                  <div className={styles.listItemDescritipn}>
-                    AI will verify whether your screenshot is valid.
-                  </div>
-                </div>
-                <div className={styles.listItem}>
-                  <div className={styles.listItemTitle}>
-                    2. Confirm & Submit
-                  </div>
-                  <div className={styles.listItemDescritipn}>
-                    If AI passes, confirm extracted details and submit to file your case.
-                  </div>
-                </div>
-                <div className={styles.listItem}>
-                  <div className={styles.listItemTitle}>
-                    3. Waiting For Claim
-                  </div>
-                  <div className={styles.listItemDescritipn}>
-                    Get the exchange-specific token — tradable and tied to future case payouts.
                   </div>
                 </div>
               </div>

@@ -124,14 +124,13 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
         <div className={styles.account}>
           <div className={styles.user}>
             <div className={styles.top}>
-              <div className={styles.text}>Invited By</div>
+              <div className={styles.text}>Called by</div>
             </div>
             <div className={styles.bottom}>
               <div className={styles.box}>
                 <div className={styles.logo}></div>
 
                 <div className={styles.info}>
-                  <div className={styles.label}>Called by</div>
                   <div className={styles.name}>
                     {info.referrer.username}
                   </div>
@@ -142,9 +141,6 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
                     <div className={styles.value}>
                       {referralCode}
                     </div>
-                  </div>
-                  <div className={styles.description}>
-                    This case is currently collecting victim evidence. Submit proof and reclaim what's yours.
                   </div>
                 </div>
               </div>
@@ -160,6 +156,9 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
               </div>
               <div className={styles.description}>
                 This case is currently collecting victim evidence. Join others in seeking justice.
+              </div>
+              <div className={styles.caseDescription}>
+                This case is currently collecting victim evidence. Submit proof and reclaim what's yours.
               </div>
             </div>
             <div className={styles.bottom}>
@@ -190,6 +189,29 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className={styles.faqSection}>
+          <div className={styles.faqTitle}>
+            _> Decode the Fury
+          </div>
+          <div className={styles.faqContent}>
+            {[
+              { q: "What is Satoshi's Fury?", a: "A decentralized platform that lets users report fraud, share proof, and surface the truth about crypto trading losses." },
+              { q: "Why was this created?", a: "To empower victims of trading fraud and give them a voice to collectively seek justice." },
+              { q: "How does the AI verification system work?", a: "Our AI analyzes your trading screenshots to extract loss details and verify authenticity automatically." },
+              { q: "What do I earn by contributing to a case?", a: "You receive exchange-specific tokens tied to the case, which are tradable and connected to future case payouts." },
+              { q: "Can I sell the token anytime?", a: "Yes, tokens are tradable, but locked tokens will unlock according to the schedule shown in your profile." },
+              { q: "Why is KYC required in the legal phase?", a: "KYC is necessary to verify your identity for legal proceedings and ensure legitimate case participants." },
+              { q: "Who decides which cases move forward?", a: "Cases are evaluated based on evidence strength, participant count, and legal viability by our legal team." },
+              { q: "What types of cases can be submitted?", a: "Malicious liquidations, unfair fees, trading manipulation, and other documented losses on supported exchanges." },
+              { q: "Is my data safe?", a: "Yes. All evidence is encrypted and stored securely on-chain. Your privacy is protected throughout the process." }
+            ].map((faq, index) => (
+              <div key={index} className={styles.faqQuestion}>
+                <div className={styles.faqQuestionText}>{faq.q}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

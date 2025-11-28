@@ -344,17 +344,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
 
             <div className={styles.statistic}>
               <div className={styles.statisticTitle}>
-                Account Statistics
+                Overview
               </div>
               <div className={styles.list}>
-                <div className={styles.listItem}>
-                  <div className={styles.listItemNumber}>
-                    {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
-                  </div>
-                  <div className={styles.listItemName}>
-                    Cases
-                  </div>
-                </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
                     {(submissions && submissions.statistics && submissions.statistics.total_loss_amount) 
@@ -362,7 +354,15 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                       : '--'}
                   </div>
                   <div className={styles.listItemName}>
-                    Evidence
+                    Total Loss Amount
+                  </div>
+                </div>
+                <div className={styles.listItem}>
+                  <div className={styles.listItemNumber}>
+                    {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
+                  </div>
+                  <div className={styles.listItemName}>
+                    Cases Submitted
                   </div>
                 </div>
                 <div className={styles.listItem}>
