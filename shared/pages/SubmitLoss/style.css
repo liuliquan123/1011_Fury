@@ -16,6 +16,53 @@
   color: white;
   padding: 40px 60px;
 
+  .questions {
+    background: #232326;
+    padding: 40px 20px;
+    margin-top: 40px;
+
+    .questionsTitle {
+      color: #FFF;
+      font-family: "Google Sans Code";
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 32px;
+      margin-bottom: 20px;
+    }
+
+    .list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .listItem {
+        padding: 10px 20px;
+        background: #141519;
+        width: 100%;
+
+        .listItemTitle {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 20px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 32px;
+        }
+
+        .listItemDescription {
+          color: #A7ADB9;
+          font-family: "Google Sans Code";
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+
   .stepTwo {
     .title {
       color: #FFF;
@@ -131,53 +178,6 @@
 
           .warningContentItem {
             color: #FFF;
-            font-family: "Google Sans Code";
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 24px;
-          }
-        }
-      }
-    }
-
-    .questions {
-      background: #232326;
-      padding: 40px 20px;
-      margin-top: 40px;
-
-      .questionsTitle {
-        color: #FFF;
-        font-family: "Google Sans Code";
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 32px;
-        margin-bottom: 20px;
-      }
-
-      .list {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        .listItem {
-          padding: 10px 20px;
-          background: #141519;
-          width: 100%;
-
-          .listItemTitle {
-            color: #FFF;
-            font-family: "Google Sans Code";
-            font-size: 20px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: 32px;
-          }
-
-          .listItemDescription {
-            color: #A7ADB9;
             font-family: "Google Sans Code";
             font-size: 14px;
             font-style: normal;
@@ -815,6 +815,40 @@
 
   .submitLoss .stepThree .form .row .field {
     width: 100%;
+  }
+
+  /* Step 4: OCR 表单区域 */
+  .submitLoss .stepFour .title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .submitLoss .stepFour .sections {
+    padding: 20px 12px;
+  }
+
+  .submitLoss .stepFour .sections .section .sectionTitle {
+    font-size: 20px;
+    line-height: 28px;
+    margin-bottom: 16px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field {
+    gap: 12px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field .name {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field .input {
+    min-height: 40px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field .input input {
+    font-size: 16px;
+    padding: 8px 12px;
   }
 
   /* 按钮区域 */

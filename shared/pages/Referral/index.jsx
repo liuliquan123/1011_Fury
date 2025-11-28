@@ -101,10 +101,6 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   const [exchangeType, setExchangeType] = useState('binance')
   const [inviteCode, setInviteCode] = useState(getInviteCode(referralStats.referral_code, exchangeType))
 
-  console.log('formattedTime', formattedTime)
-  console.log('percentage', percentage)
-  console.log('inviteCode', inviteCode)
-
   const selectExchange = useCallback((exchangeType) => () => {
     setExchangeType(exchangeType)
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
@@ -180,10 +176,10 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
     <div className={styles.referral}>
       <div className={styles.title}>
         <div className={styles.text}>
-          REACH 100% PROGRESS
+          Spread the Fury
         </div>
         <div className={styles.description}>
-          Unlock Your Round Reward Now!
+          Ignite action, inspire others, and unlock your rightful value.
         </div>
       </div>
       <div className={styles.content}>
@@ -199,7 +195,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
                   </div>
                   <div className={styles.tokenLockTime}>
                     <div className={styles.tokenLockTimeName}>
-                      Available for withdrawal in
+                      Unlocks in
                     </div>
                     <div className={styles.tokenLockTimeContent}>
                       <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
@@ -219,7 +215,11 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
 
                 </div>
               </div>
-              <div className={styles.name}>withdrawal</div>
+              <button className={classNames(styles.withdrawalButton, {
+                [styles.disabled]: formattedTime.d > 0 || formattedTime.h > 0 || formattedTime.m > 0 || formattedTime.s > 0
+              })} disabled={formattedTime.d > 0 || formattedTime.h > 0 || formattedTime.m > 0 || formattedTime.s > 0}>
+                withdrawal
+              </button>
               <div className={styles.nav}>
                 <div className={classNames(styles.leftButton, {
                   [styles.disabled]: activeIdx === 0
@@ -241,7 +241,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
         )}
         <div className={styles.myReferral}>
           <div className={styles.contentTitle}>
-            Your Participated Cases
+            Pick & Spread
           </div>
           <div className={styles.exchanges}>
             <div
@@ -305,69 +305,10 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
             </button>
             <button className={styles.copyButton} onClick={handleCopyLink}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.buttonText)}>Copy referral link</div>
+              <div className={classNames(styles.buttonText)}>Copy Advocate Link</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
           </div>
-        </div>
-      </div>
-      <div className={styles.title}>
-        <div className={styles.text}>
-          Inviter Tasks
-        </div>
-        <div className={styles.description}>
-          Unlock up to 300 USDC per month by inviting friends
-        </div>
-      </div>
-      <div className={styles.content}>
-        <div className={styles.taskOne}>
-          <div className={styles.contentTitle}>
-            Task 1:
-          </div>
-          <div className={styles.contentText}>
-            Unlock up to 300 USDC per month by inviting friends
-          </div>
-          {/* <div className={styles.buttons}>
-              <div className={styles.inviteButton}>
-              invite
-              </div>
-              </div> */}
-        </div>
-        <div className={styles.taskMore}>
-          <div className={styles.contentTitle}>
-            超级返佣
-          </div>
-          <div className={styles.contentStats}>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁加快 X 天
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                0-5人
-              </div>
-            </div>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁加快 X+1 天
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                6-50人
-              </div>
-            </div>
-            <div className={styles.contentStatsItem}>
-              <div className={styles.contentStatsItemName}>
-                解锁
-              </div>
-              <div className={styles.contentStatsItemNumber}>
-                51人以上
-              </div>
-            </div>
-          </div>
-          {/* <div className={styles.buttons}>
-              <div className={styles.inviteButton}>
-              INVITE MORE
-              </div>
-              </div> */}
         </div>
       </div>
     </div>

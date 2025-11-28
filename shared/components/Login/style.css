@@ -271,6 +271,17 @@
     }
   }
 
+  .loginMethodLabel {
+    color: rgba(255, 255, 255, 0.68);
+    text-align: center;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    margin-bottom: 16px;
+  }
+
   .separator {
     display: flex;
     align-items: center;
@@ -290,13 +301,14 @@
     }
 
     .separatorText {
-      width: 40px;
+      width: 100px;
       height: 100%;
       background: #232326;
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
       z-index: 2;
 
       color: #828698;

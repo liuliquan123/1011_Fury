@@ -63,11 +63,11 @@ const Header = ({ profile, actions, history }) => {
             })}
             to={profile.id ? `/referral` : `/login`}
           >
-            Referral
+            Advocate Hub
           </Link>
         </div>
       )}
-      <div className={classNames(styles.buttons)}>
+      <div className={classNames(styles.buttons)} style={{ gap: '10px' }}>
         <Link
           className={classNames(styles.button, styles.large)}
           to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}
@@ -88,10 +88,54 @@ const Header = ({ profile, actions, history }) => {
           </div>
           <div className={classNames(styles.rightArrow)}>{"<"}</div>
         </Link>
-        {!profile.id && false && (
-          <Link className={classNames(styles.button, styles.loginButton)} to={referralCode ? `/login?code=${referralCode}` : '/login'}>
-            <div className={classNames(styles.text)}>Login</div>
-          </Link>
+        {!profile.id && (
+          <Fragment>
+            <Link 
+              className={classNames(styles.desktopLoginButton)} 
+              to={referralCode ? `/login?code=${referralCode}` : '/login'}
+              style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '2px 16px',
+                height: '52px',
+                background: '#E9FD66',
+                border: 'none',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                fontFamily: 'Google Sans Code',
+                fontSize: '16px',
+                fontWeight: 500,
+                color: 'black'
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+                <path d="M4 9H5V10H11V9H12V8H13V2H12V1H11V0H5V1H4V2H3V8H4V9ZM5 4H6V3H7V2H9V3H10V4H11V6H10V7H9V8H7V7H6V6H5V4Z" fill="black"/>
+                <path d="M15 13V12H14V11H2V12H1V13H0V18H2V15H3V14H4V13H12V14H13V15H14V18H16V13H15Z" fill="black"/>
+              </svg>
+            </Link>
+            <Link 
+              className={classNames(styles.mobileLoginButton)} 
+              to={referralCode ? `/login?code=${referralCode}` : '/login'}
+              style={{ 
+                display: 'none',
+                padding: '8px',
+                width: '40px',
+                height: '40px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'transparent',
+                border: 'none',
+                textDecoration: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="27" viewBox="0 0 16 18" fill="none">
+                <path d="M4 9H5V10H11V9H12V8H13V2H12V1H11V0H5V1H4V2H3V8H4V9ZM5 4H6V3H7V2H9V3H10V4H11V6H10V7H9V8H7V7H6V6H5V4Z" fill="black"/>
+                <path d="M15 13V12H14V11H2V12H1V13H0V18H2V15H3V14H4V13H12V14H13V15H14V18H16V13H15Z" fill="black"/>
+              </svg>
+            </Link>
+          </Fragment>
         )}
         {profile.id && (
           <Link className={classNames(styles.logoButton)} to={profile.id ? `/profile` : `/login`}>
@@ -106,7 +150,7 @@ const Header = ({ profile, actions, history }) => {
                   Profile
                   </Link>
                   <Link className={classNames(styles.menuItem)} to={profile.id ? `/referral` : `/login`}>
-                  Referral
+                  Advocate Hub
                   </Link>
                   <Link className={classNames(styles.menuItem)} to={profile.id ? `/my-case` : `/login`}>
                   My Case

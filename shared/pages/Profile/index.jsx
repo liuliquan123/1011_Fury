@@ -71,6 +71,12 @@ const formatAmount = (amount) => {
   return '$' + formatNumberWithUnit(amount)
 }
 
+// 地址省略显示函数
+const truncateAddress = (address) => {
+  if (!address) return ''
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
 // {
 //   created_at: "2025-11-21T11:18:42.279562+00:00",
 //   exchange: "Binance",
@@ -144,14 +150,6 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
   const [percentage, setPercentage] = useState(getPercentage(reward))
 
-  console.log('profile', profile)
-  console.log('userTokens', userTokens)
-  console.log('referralStats', referralStats)
-  console.log('submissions', submissions)
-
-  console.log('formattedTime', formattedTime)
-  console.log('percentage', percentage)
-
   useEffect(() => {
     const iv = setInterval(() => {
       setDate(+new Date())
@@ -218,7 +216,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
           Profile
         </div>
         <div className={styles.description}>
-          Manage your account and view your activity
+          They Took Control. We Take It Back
         </div>
       </div>
       <div className={styles.content}>
@@ -233,7 +231,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
               <div className={styles.list}>
                 <div className={styles.listItem}>
                   <div className={styles.listItemName}>
-                    Login Type
+                    Login Method
                   </div>
                   <div className={styles.listItemContent}>
                     {profile.login_type}
@@ -241,10 +239,19 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemName}>
-                    Wallet
+                    Wallet Address
                   </div>
-                  <div className={styles.listItemContent}>
-                    {profile.wallet_address}
+                  <div 
+                    className={styles.listItemContent} 
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      if (profile.wallet_address) {
+                        navigator.clipboard.writeText(profile.wallet_address)
+                        toast('Address copied!')
+                      }
+                    }}
+                  >
+                    {truncateAddress(profile.wallet_address)}
                   </div>
                 </div>
                 <div className={styles.listItem}>
@@ -292,7 +299,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     </div>
                     <div className={styles.tokenLockTime}>
                       <div className={styles.tokenLockTimeName}>
-                        Remaining
+                        Unlocks in
                       </div>
                       <div className={styles.tokenLockTimeContent}>
                         <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
@@ -315,7 +322,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 <div className={styles.actionButtons}>
                   <Link className={styles.actionButton} to="/referral">
                     <div className={classNames(styles.leftArrow)}>{">"}</div>
-                    <div className={classNames(styles.buttonText)}>Accelerate Unlock</div>
+                    <div className={classNames(styles.buttonText)}>Boost Unlock</div>
                     <div className={classNames(styles.rightArrow)}>{"<"}</div>
                   </Link>
                   {profile && !profile.wallet_address && (
@@ -349,18 +356,20 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
               <div className={styles.list}>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
+                    {(submissions && submissions.statistics && submissions.statistics.total_loss_amount) 
+                      ? formatAmount(submissions.statistics.total_loss_amount) 
+                      : '--'}
                   </div>
                   <div className={styles.listItemName}>
-                    Cases
+                    Loss Amount
                   </div>
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {formatAmount((submissions && submissions.statistics && submissions.statistics.total_loss_amount) || 0)}
+                    {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
                   </div>
                   <div className={styles.listItemName}>
-                    Evidence
+                    Cases Submitted
                   </div>
                 </div>
                 <div className={styles.listItem}>

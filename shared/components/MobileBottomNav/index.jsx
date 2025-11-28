@@ -51,7 +51,7 @@ const MobileBottomNav = ({ profile }) => {
         className={classNames(styles.navItem, { [styles.active]: isReferralActive })}
       >
         <ReferralIcon className={styles.icon} />
-        <span className={styles.label}>Referral</span>
+        <span className={styles.label}>Advocate Hub</span>
       </Link>
     </div>
   )

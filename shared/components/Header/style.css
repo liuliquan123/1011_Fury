@@ -63,7 +63,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 10px;
+
+    .desktopLoginButton {
+      text-decoration: none;
+      color: black;
+      font-size: 16px;
+      padding: 2px 16px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      cursor: pointer;
+      background: #E9FD66;
+      border: 1px solid black;
+      font-family: "Google Sans Code";
+
+      svg path {
+        fill: black;
+      }
+    }
+
+    .mobileLoginButton {
+      display: none;
+    }
 
     .logoButton {
       text-decoration: none;
@@ -228,8 +252,28 @@
     display: none;
   }
 
+  .header .buttons .desktopLoginButton {
+    display: none !important;
+  }
+
   .header .loginButton {
     display: none;
+  }
+
+  .header .buttons .mobileLoginButton {
+    display: flex !important;
+    padding: 8px !important;
+    width: 40px !important;
+    height: 40px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  
+  .header .buttons .mobileLoginButton svg {
+    width: 24px;
+    height: 27px;
   }
 
   .header {
@@ -250,3 +294,4 @@
     }
   }
 }
+

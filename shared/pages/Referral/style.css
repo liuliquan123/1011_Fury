@@ -440,6 +440,31 @@
       .bottom {
         padding: 40px;
 
+        .withdrawalButton {
+          background: #E9FD66;
+          border: 1px solid black;
+          color: black;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-weight: 500;
+          padding: 8px 24px;
+          cursor: pointer;
+          text-transform: lowercase;
+          display: block;
+          margin: 20px auto 20px;
+
+          &.disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+            border-color: #666;
+          }
+
+          &:not(.disabled):hover {
+            background: #d4e650;
+          }
+        }
+
         .name {
           color: #E9FD66;
           text-align: center;

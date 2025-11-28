@@ -72,8 +72,6 @@ const formatAmount = (amount) => {
 }
 
 const Cases = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
-  console.log('submissions', submissions)
-
   return (
     <div className={styles.cases}>
       <div className={styles.title}>
@@ -86,7 +84,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
         <div className={styles.buttons}>
           <Link className={styles.button} to="/submit-loss">
             <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.buttonText)}>Create New Case</div>
+            <div className={classNames(styles.buttonText)}>SUBMIT NEW LOSS</div>
             <div className={classNames(styles.rightArrow)}>{"<"}</div>
           </Link>
         </div>
@@ -96,7 +94,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
           <div className={styles.statistic}>
             <div className={styles.top}>
               <div className={styles.text}>
-                Your Participated Cases
+                Overview
               </div>
             </div>
             <div className={styles.bottom}>
@@ -106,15 +104,17 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                     {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
                   </div>
                   <div className={styles.listItemName}>
-                    Total Submissions
+                    Total Submitted
                   </div>
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {formatAmount((submissions && submissions.statistics && submissions.statistics.total_loss_amount) || 0)}
+                    {(submissions && submissions.statistics && submissions.statistics.total_loss_amount) 
+                      ? formatAmount(submissions.statistics.total_loss_amount) 
+                      : '--'}
                   </div>
                   <div className={styles.listItemName}>
-                    Total Loss
+                    Total Loss Amount
                   </div>
                 </div>
                 <div className={styles.listItem}>
@@ -131,7 +131,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
           <div className={styles.statistic}>
             <div className={styles.top}>
               <div className={styles.text}>
-                Your Participated Cases
+                Your Cases Submitted
               </div>
               <div className={styles.buttons}>
                 <Link className={styles.inviteButton} to="/referral">
@@ -153,29 +153,21 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                     <div className={styles.caseListItemTop}>
                       {submission.matched_case && (
                         <div className={styles.text}>
-                          {submission.matched_case.exchange} {submission.trading_pair} {submission.matched_case.matched_case} - {formatDateShort(submission.loss_date)}
+                          {submission.matched_case.exchange} {submission.trading_pair}{submission.matched_case.matched_case ? ` - ${submission.matched_case.matched_case}` : ''} - {formatDateShort(submission.loss_date)}
                         </div>
                       )}
                       <div className={styles.status}>
-                        {submission.matched_case.status}
+                        {(submission.matched_case.status || '').toUpperCase()}
                       </div>
                     </div>
                     <div className={styles.caseListItemBottom}>
                       <div className={styles.statsList}>
                         <div className={styles.statsListItem}>
                           <div className={styles.statsListItemNumber}>
-                            {formatAmount(submission.loss_amount || 0)}
+                            {submission.loss_amount ? formatAmount(submission.loss_amount) : '--'}
                           </div>
                           <div className={styles.statsListItemName}>
-                            Your Loss
-                          </div>
-                        </div>
-                        <div className={styles.statsListItem}>
-                          <div className={styles.statsListItemNumber}>
-                            {formatAmount(submission.trading_fee || 0)}
-                          </div>
-                          <div className={styles.statsListItemName}>
-                            Trading Fees
+                            Loss Amount
                           </div>
                         </div>
                         <div className={styles.statsListItem}>
@@ -183,7 +175,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                             {submission.file_urls.length}
                           </div>
                           <div className={styles.statsListItemName}>
-                            Evidence
+                            Evidence Files
                           </div>
                         </div>
                         <div className={styles.statsListItem}>

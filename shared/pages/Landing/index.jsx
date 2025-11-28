@@ -76,6 +76,7 @@ const formatNumber = (num) => {
 
 const Landing = ({ cases, actions }) => {
   const [activeIdx, setActiveIdx] = useState(0)
+  const [expandedFAQ, setExpandedFAQ] = useState(null)
 
   useEffect(() => {
     actions.getCases({})
@@ -96,15 +97,19 @@ const Landing = ({ cases, actions }) => {
     setActiveIdx((prev) => (prev === caseList.length - 1 ? 0 : prev + 1))
   }
 
+  const toggleFAQ = (index) => {
+    setExpandedFAQ(expandedFAQ === index ? null : index)
+  }
+
   return (
     <div className={styles.landing}>
       <div className={styles.banner}>
         <div className={styles.content}>
           <div className={styles.title}>
-            Gate Welcome to Satoshi's Fury
+            It's decentralized revolution
           </div>
           <div className={styles.text}>
-            Join thousands fighting for justice in the crypto space
+            They Took Control. We Take It Back
           </div>
           <Link className={styles.button} to="/submit-loss">
             <div className={classNames(styles.leftArrow)}>{">"}</div>
@@ -116,7 +121,7 @@ const Landing = ({ cases, actions }) => {
       <div className={styles.sections}>
         <div className={classNames(styles.section, styles.platform)}>
           <div className={styles.sectionTitle}>
-            _> platform-statistics
+            _> UNBURIED-NUMBERS
           </div>
           <div className={styles.sectionContent}>
             <div className={styles.statistic}>
@@ -155,14 +160,13 @@ const Landing = ({ cases, actions }) => {
         </div>
         <div className={classNames(styles.section, styles.featured)}>
           <div className={styles.sectionTitle}>
-            _> Featured Cases
+            _> FEATURED CASES
           </div>
           <div className={styles.sectionContent}>
             <div className={styles.cases}>
               <div className={styles.case}>
                 <div className={styles.caseTitle}>
-                  <div className={styles.text}>{featuredCase.exchange || 'Binance'} {featuredCase.trading_pair || 'BTC/USDT'} - Illegal Contract Liquidation</div>
-                  <div className={styles.status}>{featuredCase.status === 'open' ? 'Under Legal Review' : 'Closed'}</div>
+                  <div className={styles.text}>{featuredCase.exchange || 'Binance'} {featuredCase.trading_pair || ''} - Malicious Liquidation</div>
                 </div>
                 <div className={styles.caseCards}>
                   <div className={styles.caseCard}>
@@ -234,10 +238,10 @@ const Landing = ({ cases, actions }) => {
                 </svg>
               </div>
               <div className={styles.featureTitle}>
-                Collective Action
+                Unmute Your Voice
               </div>
               <div className={styles.featureText}>
-                Join forces with others who suffered similar losses
+                Turn silence into pressure. Turn losses into signal.
               </div>
             </div>
 
@@ -248,10 +252,10 @@ const Landing = ({ cases, actions }) => {
                 </svg>
               </div>
               <div className={styles.featureTitle}>
-                Secure & Private
+                Stand With Fury
               </div>
               <div className={styles.featureText}>
-                Your data is encrypted and stored securely
+                Every witness strengthens the chain we build together.
               </div>
             </div>
 
@@ -268,17 +272,17 @@ const Landing = ({ cases, actions }) => {
                 </svg>
               </div>
               <div className={styles.featureTitle}>
-                AI-Powered Matching
+                Reclaim What’s Yours
               </div>
               <div className={styles.featureText}>
-                Automatically matched to relevant cases
+                End their control and reclaim what belongs to the people.
               </div>
             </div>
           </div>
         </div>
         <div className={classNames(styles.section, styles.community)}>
           <div className={styles.sectionTitle}>
-            _> Join Our Community
+            _> JOIN OUR COMMUNITY
           </div>
           <div className={styles.sectionContent}>
             <div className={styles.socialAccount}>
@@ -321,106 +325,80 @@ const Landing = ({ cases, actions }) => {
                 <div className={classNames(styles.rightArrow)}>{"<"}</div>
               </button>
             </div>
-            <div className={styles.socialAccount}>
-              <div className={styles.socialAccountInfo}>
-                <div className={styles.socialAccountIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                    <rect width="42" height="42" fill="black"/>
-                    <path d="M28.8047 14.4358C28.7989 14.4238 28.7892 14.4143 28.7775 14.4092C27.4159 13.7455 25.9791 13.2722 24.5029 13.0012C24.4895 12.9985 24.4757 13.0004 24.4633 13.0066C24.451 13.0128 24.4408 13.023 24.4343 13.0357C24.2386 13.413 24.061 13.8005 23.9021 14.1969C22.3109 13.9402 20.6924 13.9402 19.1012 14.1969C18.9412 13.7995 18.7608 13.4119 18.5606 13.0357C18.5538 13.0233 18.5435 13.0133 18.5313 13.0072C18.519 13.001 18.5053 12.9989 18.4919 13.0012C17.0156 13.2716 15.5787 13.7449 14.2173 14.4092C14.2057 14.4145 14.1958 14.4235 14.1892 14.4349C11.4667 18.7547 10.7209 22.9682 11.0868 27.1296C11.0878 27.1398 11.0908 27.1496 11.0955 27.1586C11.1001 27.1676 11.1065 27.1754 11.1141 27.1817C12.6994 28.4289 14.4725 29.3808 16.3579 29.997C16.3711 30.0012 16.3853 30.001 16.3985 29.9964C16.4117 29.9918 16.4232 29.9831 16.4315 29.9713C16.8365 29.3859 17.1953 28.766 17.5043 28.1179C17.5085 28.109 17.511 28.0993 17.5114 28.0893C17.5119 28.0794 17.5103 28.0694 17.5069 28.0601C17.5034 28.0509 17.4982 28.0425 17.4915 28.0355C17.4848 28.0285 17.4767 28.0231 17.4679 28.0197C16.9021 27.7897 16.3543 27.5124 15.8298 27.1905C15.8202 27.1845 15.8122 27.1762 15.8065 27.1661C15.8007 27.1561 15.7973 27.1448 15.7967 27.133C15.796 27.1213 15.7981 27.1096 15.8027 27.0989C15.8073 27.0883 15.8144 27.079 15.8232 27.0719C15.9335 26.9842 16.042 26.8939 16.1485 26.801C16.1578 26.7929 16.1691 26.7876 16.1811 26.7859C16.1931 26.7842 16.2053 26.7861 16.2163 26.7913C19.6531 28.4578 23.3739 28.4578 26.7699 26.7913C26.781 26.7857 26.7933 26.7836 26.8055 26.7852C26.8177 26.7867 26.8292 26.7919 26.8387 26.8002C26.9452 26.8936 27.054 26.9842 27.1648 27.0719C27.1737 27.0789 27.1807 27.0881 27.1854 27.0988C27.1901 27.1094 27.1923 27.1211 27.1917 27.1328C27.1911 27.1445 27.1878 27.1559 27.1821 27.166C27.1764 27.176 27.1685 27.1844 27.159 27.1905C26.6356 27.5151 26.0874 27.7922 25.5201 28.0188C25.5113 28.0224 25.5033 28.0279 25.4966 28.035C25.4899 28.0421 25.4847 28.0505 25.4814 28.0599C25.478 28.0692 25.4765 28.0792 25.477 28.0892C25.4776 28.0992 25.4801 28.109 25.4844 28.1179C25.7986 28.7624 26.1568 29.3815 26.5563 29.9703C26.5644 29.9824 26.5759 29.9914 26.5891 29.9962C26.6023 30.001 26.6166 30.0012 26.63 29.9968C28.5187 29.3828 30.295 28.4308 31.8822 27.1817C31.8899 27.1758 31.8964 27.1681 31.9011 27.1592C31.9058 27.1504 31.9087 27.1406 31.9095 27.1304C32.3475 22.3195 31.1762 18.1405 28.8047 14.4358ZM18.0176 24.5957C16.9828 24.5957 16.1303 23.5868 16.1303 22.3478C16.1303 21.1088 16.9663 20.0998 18.0176 20.0998C19.077 20.0998 19.9213 21.1175 19.9048 22.3477C19.9048 23.5868 19.0687 24.5957 18.0176 24.5957ZM24.9954 24.5957C23.9608 24.5957 23.1082 23.5868 23.1082 22.3478C23.1082 21.1088 23.9442 20.0998 24.9954 20.0998C26.055 20.0998 26.8993 21.1175 26.8827 22.3477C26.8827 23.5868 26.055 24.5957 24.9954 24.5957Z" fill="white" />
-                  </svg>
-                </div>
-                <div className={styles.socialAccountTitle}>
-                  Join Discord Server
-                </div>
-                <div className={styles.socialAccountText}>
-                  Chat with the community, get support, and participate in governance
-                </div>
-              </div>
-              <button className={styles.socialAccountAction}>
-                <div className={classNames(styles.leftArrow)}>{">"}</div>
-                <div className={classNames(styles.text)}>go</div>
-                <div className={classNames(styles.rightArrow)}>{"<"}</div>
-              </button>
-            </div>
-            <div className={styles.socialAccount}>
-              <div className={styles.socialAccountInfo}>
-                <div className={styles.socialAccountIcon}>
-                  <svg width="32" height="32" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="1024" height="1024" rx="179.649" fill="none"/>
-                    <path d="M836.115 244.625L836.923 244.448V238.195H672.014L518.891 598.084L365.768 238.195H188.059V244.448L188.857 244.625C218.957 251.419 234.239 261.551 234.239 298.091V725.872C234.239 762.412 218.898 772.544 188.798 779.338L188 779.516V785.788H308.57V779.535L307.773 779.358C277.672 772.564 262.39 762.432 262.39 725.892V322.905L459.093 785.788H470.249L672.683 309.996V736.457C670.104 765.317 654.96 774.228 627.705 780.382L626.897 780.569V786.773H836.923V780.569L836.115 780.382C808.831 774.228 793.322 765.317 790.743 736.457L790.605 298.091H790.743C790.743 261.551 806.024 251.419 836.115 244.625Z" fill="white" />
-                  </svg>
-                </div>
-                <div className={styles.socialAccountTitle}>
-                  Read on Medium
-                </div>
-                <div className={styles.socialAccountText}>
-                  In-depth articles, case studies, and legal insights
-                </div>
-              </div>
-              <button className={styles.socialAccountAction}>
-                <div className={classNames(styles.leftArrow)}>{">"}</div>
-                <div className={classNames(styles.text)}>go</div>
-                <div className={classNames(styles.rightArrow)}>{"<"}</div>
-              </button>
-            </div>
           </div>
         </div>
         <div className={classNames(styles.section, styles.questions)}>
           <div className={styles.sectionTitle}>
-            _> Frequently Asked Questions
+            _> DECODE THE FURY
           </div>
           <div className={styles.sectionContent}>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  How does the collective lawsuit work?
+            {[
+              { 
+                q: "What is Satoshi's Fury?", 
+                a: "Satoshi's Fury is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
+              },
+              { 
+                q: "Why was this created?", 
+                a: "In Web3, scams, abnormal liquidations, and vanishing projects have become routine — and victims are usually left with no path forward.\n\nWe believe justice in crypto should be community-driven, transparent, and enforced by code, not centralized institutions." 
+              },
+              { 
+                q: "How does the AI verification system work?", 
+                a: "All submitted proof (tx hashes, screenshots, statements) goes through: AI risk-model assessment (detecting anomalies, address linkage, fund flow), AI text/image authenticity checks, and community multi-sig voting for transparent final approval.\n\nOnce your evidence is verified:\n✔ You receive token rewards for verified contribution\n✔ The evidence enters the case pool for future legal escalation" 
+              },
+              { 
+                q: "What do I earn by contributing to a case?", 
+                a: "You receive two types of rewards:\n\nA. Verification Rewards (Immediate) - Once your evidence passes AI + community verification, you earn Contributor Tokens instantly.\n\nB. Legal Recovery Rewards (Post-Case) - If the case proceeds to legal action and funds are recovered: 50% goes to verified victims involved in the case, 50% (after legal fees) is injected into the token pool, driving token value growth.\n\nTokens can be sold at any time." 
+              },
+              { 
+                q: "Can I sell the token anytime?", 
+                a: "Yes.\n\nThere is no lockup and no mandatory holding period.\n\nUsers can sell, trade, or exit at any time." 
+              },
+              { 
+                q: "Why is KYC required in the legal phase?", 
+                a: "Courts require verified personal identity to:\n\n1. Confirm you are a legitimate victim\n\n2. Enable you to legally receive recovered funds\n\n3. Prevent impersonation and claim fraud\n\nKYC is required only when a case enters the formal legal phase — not during submission." 
+              },
+              { 
+                q: "Who decides which cases move forward?", 
+                a: "Decisions are fully community-driven.\n\nToken holders vote on-chain to determine:\n\n1. Which cases advance to legal action\n\n2. How resources are allocated\n\n3. Adjustments to reward or governance models" 
+              },
+              { 
+                q: "What types of cases can be submitted?", 
+                a: "Any case traceable on-chain is eligible, including:\n\n1. Forced liquidations / abnormal margin wipes\n\n2. DeFi hacks and exploits\n\n3. NFT rug pulls\n\n4. Centralized exchange irregularities\n\n5. Market manipulation evidence\n\n6. Influencer-driven scams\n\n7. Token project abandonment" 
+              },
+              { 
+                q: "Is my data safe?", 
+                a: "Yes.\n\nPrivacy is protected through a zero-knowledge-based, layered verification flow:\n\n1. No identity is required during evidence submission\n\n2. AI and voters verify content only\n\n3. KYC is required only in the legal phase\n\n4. All sensitive data is encrypted and deletable upon request" 
+              }
+            ].map((faq, index) => (
+              <div key={index} className={styles.question}>
+                <div className={styles.questionTitle} onClick={() => toggleFAQ(index)}>
+                  <div className={styles.questionTitleText}>
+                    {faq.q}
+                  </div>
+                  <div className={styles.questionTitleIcon}>
+                    {expandedFAQ === index ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="2" viewBox="0 0 14 2" fill="none">
+                        <path d="M14 2H0V0H14V2Z" fill="white"/>
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
+                      </svg>
+                    )}
+                  </div>
                 </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="2" viewBox="0 0 14 2" fill="none">
-                    <path d="M14 2H0V0H14V2Z" fill="white"/>
-                  </svg>
-                </div>
+                {expandedFAQ === index && (
+                  <div className={styles.questionContent}>
+                    {faq.a.split('\n').map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i < faq.a.split('\n').length - 1 && <br />}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className={styles.questionContent}>
-                We automatically match your loss report with similar cases. When enough evidence is gathered, our legal team will initiate proceedings on behalf of all participants.
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  Is my data secure?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  What are the costs involved?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className={styles.question}>
-              <div className={styles.questionTitle}>
-                <div className={styles.questionTitleText}>
-                  How long does the process take?
-                </div>
-                <div className={styles.questionTitleIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -450,18 +428,6 @@ const Landing = ({ cases, actions }) => {
               <div className={classNames(styles.socialLink)}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="18" viewBox="0 0 36 18" fill="none">
                   <path fillRule="evenodd" clipRule="evenodd" d="M19.3718 4.5598C17.8493 5.23406 14.8063 6.62962 10.2429 8.74646C9.50186 9.06021 9.11368 9.36715 9.07834 9.66727C9.01862 10.1745 9.61519 10.3742 10.4276 10.6462C10.5381 10.6832 10.6526 10.7215 10.7699 10.7621C11.5692 11.0388 12.6443 11.3624 13.2033 11.3752C13.7103 11.3869 14.2761 11.1644 14.9009 10.7076C19.1646 7.64324 21.3655 6.09436 21.5037 6.06097C21.6012 6.03741 21.7363 6.00779 21.8278 6.09441C21.9193 6.18103 21.9103 6.34507 21.9006 6.38907C21.8415 6.65732 19.4998 8.97531 18.2879 10.1749C17.9101 10.5488 17.6421 10.8141 17.5874 10.8747C17.4646 11.0104 17.3396 11.1388 17.2194 11.2621C16.4768 12.0243 15.92 12.5958 17.2502 13.5291C17.8894 13.9776 18.4009 14.3484 18.9112 14.7185C19.4685 15.1225 20.0244 15.5256 20.7436 16.0275C20.9268 16.1554 21.1018 16.2882 21.2723 16.4176C21.9208 16.9099 22.5035 17.3522 23.2234 17.2816C23.6417 17.2406 24.0737 16.8219 24.2932 15.5729C24.8117 12.6212 25.8311 6.22581 26.0667 3.59042C26.0873 3.35952 26.0613 3.06402 26.0405 2.93431C26.0196 2.80459 25.9761 2.61977 25.8177 2.48295C25.6301 2.32092 25.3406 2.28675 25.2111 2.28918C24.6223 2.30022 23.719 2.63464 19.3718 4.5598Z" fill="white" />
-                </svg>
-              </div>
-              <div className={classNames(styles.socialLink)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                  <rect width="42" height="42" fill="black"/>
-                  <path d="M28.8047 14.4358C28.7989 14.4238 28.7892 14.4143 28.7775 14.4092C27.4159 13.7455 25.9791 13.2722 24.5029 13.0012C24.4895 12.9985 24.4757 13.0004 24.4633 13.0066C24.451 13.0128 24.4408 13.023 24.4343 13.0357C24.2386 13.413 24.061 13.8005 23.9021 14.1969C22.3109 13.9402 20.6924 13.9402 19.1012 14.1969C18.9412 13.7995 18.7608 13.4119 18.5606 13.0357C18.5538 13.0233 18.5435 13.0133 18.5313 13.0072C18.519 13.001 18.5053 12.9989 18.4919 13.0012C17.0156 13.2716 15.5787 13.7449 14.2173 14.4092C14.2057 14.4145 14.1958 14.4235 14.1892 14.4349C11.4667 18.7547 10.7209 22.9682 11.0868 27.1296C11.0878 27.1398 11.0908 27.1496 11.0955 27.1586C11.1001 27.1676 11.1065 27.1754 11.1141 27.1817C12.6994 28.4289 14.4725 29.3808 16.3579 29.997C16.3711 30.0012 16.3853 30.001 16.3985 29.9964C16.4117 29.9918 16.4232 29.9831 16.4315 29.9713C16.8365 29.3859 17.1953 28.766 17.5043 28.1179C17.5085 28.109 17.511 28.0993 17.5114 28.0893C17.5119 28.0794 17.5103 28.0694 17.5069 28.0601C17.5034 28.0509 17.4982 28.0425 17.4915 28.0355C17.4848 28.0285 17.4767 28.0231 17.4679 28.0197C16.9021 27.7897 16.3543 27.5124 15.8298 27.1905C15.8202 27.1845 15.8122 27.1762 15.8065 27.1661C15.8007 27.1561 15.7973 27.1448 15.7967 27.133C15.796 27.1213 15.7981 27.1096 15.8027 27.0989C15.8073 27.0883 15.8144 27.079 15.8232 27.0719C15.9335 26.9842 16.042 26.8939 16.1485 26.801C16.1578 26.7929 16.1691 26.7876 16.1811 26.7859C16.1931 26.7842 16.2053 26.7861 16.2163 26.7913C19.6531 28.4578 23.3739 28.4578 26.7699 26.7913C26.781 26.7857 26.7933 26.7836 26.8055 26.7852C26.8177 26.7867 26.8292 26.7919 26.8387 26.8002C26.9452 26.8936 27.054 26.9842 27.1648 27.0719C27.1737 27.0789 27.1807 27.0881 27.1854 27.0988C27.1901 27.1094 27.1923 27.1211 27.1917 27.1328C27.1911 27.1445 27.1878 27.1559 27.1821 27.166C27.1764 27.176 27.1685 27.1844 27.159 27.1905C26.6356 27.5151 26.0874 27.7922 25.5201 28.0188C25.5113 28.0224 25.5033 28.0279 25.4966 28.035C25.4899 28.0421 25.4847 28.0505 25.4814 28.0599C25.478 28.0692 25.4765 28.0792 25.477 28.0892C25.4776 28.0992 25.4801 28.109 25.4844 28.1179C25.7986 28.7624 26.1568 29.3815 26.5563 29.9703C26.5644 29.9824 26.5759 29.9914 26.5891 29.9962C26.6023 30.001 26.6166 30.0012 26.63 29.9968C28.5187 29.3828 30.295 28.4308 31.8822 27.1817C31.8899 27.1758 31.8964 27.1681 31.9011 27.1592C31.9058 27.1504 31.9087 27.1406 31.9095 27.1304C32.3475 22.3195 31.1762 18.1405 28.8047 14.4358ZM18.0176 24.5957C16.9828 24.5957 16.1303 23.5868 16.1303 22.3478C16.1303 21.1088 16.9663 20.0998 18.0176 20.0998C19.077 20.0998 19.9213 21.1175 19.9048 22.3477C19.9048 23.5868 19.0687 24.5957 18.0176 24.5957ZM24.9954 24.5957C23.9608 24.5957 23.1082 23.5868 23.1082 22.3478C23.1082 21.1088 23.9442 20.0998 24.9954 20.0998C26.055 20.0998 26.8993 21.1175 26.8827 22.3477C26.8827 23.5868 26.055 24.5957 24.9954 24.5957Z" fill="white" />
-                </svg>
-              </div>
-              <div className={classNames(styles.socialLink)}>
-                <svg width="32" height="32" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="1024" height="1024" rx="179.649" fill="none"/>
-                  <path d="M836.115 244.625L836.923 244.448V238.195H672.014L518.891 598.084L365.768 238.195H188.059V244.448L188.857 244.625C218.957 251.419 234.239 261.551 234.239 298.091V725.872C234.239 762.412 218.898 772.544 188.798 779.338L188 779.516V785.788H308.57V779.535L307.773 779.358C277.672 772.564 262.39 762.432 262.39 725.892V322.905L459.093 785.788H470.249L672.683 309.996V736.457C670.104 765.317 654.96 774.228 627.705 780.382L626.897 780.569V786.773H836.923V780.569L836.115 780.382C808.831 774.228 793.322 765.317 790.743 736.457L790.605 298.091H790.743C790.743 261.551 806.024 251.419 836.115 244.625Z" fill="white" />
                 </svg>
               </div>
             </div>

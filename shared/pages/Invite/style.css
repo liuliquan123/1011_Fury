@@ -8,10 +8,10 @@
     .text {
       color: #FFF;
       font-family: "Jersey10";
-      font-size: 120px;
+      font-size: 72px;
       font-style: normal;
       font-weight: 400;
-      line-height: 140px;
+      line-height: 84px;
       text-align: center;
     }
 
@@ -148,6 +148,7 @@
               .code {
                 display: flex;
                 align-items: center;
+                gap: 10px;
 
                 .label {
                   color: #A7ADB9;
@@ -302,6 +303,66 @@
                 line-height: 24px;
               }
             }
+          }
+        }
+      }
+    }
+  }
+
+  .section {
+    &.questions {
+      margin-bottom: 60px;
+
+      .sectionTitle {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 36px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 44px;
+        margin-bottom: 20px;
+      }
+
+      .sectionContent {
+        background: #232326;
+
+        .question {
+          padding: 20px;
+          cursor: pointer;
+
+          .questionTitle {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            .questionTitleText {
+              color: #FFF;
+              font-family: "Google Sans Code";
+              font-size: 22px;
+              font-style: normal;
+              font-weight: 600;
+              line-height: 32px;
+            }
+
+            .questionTitleIcon {
+              width: 20px;
+              height: 20px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .questionContent {
+            margin-top: 20px;
+            padding: 10px;
+            background: #141519;
+            color: #A7ADB9;
+            font-family: "Google Sans Code";
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 24px;
           }
         }
       }
@@ -801,6 +862,153 @@
                   font-size: 11px;
                 }
               }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .invite {
+    padding: 16px;
+
+    .title {
+      margin-bottom: 40px;
+
+      .text {
+        font-size: 48px;
+        line-height: 56px;
+      }
+
+      .description {
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .buttons {
+        .button {
+          font-size: 14px;
+          padding: 12px 16px;
+        }
+      }
+    }
+
+    .content {
+      .user {
+        padding: 16px;
+
+        .top {
+          margin-bottom: 12px;
+
+          .text {
+            font-size: 16px;
+          }
+        }
+
+        .bottom {
+          .box {
+            padding: 12px;
+            gap: 12px;
+
+            .logo {
+              width: 60px;
+              height: 60px;
+              border-radius: 30px;
+            }
+
+            .info {
+              gap: 10px;
+
+              .name {
+                font-size: 24px;
+                line-height: 24px;
+              }
+
+              .code {
+                gap: 6px;
+
+                .label {
+                  font-size: 12px;
+                }
+
+                .value {
+                  font-size: 16px;
+                  line-height: 20px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .statistic {
+        padding: 16px;
+
+        .top {
+          margin-bottom: 12px;
+          gap: 10px;
+
+          .text {
+            font-size: 16px;
+          }
+
+          .subtext {
+            font-size: 13px;
+          }
+
+          .description {
+            font-size: 11px;
+          }
+        }
+
+        .bottom {
+          .list {
+            gap: 10px;
+
+            .listItem {
+              padding: 10px;
+
+              .listItemNumber {
+                font-size: 24px;
+                line-height: 24px;
+              }
+
+              .listItemName {
+                font-size: 11px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .section {
+      &.questions {
+        margin-bottom: 40px;
+
+        .sectionTitle {
+          font-size: 28px;
+          line-height: 36px;
+          margin-bottom: 16px;
+        }
+
+        .sectionContent {
+          .question {
+            padding: 16px;
+
+            .questionTitle {
+              .questionTitleText {
+                font-size: 18px;
+                line-height: 24px;
+              }
+            }
+
+            .questionContent {
+              font-size: 14px;
+              line-height: 20px;
+              padding: 8px;
             }
           }
         }

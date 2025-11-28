@@ -136,10 +136,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     actions.getExchangePhase({ exchange: getExchangeName(exchangeType) })
   }, [])
 
-  console.log('exchangePhase', exchangePhase, phase, ocrForm)
-  console.log('isLoggedIn', isLoggedIn, profile)
-  console.log('phaseLocked', phasesLocked, getExchangeName(exchangeType), !!phaseLocked)
-
   const openModal = useCallback(() => {
     setIsOpen(true)
   }, [])
@@ -172,7 +168,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     setUploadError(false)
     const previewUrl = URL.createObjectURL(file)
     setPreviewUrl(previewUrl)
-    console.log('set file', file, previewUrl)
   }, [])
 
   const uploadFile = useCallback(() => {
@@ -192,7 +187,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   }, [file, isLoggedIn])
 
   const submitLoss = useCallback(() => {
-    console.log('submit isLoggedIn', isLoggedIn)
     if (!isLoggedIn) {
       setIsOpen(true)
     } else {
@@ -247,12 +241,12 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
         <Fragment>
           <div className={styles.stepOne}>
             <div className={styles.title}>
-              Submit Your Loss - Step 1
+              Step 1: Name the Exchange
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
                 <div className={styles.sectionTitle}>
-                  Select Exchange
+                  Exchanges currently eligible for claims
                 </div>
                 <div className={styles.exchanges}>
                   <div
@@ -345,15 +339,13 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
         <Fragment>
           <div className={styles.stepTwo}>
             <div className={styles.title}>
-              Submit Your Loss - Step 2
+              Step 2: Gather Your Proof
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
-                <div className={styles.sectionTitle}>
-                  How to Get Your Loss Screenshot
-                </div>
                 <div className={styles.sectionDescription}>
-                  Follow these steps to capture your trading loss evidence from Binance.
+                  <strong>Tips For Evidence Gathering</strong><br />
+                  Follow these steps to capture your trading loss evidence from CEX and submit.
                 </div>
                 <div className={styles.sectionSteps}>
                   <div className={styles.sectionStep}>
@@ -412,53 +404,21 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 </div>
                 <div className={styles.warning}>
                   <div className={styles.warningTitle}>
-                    Important Requirements
+                    Kindly Reminders
                   </div>
                   <div className={styles.warningContent}>
                     <div className={styles.warningContentItem}>
-                      Screenshot must show leverage trading (≥1x leverage)
+                      1. Only image uploads are supported for now.
                     </div>
                     <div className={styles.warningContentItem}>
-                      Must show negative PNL (loss, not profit)
+                      2. The screenshot must clearly show negative PnL (a real loss).
                     </div>
                     <div className={styles.warningContentItem}>
-                      Must include exchange name, timestamp, and amounts
+                      3. Blurry, cropped, or edited images may fail verification.
                     </div>
-                    <div className={styles.warningContentItem}>
+                    {/* <div className={styles.warningContentItem}>
                       Use "Share Order" feature for best OCR recognition
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.questions}>
-              <div className={styles.questionsTitle}>
-                What Happens Next?
-              </div>
-              <div className={styles.list}>
-                <div className={styles.listItem}>
-                  <div className={styles.listItemTitle}>
-                    AI-Powered Recognition
-                  </div>
-                  <div className={styles.listItemDescritipn}>
-                    Our AI will automatically extract trading details from your screenshot
-                  </div>
-                </div>
-                <div className={styles.listItem}>
-                  <div className={styles.listItemTitle}>
-                    Review & Submit
-                  </div>
-                  <div className={styles.listItemDescritipn}>
-                    You'll have a chance to review and edit the extracted information
-                  </div>
-                </div>
-                <div className={styles.listItem}>
-                  <div className={styles.listItemTitle}>
-                    Get Your Token
-                  </div>
-                  <div className={styles.listItemDescritipn}>
-                    After approval, receive your exchange-specific token with unlock benefits
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -482,12 +442,12 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
         <Fragment>
           <div className={styles.stepThree}>
             <div className={styles.title}>
-              Submit Your Loss - Step 3
+              Step 3: Send Your Proof
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
                 <div className={styles.sectionTitle}>
-                  Upload Evidence
+                  Upload Your Photo
                 </div>
                 <div className={styles.input}>
                   <input
@@ -507,7 +467,10 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                         Click to upload
                       </div>
                       <div className={styles.inputDescription}>
-                        PNG, JPG up to 10MB • OCR extraction enabled • Single file only
+                        PNG, JPG up to 10MB
+                      </div>
+                      <div className={styles.inputDescription}>
+                        · Single file only
                       </div>
                     </Fragment>
                   )}
@@ -544,8 +507,40 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 <div className={styles.tip}>
                   <div className={styles.tipContent}>
                     <div className={styles.tipContentItem}>
-                      Tip: Our AI will automatically extract trading data from your screenshot. You can review and edit the data in the next step. Only one file can be uploaded.
+                      All evidence is encrypted and saved securely on-chain. Your privacy is protected.
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.questions}>
+              <div className={styles.questionsTitle}>
+                What Happens Next?
+              </div>
+              <div className={styles.list}>
+                <div className={styles.listItem}>
+                  <div className={styles.listItemTitle}>
+                    1. AI Evidence Check
+                  </div>
+                  <div className={styles.listItemDescritipn}>
+                    AI will verify whether your screenshot is valid.
+                  </div>
+                </div>
+                <div className={styles.listItem}>
+                  <div className={styles.listItemTitle}>
+                    2. Confirm & Submit
+                  </div>
+                  <div className={styles.listItemDescritipn}>
+                    If AI passes, confirm extracted details and submit to file your case.
+                  </div>
+                </div>
+                <div className={styles.listItem}>
+                  <div className={styles.listItemTitle}>
+                    3. Waiting For Claim
+                  </div>
+                  <div className={styles.listItemDescritipn}>
+                    Get the exchange-specific token — tradable and tied to future case payouts.
                   </div>
                 </div>
               </div>
@@ -571,12 +566,12 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
         <Fragment>
           <div className={styles.stepFour}>
             <div className={styles.title}>
-              Submit Your Loss - Step 4
+              Confirm Your Rights
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
                 <div className={styles.sectionTitle}>
-                  Loss Info
+                  Claimed Details
                 </div>
                 <div className={styles.form}>
                   <div className={styles.field}>
