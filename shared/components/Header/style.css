@@ -71,7 +71,7 @@
       font-size: 16px;
       padding: 2px 16px;
       height: 52px;
-      display: flex;
+      display: flex !important;
       align-items: center;
       justify-content: center;
       font-weight: 500;
@@ -267,8 +267,8 @@
   }
   
   .header .mobileLoginButton svg {
-    width: 16px;
-    height: 18px;
+    width: 24px;
+    height: 27px;
   }
 
   .header {

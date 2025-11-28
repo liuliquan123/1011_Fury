@@ -71,6 +71,12 @@ const formatAmount = (amount) => {
   return '$' + formatNumberWithUnit(amount)
 }
 
+// 地址省略显示函数
+const truncateAddress = (address) => {
+  if (!address) return ''
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
 // {
 //   created_at: "2025-11-21T11:18:42.279562+00:00",
 //   exchange: "Binance",
@@ -232,9 +238,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
             <div className={styles.bottom}>
               <div className={styles.list}>
                 <div className={styles.listItem}>
-                  {/* <div className={styles.listItemName}>
+                  <div className={styles.listItemName}>
                     Login Method
-                  </div> */}
+                  </div>
                   <div className={styles.listItemContent}>
                     {profile.login_type}
                   </div>
@@ -243,8 +249,17 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                   <div className={styles.listItemName}>
                     Wallet Address
                   </div>
-                  <div className={styles.listItemContent}>
-                    {profile.wallet_address}
+                  <div 
+                    className={styles.listItemContent} 
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      if (profile.wallet_address) {
+                        navigator.clipboard.writeText(profile.wallet_address)
+                        toast('Address copied!')
+                      }
+                    }}
+                  >
+                    {truncateAddress(profile.wallet_address)}
                   </div>
                 </div>
                 <div className={styles.listItem}>
@@ -354,7 +369,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                       : '--'}
                   </div>
                   <div className={styles.listItemName}>
-                    Total Loss Amount
+                    Loss Amount
                   </div>
                 </div>
                 <div className={styles.listItem}>
