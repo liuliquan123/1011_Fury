@@ -232,6 +232,16 @@
     display: none;
   }
 
+  .header .mobileLoginButton {
+    display: flex !important;
+    padding: 8px 16px;
+    font-size: 14px;
+    height: 40px;
+    background: #E4FF00;
+    color: #000;
+    border: 1px solid #000;
+  }
+
   .header {
     .topMenu {
       display: none;
@@ -250,3 +260,4 @@
     }
   }
 }
+

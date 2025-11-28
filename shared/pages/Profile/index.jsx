@@ -357,7 +357,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemNumber}>
-                    {formatAmount((submissions && submissions.statistics && submissions.statistics.total_loss_amount) || 0)}
+                    {(submissions && submissions.statistics && submissions.statistics.total_loss_amount) 
+                      ? formatAmount(submissions.statistics.total_loss_amount) 
+                      : '--'}
                   </div>
                   <div className={styles.listItemName}>
                     Evidence

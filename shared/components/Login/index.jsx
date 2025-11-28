@@ -507,10 +507,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         </div>
       )}
       <div className={styles.title}>
-        One more step to claim the token
+        They Took Control. We Take It Back
       </div>
       <div className={styles.subtitle}>
-        Join thousands fighting for justice
+        Login to continue
       </div>
       <div className={styles.form}>
         <div className={classNames(styles.field, styles.referral)}>
@@ -526,7 +526,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
             />
             {!referralCode && (
               <div className={styles.placeholder}>
-                Enter referral code
+                Advocate’s Code
               </div>
             )}
           </div>
@@ -557,6 +557,9 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       <div className={styles.separator}>
         <div className={styles.separatorLine}></div>
         <div className={styles.separatorText}>or</div>
+      </div>
+      <div className={styles.loginMethodLabel}>
+        Login Method
       </div>
       <div className={styles.providers}>
         {showEmailInput && (

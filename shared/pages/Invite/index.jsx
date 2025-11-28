@@ -109,14 +109,14 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
     <div className={styles.invite}>
       <div className={styles.title}>
         <div className={styles.text}>
-          You’ve Been Invited!
+          {info.referrer.username || 'Someone'} wants you to take back what's yours.
         </div>
         <div className={styles.description}>
-          Join with referral code: {referralCode}
+          Submit your loss, claim your rights, and join the fight.
         </div>
         <div className={styles.buttons}>
           <Link className={styles.button} to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}>
-            Create New Case
+            Submit My Proof
           </Link>
         </div>
       </div>
@@ -131,16 +131,20 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
                 <div className={styles.logo}></div>
 
                 <div className={styles.info}>
+                  <div className={styles.label}>Called by</div>
                   <div className={styles.name}>
                     {info.referrer.username}
                   </div>
                   <div className={styles.code}>
                     <div className={styles.label}>
-                      Referral Code：
+                      Advocate Code
                     </div>
                     <div className={styles.value}>
                       {referralCode}
                     </div>
+                  </div>
+                  <div className={styles.description}>
+                    This case is currently collecting victim evidence. Submit proof and reclaim what's yours.
                   </div>
                 </div>
               </div>
@@ -152,10 +156,10 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
                 Featured Case
               </div>
               <div className={styles.subtext}>
-                Demo： Binance Futures Fee Overcharge(Referral Test Case)
+                {exchangePool.exchange || 'Binance'} - Malicious Liquidation
               </div>
               <div className={styles.description}>
-                This is demonstration case specifically designed to showcase the referral system.**What happened…
+                This case is currently collecting victim evidence. Join others in seeking justice.
               </div>
             </div>
             <div className={styles.bottom}>

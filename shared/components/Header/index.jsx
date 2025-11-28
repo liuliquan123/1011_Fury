@@ -88,8 +88,8 @@ const Header = ({ profile, actions, history }) => {
           </div>
           <div className={classNames(styles.rightArrow)}>{"<"}</div>
         </Link>
-        {!profile.id && false && (
-          <Link className={classNames(styles.button, styles.loginButton)} to={referralCode ? `/login?code=${referralCode}` : '/login'}>
+        {!profile.id && (
+          <Link className={classNames(styles.button, styles.mobileLoginButton)} to={referralCode ? `/login?code=${referralCode}` : '/login'}>
             <div className={classNames(styles.text)}>Login</div>
           </Link>
         )}

@@ -180,10 +180,10 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
     <div className={styles.referral}>
       <div className={styles.title}>
         <div className={styles.text}>
-          REACH 100% PROGRESS
+          Spread the Fury
         </div>
         <div className={styles.description}>
-          Unlock Your Round Reward Now!
+          Ignite action, inspire others, and unlock your rightful value.
         </div>
       </div>
       <div className={styles.content}>
@@ -305,7 +305,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
             </button>
             <button className={styles.copyButton} onClick={handleCopyLink}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.buttonText)}>Copy referral link</div>
+              <div className={classNames(styles.buttonText)}>Copy Advocate Link</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
           </div>
