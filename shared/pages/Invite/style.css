@@ -308,6 +308,66 @@
       }
     }
   }
+
+  .section {
+    &.questions {
+      margin-bottom: 60px;
+
+      .sectionTitle {
+        color: #FFF;
+        font-family: "Google Sans Code";
+        font-size: 36px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 44px;
+        margin-bottom: 20px;
+      }
+
+      .sectionContent {
+        background: #232326;
+
+        .question {
+          padding: 20px;
+          cursor: pointer;
+
+          .questionTitle {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            .questionTitleText {
+              color: #FFF;
+              font-family: "Google Sans Code";
+              font-size: 22px;
+              font-style: normal;
+              font-weight: 600;
+              line-height: 32px;
+            }
+
+            .questionTitleIcon {
+              width: 20px;
+              height: 20px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .questionContent {
+            margin-top: 20px;
+            padding: 10px;
+            background: #141519;
+            color: #A7ADB9;
+            font-family: "Google Sans Code";
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 24px;
+          }
+        }
+      }
+    }
+  }
 }
 
 /* 响应式设计 - 平板设备 */
@@ -804,66 +864,6 @@
               }
             }
           }
-      }
-    }
-  }
-
-  .section {
-    &.questions {
-      margin-bottom: 60px;
-
-      .sectionTitle {
-        color: #FFF;
-        font-family: "Google Sans Code";
-        font-size: 36px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 44px;
-        margin-bottom: 20px;
-      }
-
-      .sectionContent {
-        background: #232326;
-
-        .question {
-          padding: 20px;
-          cursor: pointer;
-
-          .questionTitle {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-
-            .questionTitleText {
-              color: #FFF;
-              font-family: "Google Sans Code";
-              font-size: 22px;
-              font-style: normal;
-              font-weight: 600;
-              line-height: 32px;
-            }
-
-            .questionTitleIcon {
-              width: 20px;
-              height: 20px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-          }
-
-          .questionContent {
-            margin-top: 20px;
-            padding: 10px;
-            background: #141519;
-            color: #A7ADB9;
-            font-family: "Google Sans Code";
-            font-size: 16px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 24px;
-          }
-        }
       }
     }
   }
