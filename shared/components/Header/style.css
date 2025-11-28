@@ -252,7 +252,7 @@
     display: none;
   }
 
-  .header .desktopLoginButton {
+  .header .buttons .desktopLoginButton {
     display: none !important;
   }
 
@@ -260,20 +260,18 @@
     display: none;
   }
 
-  .header .mobileLoginButton {
+  .header .buttons .mobileLoginButton {
     display: flex !important;
-    padding: 8px;
-    width: 40px;
-    height: 40px;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    text-decoration: none;
-    cursor: pointer;
+    padding: 8px !important;
+    width: 40px !important;
+    height: 40px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
   }
   
-  .header .mobileLoginButton svg {
+  .header .buttons .mobileLoginButton svg {
     width: 24px;
     height: 27px;
   }
