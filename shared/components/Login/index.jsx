@@ -512,9 +512,9 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       <div className={styles.subtitle}>
         Register to claim your rights
       </div>
-      <div className={styles.loginMethodLabel}>
+      {/* <div className={styles.loginMethodLabel}>
         Login Method
-      </div>
+      </div> */}
       <div className={styles.providers}>
         {showEmailInput && (
           <div className={styles.provider}>

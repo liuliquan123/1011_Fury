@@ -218,7 +218,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
           Profile
         </div>
         <div className={styles.description}>
-          Manage your account and view your activity
+          They Took Control. We Take It Back
         </div>
       </div>
       <div className={styles.content}>
@@ -232,16 +232,16 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
             <div className={styles.bottom}>
               <div className={styles.list}>
                 <div className={styles.listItem}>
-                  <div className={styles.listItemName}>
-                    Login Type
-                  </div>
+                  {/* <div className={styles.listItemName}>
+                    Login Method
+                  </div> */}
                   <div className={styles.listItemContent}>
                     {profile.login_type}
                   </div>
                 </div>
                 <div className={styles.listItem}>
                   <div className={styles.listItemName}>
-                    Wallet
+                    Wallet Address
                   </div>
                   <div className={styles.listItemContent}>
                     {profile.wallet_address}
@@ -292,7 +292,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     </div>
                     <div className={styles.tokenLockTime}>
                       <div className={styles.tokenLockTimeName}>
-                        Remaining
+                        Unlocks in
                       </div>
                       <div className={styles.tokenLockTimeContent}>
                         <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
@@ -315,7 +315,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 <div className={styles.actionButtons}>
                   <Link className={styles.actionButton} to="/referral">
                     <div className={classNames(styles.leftArrow)}>{">"}</div>
-                    <div className={classNames(styles.buttonText)}>Accelerate Unlock</div>
+                    <div className={classNames(styles.buttonText)}>Boost Unlock</div>
                     <div className={classNames(styles.rightArrow)}>{"<"}</div>
                   </Link>
                   {profile && !profile.wallet_address && (
@@ -362,7 +362,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
                   </div>
                   <div className={styles.listItemName}>
-                    Your Cases Submitted
+                    Cases Submitted
                   </div>
                 </div>
                 <div className={styles.listItem}>

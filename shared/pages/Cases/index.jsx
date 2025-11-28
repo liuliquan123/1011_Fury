@@ -106,7 +106,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                     {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
                   </div>
                   <div className={styles.listItemName}>
-                    Cases Submitted
+                    Total Submitted
                   </div>
                 </div>
                 <div className={styles.listItem}>
@@ -124,7 +124,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                     {(submissions && submissions.statistics && submissions.statistics.total_submissions) || 0}
                   </div>
                   <div className={styles.listItemName}>
-                    Evidence Files
+                    Evidence Submitted
                   </div>
                 </div>
               </div>
@@ -169,7 +169,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                             {submission.loss_amount ? formatAmount(submission.loss_amount) : '--'}
                           </div>
                           <div className={styles.statsListItemName}>
-                            Total Loss Amount
+                            Loss Amount
                           </div>
                         </div>
                         <div className={styles.statsListItem}>
@@ -177,7 +177,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                             {submission.file_urls.length}
                           </div>
                           <div className={styles.statsListItemName}>
-                            Evidence
+                            Evidence Files
                           </div>
                         </div>
                         <div className={styles.statsListItem}>

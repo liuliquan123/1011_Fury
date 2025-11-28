@@ -106,10 +106,10 @@ const Landing = ({ cases, actions }) => {
       <div className={styles.banner}>
         <div className={styles.content}>
           <div className={styles.title}>
-            They Took Control. We Take It Back.
+            It's decentralized revolution
           </div>
           <div className={styles.text}>
-            Join the decentralized movement that lets users report fraud, share proof, and surface the truth.
+            They Took Control. We Take It Back
           </div>
           <Link className={styles.button} to="/submit-loss">
             <div className={classNames(styles.leftArrow)}>{">"}</div>
@@ -160,7 +160,7 @@ const Landing = ({ cases, actions }) => {
         </div>
         <div className={classNames(styles.section, styles.featured)}>
           <div className={styles.sectionTitle}>
-            _> Featured Cases
+            _> FEATURED CASES
           </div>
           <div className={styles.sectionContent}>
             <div className={styles.cases}>
@@ -282,7 +282,7 @@ const Landing = ({ cases, actions }) => {
         </div>
         <div className={classNames(styles.section, styles.community)}>
           <div className={styles.sectionTitle}>
-            _> Join Our Community
+            _> JOIN OUR COMMUNITY
           </div>
           <div className={styles.sectionContent}>
             <div className={styles.socialAccount}>
@@ -329,7 +329,7 @@ const Landing = ({ cases, actions }) => {
         </div>
         <div className={classNames(styles.section, styles.questions)}>
           <div className={styles.sectionTitle}>
-            _> Decode the Fury
+            _> DECODE THE FURY
           </div>
           <div className={styles.sectionContent}>
             {[
