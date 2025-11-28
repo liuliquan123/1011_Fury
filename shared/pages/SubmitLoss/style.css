@@ -817,6 +817,40 @@
     width: 100%;
   }
 
+  /* Step 4: OCR 表单区域 */
+  .submitLoss .stepFour .title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .submitLoss .stepFour .sections {
+    padding: 20px 12px;
+  }
+
+  .submitLoss .stepFour .sections .section .sectionTitle {
+    font-size: 20px;
+    line-height: 28px;
+    margin-bottom: 16px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field {
+    gap: 12px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field .name {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field .input {
+    min-height: 40px;
+  }
+
+  .submitLoss .stepFour .sections .section .form .field .input input {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+
   /* 按钮区域 */
   .submitLoss .actions {
     flex-direction: row;
