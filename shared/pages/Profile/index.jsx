@@ -344,7 +344,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
 
             <div className={styles.statistic}>
               <div className={styles.statisticTitle}>
-                Overview
+                Account Statistics
               </div>
               <div className={styles.list}>
                 <div className={styles.listItem}>

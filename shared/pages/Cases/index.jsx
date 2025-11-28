@@ -169,7 +169,7 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                             {submission.loss_amount ? formatAmount(submission.loss_amount) : '--'}
                           </div>
                           <div className={styles.statsListItemName}>
-                            Your Loss
+                            Total Loss Amount
                           </div>
                         </div>
                         <div className={styles.statsListItem}>

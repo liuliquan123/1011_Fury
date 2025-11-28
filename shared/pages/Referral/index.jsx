@@ -199,7 +199,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
                   </div>
                   <div className={styles.tokenLockTime}>
                     <div className={styles.tokenLockTimeName}>
-                      Available for withdrawal in
+                      Unlocks in
                     </div>
                     <div className={styles.tokenLockTimeContent}>
                       <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
