@@ -725,10 +725,21 @@ function* claimToken(action) {
   } catch (error) {
     console.error('claimToken error:', error)
 
-    // 解析错误消息
+    // 解析错误消息 - 兼容字符串和对象类型
     let errorMessage = 'Claim failed'
-    const errorStr = error.message || ''
+    let errorStr = ''
+    
+    // 处理不同类型的错误消息
+    if (typeof error.message === 'string') {
+      errorStr = error.message
+    } else if (typeof error.message === 'object' && error.message !== null) {
+      // API 返回的错误可能是 { error: "message" } 格式
+      errorStr = error.message.error || error.message.message || JSON.stringify(error.message)
+    } else if (typeof error === 'string') {
+      errorStr = error
+    }
 
+    // 根据错误内容返回友好的提示
     if (errorStr.includes('SignatureExpired')) {
       errorMessage = 'Signature expired. Please try again.'
     } else if (errorStr.includes('InvalidNonce')) {
@@ -747,6 +758,8 @@ function* claimToken(action) {
       errorMessage = 'Your tokens are still locked.'
     } else if (errorStr.includes('Wallet address not found')) {
       errorMessage = 'Please connect your wallet first.'
+    } else if (errorStr.includes('500') || errorStr.includes('Internal Server Error')) {
+      errorMessage = 'Server error. The claim API may not be deployed yet.'
     } else if (errorStr) {
       errorMessage = errorStr
     }
