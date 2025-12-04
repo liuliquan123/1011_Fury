@@ -150,6 +150,10 @@ function* waitWeb3AuthReady() {
   }
 
   console.log('[Web3Auth] ready, status:', web3auth.status)
+
+  // 4. 额外等待让 connectors 初始化完成（参考 linkWallet 的 2 秒等待）
+  yield delay(2000)
+  console.log('[Web3Auth] connectors should be ready now')
 }
 
 /**
