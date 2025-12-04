@@ -151,8 +151,9 @@ function* waitWeb3AuthReady() {
 
   console.log('[Web3Auth] ready, status:', web3auth.status)
 
-  // 4. 额外等待让 connectors 初始化完成（参考 linkWallet 的 2 秒等待）
-  yield delay(2000)
+  // 4. 额外等待让 connectors 初始化完成
+  // 如果之前执行了 logout，需要等待更长时间
+  yield delay(3000)
   console.log('[Web3Auth] connectors should be ready now')
 }
 
@@ -196,6 +197,18 @@ function* switchToTargetChain(provider) {
       throw switchError
     }
   }
+}
+
+/**
+ * 判断是否是临时性连接错误（可以重试）
+ * @param {Error} err - 错误对象
+ * @returns {boolean} 是否可重试
+ */
+const isTransientConnectError = (err) => {
+  const msg = (err?.message || '').toLowerCase()
+  return msg.includes('wallet connector is not ready yet') ||
+         msg.includes('adapter not ready') ||
+         msg.includes('not ready')
 }
 
 function* web3AuthLogin(web3auth, data) {
@@ -737,15 +750,46 @@ function* claimToken(action) {
       provider = web3auth.provider
       console.log('claimToken: Using existing provider')
     } else {
-      // 没有连接 → 走 connectTo
+      // 没有连接 → 走 connectTo（带重试逻辑）
       console.log('claimToken: Connecting to MetaMask with chainId:', CHAIN_ID_HEX)
-      provider = yield apply(web3auth, web3auth.connectTo, [
-        WALLET_CONNECTORS.METAMASK, {
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: CHAIN_ID_HEX,
-          rpcTarget: RPC_URL,
+      
+      let retryCount = 0
+      const maxRetries = 3
+      
+      while (retryCount < maxRetries) {
+        try {
+          provider = yield apply(web3auth, web3auth.connectTo, [
+            WALLET_CONNECTORS.METAMASK, {
+              chainNamespace: CHAIN_NAMESPACES.EIP155,
+              chainId: CHAIN_ID_HEX,
+              rpcTarget: RPC_URL,
+            }
+          ])
+          break // 成功则跳出循环
+        } catch (connectError) {
+          const code = connectError?.code
+          
+          // 用户拒绝：不重试，直接抛出
+          if (code === 4001) {
+            throw new Error('User rejected wallet connection.')
+          }
+          
+          // 不属于"临时错误"：也不重试
+          if (!isTransientConnectError(connectError)) {
+            throw connectError
+          }
+          
+          retryCount++
+          console.log(`[Wallet] Connection attempt ${retryCount} failed:`, connectError.message)
+          
+          if (retryCount >= maxRetries) {
+            throw connectError
+          }
+          
+          yield delay(1000)
+          console.log(`[Wallet] Retrying connection (${retryCount}/${maxRetries})...`)
         }
-      ])
+      }
     }
 
     if (!provider) {
@@ -801,6 +845,15 @@ function* claimToken(action) {
       throw new Error(`No contract address configured for ${exchange}`)
     }
 
+    // 6.5 检查签名是否快过期（离过期不足 1 分钟则提前报错）
+    const now = Math.floor(Date.now() / 1000)
+    const deadline = Number(claimData.deadline)
+    
+    if (deadline - now < 60) {
+      throw new Error('Signature is about to expire. Please try again to get a fresh claim.')
+    }
+    
+    console.log('claimToken: Signature valid, time remaining:', deadline - now, 'seconds')
     console.log('claimToken: Calling contract', { contractAddress, exchange })
 
     const contract = new ethers.Contract(contractAddress, SIGNATURE_CLAIM_ABI, signer)
@@ -866,6 +919,15 @@ function* claimToken(action) {
       errorMessage = 'Please connect your wallet first.'
     } else if (errorStr.includes('500') || errorStr.includes('Internal Server Error')) {
       errorMessage = 'Server error. The claim API may not be deployed yet.'
+    } else if (errorStr.includes('0x1f2a2005')) {
+      // 合约自定义错误：签名过期
+      errorMessage = 'Transaction failed. Your signature may have expired. Please try again.'
+    } else if (errorStr.includes('execution reverted')) {
+      // 其他合约 revert 错误
+      errorMessage = 'Transaction reverted on-chain. Please check your network and try again.'
+    } else if (errorStr.includes('about to expire')) {
+      // 前端 deadline pre-check 错误
+      errorMessage = 'Signature is about to expire. Please try again to get a fresh claim.'
     } else if (errorStr) {
       errorMessage = errorStr
     }
