@@ -14,7 +14,7 @@ export const CHAIN_CONFIG = {
     chainId: '0x14A34', // 84532 十六进制
     chainName: 'Base Sepolia',
     nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: ['https://sepolia.base.org'],
+    rpcUrls: ['https://base-sepolia.g.alchemy.com/v2/FZyIRZ0HcoRTVgwCW8PV4'],
     blockExplorerUrls: ['https://sepolia.basescan.org'],
   },
   8453: {
