@@ -22,6 +22,8 @@ import { createClient } from "@supabase/supabase-js"
 import * as actions from 'actions/auth'
 import * as api from 'api/supabase'
 import { ethers } from 'ethers'
+import { CHAIN_ID, getSignatureClaimAddress } from 'config/contracts'
+import SIGNATURE_CLAIM_ABI from 'config/abi/signatureClaim.json'
 
 const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k"
 const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
@@ -164,11 +166,11 @@ function* authByWallet(action) {
     if (isWalletBrowser) {
       yield apply(web3auth, web3auth.connect)
     } else {
-      yield apply(web3auth, web3auth.connectTo, [
-        WALLET_CONNECTORS.METAMASK, {
-          chainNamespace: CHAIN_NAMESPACES.EIP155
-        }
-      ])
+    yield apply(web3auth, web3auth.connectTo, [
+      WALLET_CONNECTORS.METAMASK, {
+        chainNamespace: CHAIN_NAMESPACES.EIP155
+      }
+    ])
     }
 
     // yield apply(web3auth, web3auth.connect)
@@ -378,9 +380,9 @@ function* uploadEvidenceOcr(action) {
 
     // 检查 OCR 是否成功
     if (evidenceResponse.data.ocr) {
-      evidenceResponse.data.ocr.user_note = ''
-      yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
-      onSuccess()
+    evidenceResponse.data.ocr.user_note = ''
+    yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
+    onSuccess()
     } else {
       // OCR 失败，传递 ocr_details
       const errorDetails = evidenceResponse.data.ocr_details || evidenceResponse.data.ocr_error || 'OCR verification failed'
@@ -603,6 +605,156 @@ function* getCases(action) {
   }
 }
 
+/**
+ * Claim Token - 领取已解锁的 Token
+ * 流程：
+ * 1. 调用后端获取签名
+ * 2. 连接钱包获取 provider
+ * 3. 校验链 ID
+ * 4. 调用合约 claim 函数
+ * 5. 等待交易确认
+ * 6. 刷新用户数据
+ */
+function* claimToken(action) {
+  const { exchange, onSuccess, onError, onStatusChange } = action.payload
+
+  try {
+    // 通知状态变化：开始获取签名
+    if (onStatusChange) onStatusChange('signing')
+
+    // 1. 获取后端签名
+    const authToken = localStorage.getItem('auth_token')
+    if (!authToken) {
+      throw new Error('Please login first')
+    }
+
+    const signatureResponse = yield call(api.claimSignature, { exchange }, {
+      requireAuth: true,
+      tokenFetcher: () => authToken
+    })
+
+    if (!signatureResponse.success) {
+      throw new Error(signatureResponse.error || 'Failed to get claim signature')
+    }
+
+    const { claimData, signature } = signatureResponse.data
+    console.log('claimToken: Got signature', { claimData, signature })
+
+    // 通知状态变化：开始连接钱包
+    if (onStatusChange) onStatusChange('connecting')
+
+    // 2. 确保 Web3Auth 已初始化
+    if (!web3auth || web3auth.status !== 'connected') {
+      yield call(initWeb3Auth, { payload: {
+        onSuccess: () => {},
+        onError: () => {},
+      }})
+      yield delay(1000)
+    }
+
+    // 3. 连接钱包获取 provider
+    let provider
+    if (web3auth.status === 'connected') {
+      provider = web3auth.provider
+    } else {
+      provider = yield apply(web3auth, web3auth.connectTo, [
+        WALLET_CONNECTORS.METAMASK, {
+          chainNamespace: CHAIN_NAMESPACES.EIP155
+        }
+      ])
+    }
+
+    if (!provider) {
+      throw new Error('Failed to connect wallet')
+    }
+
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    const signerAddress = yield apply(signer, signer.getAddress)
+
+    console.log('claimToken: Wallet connected', { signerAddress })
+
+    // 4. 验证钱包地址匹配
+    if (signerAddress.toLowerCase() !== claimData.claimer.toLowerCase()) {
+      throw new Error('Wallet address mismatch. Please use the same wallet as your profile.')
+    }
+
+    // 5. 校验链 ID
+    const network = yield apply(ethersProvider, ethersProvider.getNetwork)
+    const currentChainId = Number(network.chainId)
+    if (currentChainId !== CHAIN_ID) {
+      throw new Error(`Please switch to Base Sepolia (Chain ID: ${CHAIN_ID}). Current: ${currentChainId}`)
+    }
+
+    // 通知状态变化：发送交易
+    if (onStatusChange) onStatusChange('claiming')
+
+    // 6. 获取合约地址并创建合约实例
+    const contractAddress = getSignatureClaimAddress(exchange)
+    if (!contractAddress) {
+      throw new Error(`No contract address configured for ${exchange}`)
+    }
+
+    console.log('claimToken: Calling contract', { contractAddress, exchange })
+
+    const contract = new ethers.Contract(contractAddress, SIGNATURE_CLAIM_ABI, signer)
+
+    // 7. 调用合约 claim 函数
+    // ClaimRequest struct: [claimer, amount, nonce, deadline]
+    const tx = yield apply(contract, contract.claim, [
+      [claimData.claimer, claimData.amount, claimData.nonce, claimData.deadline],
+      signature
+    ])
+
+    console.log('claimToken: Transaction sent', { hash: tx.hash })
+
+    // 8. 等待交易确认
+    if (onStatusChange) onStatusChange('confirming')
+    const receipt = yield apply(tx, tx.wait)
+
+    console.log('claimToken: Transaction confirmed', { 
+      hash: receipt.hash,
+      blockNumber: receipt.blockNumber 
+    })
+
+    // 9. 刷新用户数据
+    yield put(actions.getProfile())
+
+    onSuccess({ txHash: receipt.hash })
+
+  } catch (error) {
+    console.error('claimToken error:', error)
+
+    // 解析错误消息
+    let errorMessage = 'Claim failed'
+    const errorStr = error.message || ''
+
+    if (errorStr.includes('SignatureExpired')) {
+      errorMessage = 'Signature expired. Please try again.'
+    } else if (errorStr.includes('InvalidNonce')) {
+      errorMessage = 'Invalid nonce. Please refresh and try again.'
+    } else if (errorStr.includes('InsufficientPoolBalance')) {
+      errorMessage = 'Pool balance insufficient. Please contact support.'
+    } else if (errorStr.includes('ClaimerMismatch')) {
+      errorMessage = 'Wallet address does not match.'
+    } else if (errorStr.includes('InvalidSignature')) {
+      errorMessage = 'Invalid signature. Please try again.'
+    } else if (errorStr.includes('user rejected') || errorStr.includes('User denied')) {
+      errorMessage = 'Transaction rejected by user.'
+    } else if (errorStr.includes('Already claimed')) {
+      errorMessage = 'You have already claimed your tokens.'
+    } else if (errorStr.includes('still locked')) {
+      errorMessage = 'Your tokens are still locked.'
+    } else if (errorStr.includes('Wallet address not found')) {
+      errorMessage = 'Please connect your wallet first.'
+    } else if (errorStr) {
+      errorMessage = errorStr
+    }
+
+    onError(errorMessage)
+  }
+}
+
 export default function* authSaga() {
   yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
 
@@ -621,4 +773,5 @@ export default function* authSaga() {
 
   yield takeEvery(String(actions.logout), logout)
   yield takeEvery(String(actions.linkWallet), linkWallet)
+  yield takeEvery(String(actions.claimToken), claimToken)
 }

@@ -145,10 +145,15 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   const exchangeCount = exchangeTypes.length
   const [activeIdx, setActiveIdx] = useState(0)
   const [connectingWallet, setConnectingWallet] = useState(false)
+  const [claimStatus, setClaimStatus] = useState('idle') // idle | signing | connecting | claiming | confirming
   const [date, setDate] = useState(0)
   let reward = !!exchangeCount ? rewards[activeIdx] : null
   const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
   const [percentage, setPercentage] = useState(getPercentage(reward))
+
+  // 派生变量：空值防御
+  const rewardStatus = reward?.status
+  const hasWallet = !!profile?.wallet_address
 
   useEffect(() => {
     const iv = setInterval(() => {
@@ -208,6 +213,49 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
       }
     })
   }, [])
+
+  // Claim Token 处理函数
+  const handleClaim = useCallback((exchange) => {
+    // 防止重复点击
+    if (claimStatus !== 'idle') return
+
+    if (!profile?.wallet_address) {
+      toast('Please connect your wallet first')
+      return
+    }
+
+    actions.claimToken({
+      exchange,
+      onStatusChange: (status) => {
+        setClaimStatus(status)
+      },
+      onSuccess: ({ txHash }) => {
+        toast('Claim successful!')
+        setClaimStatus('idle')
+        // getProfile 会在 saga 中自动调用，刷新数据后按钮会变成 Claimed
+      },
+      onError: (message) => {
+        toast(message || 'Claim failed')
+        setClaimStatus('idle')
+      },
+    })
+  }, [claimStatus, profile?.wallet_address, actions])
+
+  // 获取 Claim 按钮文案
+  const getClaimButtonText = () => {
+    switch (claimStatus) {
+      case 'signing':
+        return 'Getting Signature...'
+      case 'connecting':
+        return 'Connecting Wallet...'
+      case 'claiming':
+        return 'Sending Transaction...'
+      case 'confirming':
+        return 'Confirming...'
+      default:
+        return 'Claim'
+    }
+  }
 
   return (
     <div className={styles.profile}>
@@ -320,17 +368,55 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                   </div>
                 </div>
                 <div className={styles.actionButtons}>
-                  <Link className={styles.actionButton} to="/referral">
-                    <div className={classNames(styles.leftArrow)}>{">"}</div>
-                    <div className={classNames(styles.buttonText)}>Boost Unlock</div>
-                    <div className={classNames(styles.rightArrow)}>{"<"}</div>
-                  </Link>
-                  {profile && !profile.wallet_address && (
-                    <button className={classNames(styles.actionButtonDark, {
-                      [styles.disabled]: connectingWallet
-                    })} onClick={linkWallet}>
+                  {/* 状态: locked - 显示 Boost Unlock */}
+                  {rewardStatus === 'locked' && (
+                    <Link className={styles.actionButton} to="/referral">
                       <div className={classNames(styles.leftArrow)}>{">"}</div>
-                      <div className={classNames(styles.buttonText)}>{connectingWallet ? 'Connecting Wallet' : 'Connect Wallet'}</div>
+                      <div className={classNames(styles.buttonText)}>Boost Unlock</div>
+                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                    </Link>
+                  )}
+
+                  {/* 状态: unlocked + 无钱包 - 显示 Connect Wallet */}
+                  {rewardStatus === 'unlocked' && !hasWallet && (
+                    <button 
+                      className={classNames(styles.actionButton, {
+                        [styles.disabled]: connectingWallet
+                      })} 
+                      onClick={linkWallet}
+                      disabled={connectingWallet}
+                    >
+                      <div className={classNames(styles.leftArrow)}>{">"}</div>
+                      <div className={classNames(styles.buttonText)}>
+                        {connectingWallet ? 'Connecting...' : 'Connect Wallet'}
+                      </div>
+                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                    </button>
+                  )}
+
+                  {/* 状态: unlocked + 有钱包 - 显示 Claim */}
+                  {rewardStatus === 'unlocked' && hasWallet && (
+                    <button
+                      className={classNames(styles.actionButton, {
+                        [styles.disabled]: claimStatus !== 'idle'
+                      })}
+                      onClick={() => handleClaim(reward?.exchange)}
+                      disabled={claimStatus !== 'idle'}
+                    >
+                      <div className={classNames(styles.leftArrow)}>{">"}</div>
+                      <div className={classNames(styles.buttonText)}>{getClaimButtonText()}</div>
+                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                    </button>
+                  )}
+
+                  {/* 状态: claimed - 显示 Claimed */}
+                  {rewardStatus === 'claimed' && (
+                    <button 
+                      className={classNames(styles.actionButtonDark, styles.disabled)} 
+                      disabled
+                    >
+                      <div className={classNames(styles.leftArrow)}>{">"}</div>
+                      <div className={classNames(styles.buttonText)}>Claimed ✓</div>
                       <div className={classNames(styles.rightArrow)}>{"<"}</div>
                     </button>
                   )}
