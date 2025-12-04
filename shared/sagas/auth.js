@@ -114,6 +114,44 @@ function* initWeb3Auth(action) {
   }
 }
 
+/**
+ * 等待 Web3Auth 初始化完成
+ * 用于 claimToken 和 linkWallet 共用的钱包连接前置逻辑
+ */
+function* waitWeb3AuthReady() {
+  // 1. 仅在未初始化时才 init
+  if (!web3auth || web3auth.status === 'not_ready' || web3auth.status === 'errored') {
+    yield call(initWeb3Auth, {
+      payload: {
+        onSuccess: () => {},
+        onError: () => {},
+      },
+    })
+  }
+
+  // 2. 等待 Web3Auth 变成 ready / connected
+  let waitCount = 0
+  const maxWait = 10 // 最多等 5 秒 (10 * 500ms)
+
+  while (
+    web3auth &&
+    web3auth.status !== 'ready' &&
+    web3auth.status !== 'connected' &&
+    waitCount < maxWait
+  ) {
+    console.log('[Web3Auth] waiting, status:', web3auth.status)
+    yield delay(500)
+    waitCount++
+  }
+
+  // 3. 超时或失败兜底
+  if (!web3auth || (web3auth.status !== 'ready' && web3auth.status !== 'connected')) {
+    throw new Error('Web3Auth initialization timeout. Please refresh and try again.')
+  }
+
+  console.log('[Web3Auth] ready, status:', web3auth.status)
+}
+
 function* web3AuthLogin(web3auth, data) {
   const web3AuthResponse = yield apply(web3auth, web3auth.getIdentityToken)
   const web3AuthToken = web3AuthResponse.idToken
@@ -643,20 +681,18 @@ function* claimToken(action) {
     // 通知状态变化：开始连接钱包
     if (onStatusChange) onStatusChange('connecting')
 
-    // 2. 确保 Web3Auth 已初始化
-    if (!web3auth || web3auth.status !== 'connected') {
-      yield call(initWeb3Auth, { payload: {
-        onSuccess: () => {},
-        onError: () => {},
-      }})
-      yield delay(1000)
-    }
+    // 2. 等待 Web3Auth 初始化完成（使用公共辅助函数）
+    yield call(waitWeb3AuthReady)
 
     // 3. 连接钱包获取 provider
     let provider
-    if (web3auth.status === 'connected') {
+    if (web3auth.status === 'connected' && web3auth.provider) {
+      // 已经有连接（connected + provider）→ 直接复用
       provider = web3auth.provider
+      console.log('claimToken: Using existing provider')
     } else {
+      // 没有连接 → 走 connectTo
+      console.log('claimToken: Connecting to MetaMask...')
       provider = yield apply(web3auth, web3auth.connectTo, [
         WALLET_CONNECTORS.METAMASK, {
           chainNamespace: CHAIN_NAMESPACES.EIP155
