@@ -22,7 +22,7 @@ import { createClient } from "@supabase/supabase-js"
 import * as actions from 'actions/auth'
 import * as api from 'api/supabase'
 import { ethers } from 'ethers'
-import { CHAIN_ID, getSignatureClaimAddress } from 'config/contracts'
+import { CHAIN_ID, CHAIN_ID_HEX, RPC_URL, CHAIN_CONFIG, getSignatureClaimAddress } from 'config/contracts'
 import SIGNATURE_CLAIM_ABI from 'config/abi/signatureClaim.json'
 
 const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k"
@@ -150,6 +150,48 @@ function* waitWeb3AuthReady() {
   }
 
   console.log('[Web3Auth] ready, status:', web3auth.status)
+}
+
+/**
+ * 切换到目标网络
+ * 如果用户未添加该网络，自动添加
+ * @param {object} provider - Web3Auth provider
+ */
+function* switchToTargetChain(provider) {
+  const chainConfig = CHAIN_CONFIG[CHAIN_ID]
+  if (!chainConfig) {
+    throw new Error(`Chain ${CHAIN_ID} not configured in CHAIN_CONFIG`)
+  }
+
+  // 防御性检查
+  if (!provider || typeof provider.request !== 'function') {
+    throw new Error('Wallet provider does not support network switching')
+  }
+
+  try {
+    // 尝试切换网络
+    console.log('[Chain] Switching to', chainConfig.chainName, '...')
+    yield apply(provider, provider.request, [{
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: chainConfig.chainId }],
+    }])
+    console.log('[Chain] Switched to', chainConfig.chainName)
+  } catch (switchError) {
+    // 错误码 4902 = 用户钱包中未添加该网络
+    if (switchError.code === 4902) {
+      console.log('[Chain] Network not found, adding...')
+      yield apply(provider, provider.request, [{
+        method: 'wallet_addEthereumChain',
+        params: [chainConfig],
+      }])
+      console.log('[Chain] Network added:', chainConfig.chainName)
+    } else if (switchError.code === 4001) {
+      // 用户拒绝切换
+      throw new Error('User rejected network switch. Please switch to ' + chainConfig.chainName + ' manually.')
+    } else {
+      throw switchError
+    }
+  }
 }
 
 function* web3AuthLogin(web3auth, data) {
@@ -692,10 +734,12 @@ function* claimToken(action) {
       console.log('claimToken: Using existing provider')
     } else {
       // 没有连接 → 走 connectTo
-      console.log('claimToken: Connecting to MetaMask...')
+      console.log('claimToken: Connecting to MetaMask with chainId:', CHAIN_ID_HEX)
       provider = yield apply(web3auth, web3auth.connectTo, [
         WALLET_CONNECTORS.METAMASK, {
-          chainNamespace: CHAIN_NAMESPACES.EIP155
+          chainNamespace: CHAIN_NAMESPACES.EIP155,
+          chainId: CHAIN_ID_HEX,
+          rpcTarget: RPC_URL,
         }
       ])
     }
@@ -704,22 +748,44 @@ function* claimToken(action) {
       throw new Error('Failed to connect wallet')
     }
 
-    const ethersProvider = new ethers.BrowserProvider(provider)
-    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    let ethersProvider = new ethers.BrowserProvider(provider)
+    let signer = yield apply(ethersProvider, ethersProvider.getSigner)
     const signerAddress = yield apply(signer, signer.getAddress)
 
     console.log('claimToken: Wallet connected', { signerAddress })
 
     // 4. 验证钱包地址匹配
     if (signerAddress.toLowerCase() !== claimData.claimer.toLowerCase()) {
-      throw new Error('Wallet address mismatch. Please use the same wallet as your profile.')
+      const expectedShort = `${claimData.claimer.slice(0, 6)}...${claimData.claimer.slice(-4)}`
+      const currentShort = `${signerAddress.slice(0, 6)}...${signerAddress.slice(-4)}`
+      
+      throw new Error(
+        `Wallet mismatch. Current: ${currentShort}, Expected: ${expectedShort}. ` +
+        `Please switch to the correct account in MetaMask.`
+      )
     }
 
-    // 5. 校验链 ID
+    // 5. 校验并自动切换网络
     const network = yield apply(ethersProvider, ethersProvider.getNetwork)
     const currentChainId = Number(network.chainId)
+    
     if (currentChainId !== CHAIN_ID) {
-      throw new Error(`Please switch to Base Sepolia (Chain ID: ${CHAIN_ID}). Current: ${currentChainId}`)
+      console.log(`[Chain] Current: ${currentChainId}, Target: ${CHAIN_ID}, switching...`)
+      
+      // 自动切换到目标网络
+      yield call(switchToTargetChain, provider)
+      
+      // 切换后需要重新创建 provider 和 signer（网络变化后原对象可能失效）
+      ethersProvider = new ethers.BrowserProvider(provider)
+      signer = yield apply(ethersProvider, ethersProvider.getSigner)
+      const newAddress = yield apply(signer, signer.getAddress)
+      
+      // 验证切换后地址仍然一致
+      if (newAddress.toLowerCase() !== signerAddress.toLowerCase()) {
+        throw new Error('Wallet address changed after network switch. Please try again.')
+      }
+      
+      console.log('[Chain] Network switched successfully')
     }
 
     // 通知状态变化：发送交易
