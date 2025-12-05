@@ -1,4 +1,4 @@
-import { createAction } from 'utils/redux-actions'
+import { createAction } from 'redux-actions'
 
 // Crowdfund Actions
 export const fetchCrowdfund = createAction('crowdfund/FETCH')
