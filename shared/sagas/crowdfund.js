@@ -3,8 +3,9 @@ import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import * as actions from 'actions/crowdfund'
 import * as api from 'api/supabase'
-import { RPC_URL, getCrowdfundAddress, CHAIN_CONFIG, CHAIN_ID } from 'config/contracts'
+import { RPC_URL, getCrowdfundAddress, getSignatureClaimETHAddress, CHAIN_CONFIG, CHAIN_ID } from 'config/contracts'
 import CROWDFUND_ABI from 'config/abi/crowdfund.json'
+import SIGNATURE_CLAIM_ETH_ABI from 'config/abi/signatureClaimETH.json'
 import { web3auth } from './auth'
 
 /**
@@ -170,9 +171,40 @@ function* claimRefundSaga({ payload }) {
   const { exchange, onSuccess, onError } = payload
   
   try {
-    // 1. 从后端获取签名
+    yield call(waitWeb3AuthReady)
+    
+    // 获取 Web3Auth provider
+    const provider = web3auth.provider
+    if (!provider) {
+      throw new Error('Wallet not connected')
+    }
+    
+    // 切换网络
+    yield call(switchToTargetChain, provider)
+    
+    // 创建 ethers provider 和 signer
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    const userAddress = yield apply(signer, signer.getAddress)
+    
+    // 获取 SignatureClaimETH 合约
+    const contractAddress = getSignatureClaimETHAddress(exchange)
+    if (!contractAddress) {
+      throw new Error('SignatureClaimETH contract not configured')
+    }
+    const contract = new ethers.Contract(contractAddress, SIGNATURE_CLAIM_ETH_ABI, signer)
+    
+    // 获取用户当前 nonce
+    const nonce = yield call([contract, contract.getNonce], userAddress)
+    console.log('[Crowdfund] User nonce:', nonce.toString())
+    
+    // 从后端获取签名
     const authToken = localStorage.getItem('auth_token')
-    const response = yield call(api.crowdfundRefundSignature, { exchange }, {
+    const response = yield call(api.crowdfundRefundSignature, { 
+      exchange,
+      wallet_address: userAddress,
+      nonce: nonce.toString()
+    }, {
       requireAuth: true,
       tokenFetcher: () => authToken
     })
@@ -181,13 +213,31 @@ function* claimRefundSaga({ payload }) {
       throw new Error(response.error || 'Failed to get refund signature')
     }
     
-    // TODO: 调用 SignatureClaimETH 合约
-    // 需要合约地址和 ABI
+    // 构建 ClaimRequest
+    const request = {
+      claimer: response.claimer,
+      amount: response.amount,
+      nonce: response.nonce,
+      deadline: response.deadline
+    }
     
-    onSuccess && onSuccess()
+    console.log('[Crowdfund] Claiming refund with request:', request)
+    
+    // 调用合约 claim
+    const tx = yield call([contract, contract.claim], request, response.signature)
+    console.log('[Crowdfund] Refund transaction sent:', tx.hash)
+    
+    yield call([tx, tx.wait])
+    console.log('[Crowdfund] Refund transaction confirmed')
+    
+    // 刷新数据
+    yield put(actions.fetchCrowdfund({ exchange }))
+    
+    onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
     console.error('claimRefund error:', error)
-    onError && onError(error.message)
+    const message = error.reason || error.message || 'Refund claim failed'
+    onError && onError(message)
   }
 }
 

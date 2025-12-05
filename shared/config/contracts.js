@@ -40,6 +40,7 @@ export const CONTRACTS = {
   // 测试用（单一合约，用于开发测试）
   test: {
     signatureClaim: '0x0c500663300c053affA1f9f49Ba6846D80693A89',
+    signatureClaimETH: '0x97984818f82B39E91f52dE914810F37922aB27F6', // Base Sepolia SignatureClaimETH (退款)
     crowdfund: '0xf893Db8f7708377120f6B50f78c23Eb17118338f', // Base Sepolia Crowdfund
   },
   // 每个交易所独立的合约地址（待部署）
@@ -83,4 +84,14 @@ export const getCrowdfundAddress = (exchange) => {
 export const getSignatureClaimAddress = (exchange) => {
   // 优先使用交易所专用合约，fallback 到测试合约
   return CONTRACTS[exchange]?.signatureClaim || CONTRACTS.test.signatureClaim
+}
+
+/**
+ * 获取交易所对应的 SignatureClaimETH 合约地址（用于退款）
+ * @param {string} exchange - 交易所名称
+ * @returns {string|null} 合约地址
+ */
+export const getSignatureClaimETHAddress = (exchange) => {
+  // 优先使用交易所专用合约，fallback 到测试合约
+  return CONTRACTS[exchange]?.signatureClaimETH || CONTRACTS.test.signatureClaimETH
 }

@@ -35,6 +35,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
   const [amount, setAmount] = useState('')
   const [contributing, setContributing] = useState(false)
   const [connecting, setConnecting] = useState(false)
+  const [claimingRefund, setClaimingRefund] = useState(false)
   const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 })
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   
@@ -56,12 +57,17 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
   // ETH 余额
   const ethBalance = data.ethBalance || null
 
-  // 加载数据
+  // 加载交易所 phase（只需执行一次）
+  useEffect(() => {
+    if (!isExchangeVisible(EXCHANGE.toLowerCase())) return
+    authActions.getExchangePhase({ exchange: EXCHANGE })
+  }, [])
+
+  // 加载 crowdfund 数据（当 wallet_address 变化时重新获取）
   useEffect(() => {
     if (!isExchangeVisible(EXCHANGE.toLowerCase())) return
     crowdfundActions.fetchCrowdfund({ exchange: EXCHANGE })
-    authActions.getExchangePhase({ exchange: EXCHANGE })
-  }, [])
+  }, [profile?.wallet_address])
 
   // 更新倒计时
   useEffect(() => {
@@ -137,6 +143,31 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
       }
     })
   }, [amount, hasWallet])
+
+  // Claim Refund 处理
+  const handleClaimRefund = useCallback(() => {
+    if (!isLoggedIn) {
+      openLoginModal()
+      return
+    }
+    if (!hasWallet) {
+      handleConnectWallet()
+      return
+    }
+    
+    setClaimingRefund(true)
+    crowdfundActions.claimRefund({
+      exchange: EXCHANGE,
+      onSuccess: ({ txHash }) => {
+        setClaimingRefund(false)
+        toast('Refund claimed successfully!')
+      },
+      onError: (msg) => {
+        setClaimingRefund(false)
+        toast(msg || 'Failed to claim refund')
+      }
+    })
+  }, [isLoggedIn, hasWallet])
 
   if (!isExchangeVisible(EXCHANGE.toLowerCase())) return null
 
@@ -307,8 +338,31 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
         {isEnded && (
           <div className={styles.claimSection}>
             <div className={styles.claimTitle}>Crowdfund Ended</div>
-            <button className={styles.claimButton} disabled>
-              Claim Available Soon
+            <div className={styles.claimInfo}>
+              <span>Your Contribution: </span>
+              <span className={styles.claimValue}>
+                {data.loading ? '—' : `${parseFloat(data.myContribution || 0).toFixed(4)} ETH`}
+              </span>
+            </div>
+            
+            {/* 退款按钮 - 只有有贡献的用户才能看到 */}
+            {parseFloat(data.myContribution || 0) > 0 && (
+              <button
+                className={classNames(styles.claimButton, {
+                  [styles.disabled]: claimingRefund || !hasWallet
+                })}
+                onClick={handleClaimRefund}
+                disabled={claimingRefund || !hasWallet}
+              >
+                {!isLoggedIn ? 'LOGIN TO CLAIM' : 
+                 !hasWallet ? 'CONNECT WALLET TO CLAIM' :
+                 claimingRefund ? 'CLAIMING...' : 'CLAIM REFUND'}
+              </button>
+            )}
+            
+            {/* Claim Token 按钮 - 暂时禁用，等后端实现 */}
+            <button className={styles.claimTokenButton} disabled>
+              CLAIM TOKEN (COMING SOON)
             </button>
           </div>
         )}
@@ -325,7 +379,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
         
         <div className={styles.contributionItem}>
           <div className={styles.contributionValue}>
-            {data.loading ? '—' : `${parseFloat(data.myContribution || 0).toFixed(2)} ETH`}
+            {(data.loading || data.myContribution === undefined) ? '—' : `${parseFloat(data.myContribution || 0).toFixed(2)} ETH`}
           </div>
           <div className={styles.contributionLabel}>Binance</div>
         </div>
@@ -333,7 +387,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
         <div className={styles.totalRow}>
           <span className={styles.totalLabel}>Total</span>
           <span className={styles.totalValue}>
-            {data.loading ? '—' : `${parseFloat(data.myContribution || 0).toFixed(2)} ETH`}
+            {(data.loading || data.myContribution === undefined) ? '—' : `${parseFloat(data.myContribution || 0).toFixed(2)} ETH`}
           </span>
         </div>
       </div>

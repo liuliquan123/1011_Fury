@@ -406,12 +406,12 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
           <div className={styles.buttons}>
             <button className={styles.shareButton} onClick={handleShareTwitter}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.buttonText)}>share on X（Twitter）</div>
+              <div className={classNames(styles.buttonText)}>Share on X（Twitter）</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={styles.shareButton} onClick={handleShareTelegram}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.buttonText)}>share on Telegram</div>
+              <div className={classNames(styles.buttonText)}>Share on Telegram</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={styles.copyButton} onClick={handleCopyLink}>
