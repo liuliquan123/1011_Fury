@@ -136,12 +136,12 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
               <div className={styles.buttons}>
                 <Link className={styles.inviteButton} to="/referral">
                   <div className={classNames(styles.leftArrow)}>{">"}</div>
-                  <div className={classNames(styles.buttonText)}>Invite</div>
+                  <div className={classNames(styles.buttonText)}>INVITE</div>
                   <div className={classNames(styles.rightArrow)}>{"<"}</div>
                 </Link>
                 <Link className={styles.submitButton} to="/submit-loss">
                   <div className={classNames(styles.leftArrow)}>{">"}</div>
-                  <div className={classNames(styles.buttonText)}>Submit New Loss</div>
+                  <div className={classNames(styles.buttonText)}>SUBMIT NEW LOSS</div>
                   <div className={classNames(styles.rightArrow)}>{"<"}</div>
                 </Link>
               </div>

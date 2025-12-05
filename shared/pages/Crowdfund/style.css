@@ -1,0 +1,544 @@
+/* Crowdfund 页面样式 - 根据 Figma JSON 校正 */
+
+/* 登录弹窗 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* 页面容器 */
+.crowdfund {
+  min-height: 100vh;
+  padding: 60px 72px;
+  color: #fff;
+  background: #14151A;
+}
+
+/* 标题 - 白色（Figma JSON 校正） */
+.title {
+  font-family: 'Jersey10', system-ui, sans-serif;
+  font-size: 88px;
+  line-height: 1;
+  margin-bottom: 16px;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+/* 描述文字 */
+.description {
+  color: #A7ADB9;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 主卡片 */
+.card {
+  background: #232326;
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 卡片头部 - 分隔线颜色修正 */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #A7ADB9;
+}
+
+.cardTitle {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* 状态徽章 - 方角 */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+.statusBadge.live {
+  background: #E9FD66;
+  color: #0b0b0c;
+}
+
+.statusBadge.ended {
+  background: #666;
+  color: #fff;
+}
+
+.statusBadge.paused {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+/* 进度区域头部 - 大百分比 + 倒计时 */
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* 大百分比 - 无下划线（Figma JSON 校正） */
+.progressPercent {
+  font-family: "Jersey10", system-ui, sans-serif;
+  font-size: 60px;
+  color: #E9FD66;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}
+
+/* 倒计时容器 */
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.countdownLabel {
+  color: #FFFFFF;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 14px;
+  margin-right: 12px;
+}
+
+/* 倒计时方块 - 深色背景白字（Figma JSON 校正） */
+.countdownBlock {
+  background: #14151A;
+  color: #FFFFFF;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.countdownUnit {
+  color: #FFFFFF;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 16px;
+  margin: 0 4px;
+}
+
+/* 进度条 */
+.progressBar {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid #E9FD66;
+  margin-bottom: 24px;
+}
+
+.progressFill {
+  height: 100%;
+  background: #E9FD66;
+  transition: width 0.3s ease-out;
+}
+
+/* 统计网格 - 3列（Figma JSON 校正） */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* 统计卡片 - #39393A 背景，直角（Figma JSON 校正） */
+.statItem {
+  background: #39393A;
+  padding: 16px;
+}
+
+.statValue {
+  font-family: "Jersey10", system-ui, sans-serif;
+  font-size: 32px;
+  color: #E9FD66;
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: #A7ADB9;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+/* 分隔线 */
+.divider {
+  height: 1px;
+  background: #333;
+  margin: 24px 0;
+}
+
+/* 输入区域 */
+.inputSection {
+  margin-bottom: 24px;
+}
+
+/* 输入标签行 - 全白（Figma JSON 校正） */
+.inputLabelRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  color: #FFFFFF;
+}
+
+.balanceValue {
+  font-weight: 600;
+}
+
+/* 输入框容器 - 方角 + 黄色边框 */
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid #E9FD66;
+  padding-right: 0;
+}
+
+.inputField {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 14px 16px;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+.inputField::placeholder {
+  color: #666;
+}
+
+/* ETH 徽章 - 方角 */
+.ethBadge {
+  background: #E9FD66;
+  color: #0B0B0C;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+/* 预估区域 */
+.estimateSection {
+  background: #39393A;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.estimateRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  color: #A7ADB9;
+  margin-bottom: 8px;
+}
+
+.estimateRow:last-child {
+  margin-bottom: 0;
+}
+
+.estimateValue {
+  color: #E9FD66;
+  font-weight: 500;
+}
+
+.estimateRefund {
+  color: #ff6b6b;
+}
+
+/* 主按钮 - 方角 */
+.primaryButton {
+  width: 100%;
+  border: none;
+  background: #E9FD66;
+  color: #050506;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  transition: background 0.2s;
+  text-transform: uppercase;
+}
+
+.primaryButton:hover:not(.disabled) {
+  background: #d4e650;
+}
+
+.primaryButton.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 我的贡献卡片 - 直角（Figma JSON 校正） */
+.myContributionsCard {
+  background: #232326;
+  padding: 32px;
+  margin-top: 24px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.myContributionsTitle {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+/* 贡献项 - #39393A 背景（Figma JSON 校正） */
+.contributionItem {
+  background: #39393A;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.contributionValue {
+  font-family: "Jersey10", system-ui, sans-serif;
+  font-size: 32px;
+  color: #E9FD66;
+  margin-bottom: 8px;
+}
+
+.contributionLabel {
+  font-size: 14px;
+  color: #A7ADB9;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+/* Total 行 */
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #333;
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+.totalLabel {
+  color: #A7ADB9;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 16px;
+}
+
+.totalValue {
+  color: #FFFFFF;
+  font-family: "Jersey10", system-ui, sans-serif;
+  font-size: 32px;
+}
+
+/* Claim 区域 */
+.claimSection {
+  text-align: center;
+  padding: 24px;
+  background: #39393A;
+  margin-bottom: 24px;
+}
+
+.claimTitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+.claimButton {
+  background: #E9FD66;
+  color: #050506;
+  border: none;
+  padding: 12px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+.claimButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 错误提示 */
+.errorText {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 16px;
+  text-align: center;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+/* 响应式 - 平板 */
+@media (max-width: 1024px) {
+  .crowdfund {
+    padding: 40px 32px;
+  }
+
+  .title {
+    font-size: 64px;
+  }
+
+  .progressHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .progressPercent {
+    font-size: 48px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .countdownBlock {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+}
+
+/* 响应式 - 移动端 */
+@media (max-width: 768px) {
+  .crowdfund {
+    padding: 24px 16px;
+  }
+
+  .title {
+    font-size: 48px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
+
+  .card {
+    padding: 24px 16px;
+  }
+
+  .cardTitle {
+    font-size: 20px;
+  }
+
+  .progressPercent {
+    font-size: 36px;
+  }
+
+  .countdown {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .countdownLabel {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .countdownBlock {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .countdownUnit {
+    font-size: 12px;
+    margin: 0 2px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .statItem {
+    padding: 12px;
+  }
+
+  .statValue {
+    font-size: 24px;
+  }
+
+  .statLabel {
+    font-size: 12px;
+  }
+
+  .myContributionsCard {
+    padding: 24px 16px;
+  }
+
+  .contributionValue {
+    font-size: 24px;
+  }
+
+  .totalValue {
+    font-size: 24px;
+  }
+}
+
+/* 响应式 - 小屏手机 */
+@media (max-width: 480px) {
+  .crowdfund {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .statItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .statValue {
+    margin-bottom: 0;
+  }
+}

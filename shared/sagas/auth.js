@@ -22,6 +22,8 @@ import { createClient } from "@supabase/supabase-js"
 import * as actions from 'actions/auth'
 import * as api from 'api/supabase'
 import { ethers } from 'ethers'
+import { CHAIN_ID, CHAIN_ID_HEX, RPC_URL, CHAIN_CONFIG, getSignatureClaimAddress } from 'config/contracts'
+import SIGNATURE_CLAIM_ABI from 'config/abi/signatureClaim.json'
 
 const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k"
 const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
@@ -39,7 +41,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 })
 
-let web3auth
+// 导出 web3auth 供其他 saga 使用
+export let web3auth
 
 function* waitUntil(web3auth, status) {
   return new Promise((resolve, reject) => {
@@ -112,6 +115,103 @@ function* initWeb3Auth(action) {
   }
 }
 
+/**
+ * 等待 Web3Auth 初始化完成
+ * 用于 claimToken 和 linkWallet 共用的钱包连接前置逻辑
+ */
+function* waitWeb3AuthReady() {
+  // 1. 仅在未初始化时才 init
+  if (!web3auth || web3auth.status === 'not_ready' || web3auth.status === 'errored') {
+    yield call(initWeb3Auth, {
+      payload: {
+        onSuccess: () => {},
+        onError: () => {},
+      },
+    })
+  }
+
+  // 2. 等待 Web3Auth 变成 ready / connected
+  let waitCount = 0
+  const maxWait = 10 // 最多等 5 秒 (10 * 500ms)
+
+  while (
+    web3auth &&
+    web3auth.status !== 'ready' &&
+    web3auth.status !== 'connected' &&
+    waitCount < maxWait
+  ) {
+    console.log('[Web3Auth] waiting, status:', web3auth.status)
+    yield delay(500)
+    waitCount++
+  }
+
+  // 3. 超时或失败兜底
+  if (!web3auth || (web3auth.status !== 'ready' && web3auth.status !== 'connected')) {
+    throw new Error('Web3Auth initialization timeout. Please refresh and try again.')
+  }
+
+  console.log('[Web3Auth] ready, status:', web3auth.status)
+
+  // 4. 额外等待让 connectors 初始化完成
+  // 如果之前执行了 logout，需要等待更长时间
+  yield delay(3000)
+  console.log('[Web3Auth] connectors should be ready now')
+}
+
+/**
+ * 切换到目标网络
+ * 如果用户未添加该网络，自动添加
+ * @param {object} provider - Web3Auth provider
+ */
+function* switchToTargetChain(provider) {
+  const chainConfig = CHAIN_CONFIG[CHAIN_ID]
+  if (!chainConfig) {
+    throw new Error(`Chain ${CHAIN_ID} not configured in CHAIN_CONFIG`)
+  }
+
+  // 防御性检查
+  if (!provider || typeof provider.request !== 'function') {
+    throw new Error('Wallet provider does not support network switching')
+  }
+
+  try {
+    // 尝试切换网络
+    console.log('[Chain] Switching to', chainConfig.chainName, '...')
+    yield apply(provider, provider.request, [{
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: chainConfig.chainId }],
+    }])
+    console.log('[Chain] Switched to', chainConfig.chainName)
+  } catch (switchError) {
+    // 错误码 4902 = 用户钱包中未添加该网络
+    if (switchError.code === 4902) {
+      console.log('[Chain] Network not found, adding...')
+      yield apply(provider, provider.request, [{
+        method: 'wallet_addEthereumChain',
+        params: [chainConfig],
+      }])
+      console.log('[Chain] Network added:', chainConfig.chainName)
+    } else if (switchError.code === 4001) {
+      // 用户拒绝切换
+      throw new Error('User rejected network switch. Please switch to ' + chainConfig.chainName + ' manually.')
+    } else {
+      throw switchError
+    }
+  }
+}
+
+/**
+ * 判断是否是临时性连接错误（可以重试）
+ * @param {Error} err - 错误对象
+ * @returns {boolean} 是否可重试
+ */
+const isTransientConnectError = (err) => {
+  const msg = (err?.message || '').toLowerCase()
+  return msg.includes('wallet connector is not ready yet') ||
+         msg.includes('adapter not ready') ||
+         msg.includes('not ready')
+}
+
 function* web3AuthLogin(web3auth, data) {
   const web3AuthResponse = yield apply(web3auth, web3auth.getIdentityToken)
   const web3AuthToken = web3AuthResponse.idToken
@@ -164,11 +264,11 @@ function* authByWallet(action) {
     if (isWalletBrowser) {
       yield apply(web3auth, web3auth.connect)
     } else {
-      yield apply(web3auth, web3auth.connectTo, [
-        WALLET_CONNECTORS.METAMASK, {
-          chainNamespace: CHAIN_NAMESPACES.EIP155
-        }
-      ])
+    yield apply(web3auth, web3auth.connectTo, [
+      WALLET_CONNECTORS.METAMASK, {
+        chainNamespace: CHAIN_NAMESPACES.EIP155
+      }
+    ])
     }
 
     // yield apply(web3auth, web3auth.connect)
@@ -378,8 +478,14 @@ function* uploadEvidenceOcr(action) {
 
     // 检查 OCR 是否成功
     if (evidenceResponse.data.ocr) {
-      evidenceResponse.data.ocr.user_note = ''
-      yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
+      // FIX: 保存 file_url 到 ocrForm
+      const upload = evidenceResponse.data.upload || {}  // 防御性处理
+      const ocrData = {
+        ...evidenceResponse.data.ocr,
+        user_note: '',
+        file_url: upload.file_url || null
+      }
+      yield put(actions.updateOcrForm(ocrData))
       onSuccess()
     } else {
       // OCR 失败，传递 ocr_details
@@ -401,7 +507,14 @@ function* submitLoss(action) {
 
     const authToken = localStorage.getItem('auth_token')
 
-    const submitLossResponse = yield call(api.submitLoss, ocrForm, {
+    // FIX: 构建 files 数组发送给后端
+    const { file_url, ...restOcrForm } = ocrForm
+    const submitData = {
+      ...restOcrForm,
+      files: file_url ? [file_url] : []  // 后端只接收 files 数组
+    }
+
+    const submitLossResponse = yield call(api.submitLoss, submitData, {
       requireAuth: true,
       tokenFetcher: () => authToken
     })
@@ -603,6 +716,240 @@ function* getCases(action) {
   }
 }
 
+/**
+ * Claim Token - 领取已解锁的 Token
+ * 流程：
+ * 1. 调用后端获取签名
+ * 2. 连接钱包获取 provider
+ * 3. 校验链 ID
+ * 4. 调用合约 claim 函数
+ * 5. 等待交易确认
+ * 6. 刷新用户数据
+ */
+function* claimToken(action) {
+  const { exchange, onSuccess, onError, onStatusChange } = action.payload
+
+  try {
+    // 通知状态变化：开始获取签名
+    if (onStatusChange) onStatusChange('signing')
+
+    // 1. 获取后端签名
+    const authToken = localStorage.getItem('auth_token')
+    if (!authToken) {
+      throw new Error('Please login first')
+    }
+
+    const signatureResponse = yield call(api.claimSignature, { exchange }, {
+      requireAuth: true,
+      tokenFetcher: () => authToken
+    })
+
+    if (!signatureResponse.success) {
+      throw new Error(signatureResponse.error || 'Failed to get claim signature')
+    }
+
+    const { claimData, signature } = signatureResponse.data
+    console.log('claimToken: Got signature', { claimData, signature })
+
+    // 通知状态变化：开始连接钱包
+    if (onStatusChange) onStatusChange('connecting')
+
+    // 2. 等待 Web3Auth 初始化完成（使用公共辅助函数）
+    yield call(waitWeb3AuthReady)
+
+    // 3. 连接钱包获取 provider
+    let provider
+    if (web3auth.status === 'connected' && web3auth.provider) {
+      // 已经有连接（connected + provider）→ 直接复用
+      provider = web3auth.provider
+      console.log('claimToken: Using existing provider')
+    } else {
+      // 没有连接 → 走 connectTo（带重试逻辑）
+      console.log('claimToken: Connecting to MetaMask with chainId:', CHAIN_ID_HEX)
+      
+      let retryCount = 0
+      const maxRetries = 3
+      
+      while (retryCount < maxRetries) {
+        try {
+          provider = yield apply(web3auth, web3auth.connectTo, [
+            WALLET_CONNECTORS.METAMASK, {
+              chainNamespace: CHAIN_NAMESPACES.EIP155,
+              chainId: CHAIN_ID_HEX,
+              rpcTarget: RPC_URL,
+            }
+          ])
+          break // 成功则跳出循环
+        } catch (connectError) {
+          const code = connectError?.code
+          
+          // 用户拒绝：不重试，直接抛出
+          if (code === 4001) {
+            throw new Error('User rejected wallet connection.')
+          }
+          
+          // 不属于"临时错误"：也不重试
+          if (!isTransientConnectError(connectError)) {
+            throw connectError
+          }
+          
+          retryCount++
+          console.log(`[Wallet] Connection attempt ${retryCount} failed:`, connectError.message)
+          
+          if (retryCount >= maxRetries) {
+            throw connectError
+          }
+          
+          yield delay(1000)
+          console.log(`[Wallet] Retrying connection (${retryCount}/${maxRetries})...`)
+        }
+      }
+    }
+
+    if (!provider) {
+      throw new Error('Failed to connect wallet')
+    }
+
+    let ethersProvider = new ethers.BrowserProvider(provider)
+    let signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    const signerAddress = yield apply(signer, signer.getAddress)
+
+    console.log('claimToken: Wallet connected', { signerAddress })
+
+    // 4. 验证钱包地址匹配
+    if (signerAddress.toLowerCase() !== claimData.claimer.toLowerCase()) {
+      const expectedShort = `${claimData.claimer.slice(0, 6)}...${claimData.claimer.slice(-4)}`
+      const currentShort = `${signerAddress.slice(0, 6)}...${signerAddress.slice(-4)}`
+      
+      throw new Error(
+        `Wallet mismatch. Current: ${currentShort}, Expected: ${expectedShort}. ` +
+        `Please switch to the correct account in MetaMask.`
+      )
+    }
+
+    // 5. 校验并自动切换网络
+    const network = yield apply(ethersProvider, ethersProvider.getNetwork)
+    const currentChainId = Number(network.chainId)
+    
+    if (currentChainId !== CHAIN_ID) {
+      console.log(`[Chain] Current: ${currentChainId}, Target: ${CHAIN_ID}, switching...`)
+      
+      // 自动切换到目标网络
+      yield call(switchToTargetChain, provider)
+      
+      // 切换后需要重新创建 provider 和 signer（网络变化后原对象可能失效）
+      ethersProvider = new ethers.BrowserProvider(provider)
+      signer = yield apply(ethersProvider, ethersProvider.getSigner)
+      const newAddress = yield apply(signer, signer.getAddress)
+      
+      // 验证切换后地址仍然一致
+      if (newAddress.toLowerCase() !== signerAddress.toLowerCase()) {
+        throw new Error('Wallet address changed after network switch. Please try again.')
+      }
+      
+      console.log('[Chain] Network switched successfully')
+    }
+
+    // 通知状态变化：发送交易
+    if (onStatusChange) onStatusChange('claiming')
+
+    // 6. 获取合约地址并创建合约实例
+    const contractAddress = getSignatureClaimAddress(exchange)
+    if (!contractAddress) {
+      throw new Error(`No contract address configured for ${exchange}`)
+    }
+
+    // 6.5 检查签名是否快过期（离过期不足 1 分钟则提前报错）
+    const now = Math.floor(Date.now() / 1000)
+    const deadline = Number(claimData.deadline)
+    
+    if (deadline - now < 60) {
+      throw new Error('Signature is about to expire. Please try again to get a fresh claim.')
+    }
+    
+    console.log('claimToken: Signature valid, time remaining:', deadline - now, 'seconds')
+    console.log('claimToken: Calling contract', { contractAddress, exchange })
+
+    const contract = new ethers.Contract(contractAddress, SIGNATURE_CLAIM_ABI, signer)
+
+    // 7. 调用合约 claim 函数
+    // ClaimRequest struct: [claimer, amount, nonce, deadline]
+    const tx = yield apply(contract, contract.claim, [
+      [claimData.claimer, claimData.amount, claimData.nonce, claimData.deadline],
+      signature
+    ])
+
+    console.log('claimToken: Transaction sent', { hash: tx.hash })
+
+    // 8. 等待交易确认
+    if (onStatusChange) onStatusChange('confirming')
+    const receipt = yield apply(tx, tx.wait)
+
+    console.log('claimToken: Transaction confirmed', { 
+      hash: receipt.hash,
+      blockNumber: receipt.blockNumber 
+    })
+
+    // 9. 刷新用户数据
+    yield put(actions.getProfile())
+
+    onSuccess({ txHash: receipt.hash })
+
+  } catch (error) {
+    console.error('claimToken error:', error)
+
+    // 解析错误消息 - 兼容字符串和对象类型
+    let errorMessage = 'Claim failed'
+    let errorStr = ''
+    
+    // 处理不同类型的错误消息
+    if (typeof error.message === 'string') {
+      errorStr = error.message
+    } else if (typeof error.message === 'object' && error.message !== null) {
+      // API 返回的错误可能是 { error: "message" } 格式
+      errorStr = error.message.error || error.message.message || JSON.stringify(error.message)
+    } else if (typeof error === 'string') {
+      errorStr = error
+    }
+
+    // 根据错误内容返回友好的提示
+    if (errorStr.includes('SignatureExpired')) {
+      errorMessage = 'Signature expired. Please try again.'
+    } else if (errorStr.includes('InvalidNonce')) {
+      errorMessage = 'Invalid nonce. Please refresh and try again.'
+    } else if (errorStr.includes('InsufficientPoolBalance')) {
+      errorMessage = 'Pool balance insufficient. Please contact support.'
+    } else if (errorStr.includes('ClaimerMismatch')) {
+      errorMessage = 'Wallet address does not match.'
+    } else if (errorStr.includes('InvalidSignature')) {
+      errorMessage = 'Invalid signature. Please try again.'
+    } else if (errorStr.includes('user rejected') || errorStr.includes('User denied')) {
+      errorMessage = 'Transaction rejected by user.'
+    } else if (errorStr.includes('Already claimed')) {
+      errorMessage = 'You have already claimed your tokens.'
+    } else if (errorStr.includes('still locked')) {
+      errorMessage = 'Your tokens are still locked.'
+    } else if (errorStr.includes('Wallet address not found')) {
+      errorMessage = 'Please connect your wallet first.'
+    } else if (errorStr.includes('500') || errorStr.includes('Internal Server Error')) {
+      errorMessage = 'Server error. The claim API may not be deployed yet.'
+    } else if (errorStr.includes('0x1f2a2005')) {
+      // 合约自定义错误：签名过期
+      errorMessage = 'Transaction failed. Your signature may have expired. Please try again.'
+    } else if (errorStr.includes('execution reverted')) {
+      // 其他合约 revert 错误
+      errorMessage = 'Transaction reverted on-chain. Please check your network and try again.'
+    } else if (errorStr.includes('about to expire')) {
+      // 前端 deadline pre-check 错误
+      errorMessage = 'Signature is about to expire. Please try again to get a fresh claim.'
+    } else if (errorStr) {
+      errorMessage = errorStr
+    }
+
+    onError(errorMessage)
+  }
+}
+
 export default function* authSaga() {
   yield takeEvery(String(actions.initWeb3Auth), initWeb3Auth)
 
@@ -621,4 +968,5 @@ export default function* authSaga() {
 
   yield takeEvery(String(actions.logout), logout)
   yield takeEvery(String(actions.linkWallet), linkWallet)
+  yield takeEvery(String(actions.claimToken), claimToken)
 }

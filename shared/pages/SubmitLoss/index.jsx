@@ -33,6 +33,7 @@ import bitgetScreenshotStep2 from 'resources/images/screenshots/bitget/bitget-st
 import bitgetScreenshotStep3 from 'resources/images/screenshots/bitget/bitget-step3.jpeg'
 import bitgetScreenshotStep4 from 'resources/images/screenshots/bitget/bitget-step4.jpeg'
 
+import { isExchangeVisible } from 'config/exchanges'
 import styles from './style.css'
 
 const getExchangeName = (exchangeType) => {
@@ -218,10 +219,27 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     event.stopPropagation()
   }, [])
 
+  const [pendingCrowdfund, setPendingCrowdfund] = useState(false)
+
   const onLoggedIn = useCallback((event) => {
     setIsOpen(false)
     actions.getProfile()
-  }, [])
+    // 如果是从 Crowdfund 入口触发的登录，登录成功后跳转
+    if (pendingCrowdfund) {
+      setPendingCrowdfund(false)
+      history('/crowdfund')
+    }
+  }, [pendingCrowdfund, history])
+
+  // Crowdfund 入口点击处理
+  const handleCrowdfundClick = useCallback(() => {
+    if (!isLoggedIn) {
+      setPendingCrowdfund(true)
+      setIsOpen(true)
+    } else {
+      history('/crowdfund')
+    }
+  }, [isLoggedIn, history])
 
   const exchangeName = getExchangeName(exchangeType)
 
@@ -249,50 +267,58 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                   Exchanges currently eligible for claims
                 </div>
                 <div className={styles.exchanges}>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'binance'
-                    })}
-                    onClick={selectExchange('binance')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={binanceLogo} alt={`binance logo`} />
+                  {isExchangeVisible('binance') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'binance'
+                      })}
+                      onClick={selectExchange('binance')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={binanceLogo} alt={`binance logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>Binance</div>
                     </div>
-                    <div className={styles.exchangeName}>Binance</div>
-                  </div>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'okx'
-                    })}
-                    onClick={selectExchange('okx')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={okxLogo} alt={`okx logo`} />
+                  )}
+                  {isExchangeVisible('okx') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'okx'
+                      })}
+                      onClick={selectExchange('okx')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={okxLogo} alt={`okx logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>OKX</div>
                     </div>
-                    <div className={styles.exchangeName}>OKX</div>
-                  </div>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'bybit'
-                    })}
-                    onClick={selectExchange('bybit')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={bybitLogo} alt={`bybit logo`} />
+                  )}
+                  {isExchangeVisible('bybit') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'bybit'
+                      })}
+                      onClick={selectExchange('bybit')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={bybitLogo} alt={`bybit logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>Bybit</div>
                     </div>
-                    <div className={styles.exchangeName}>Bybit</div>
-                  </div>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'bitget'
-                    })}
-                    onClick={selectExchange('bitget')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={bitgetLogo} alt={`bitget logo`} />
+                  )}
+                  {isExchangeVisible('bitget') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'bitget'
+                      })}
+                      onClick={selectExchange('bitget')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={bitgetLogo} alt={`bitget logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>Bitget</div>
                     </div>
-                    <div className={styles.exchangeName}>Bitget</div>
-                  </div>
+                  )}
                 </div>
                 {phase && (
                   <div className={classNames(styles.notification, {
@@ -308,7 +334,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     </div>
                     <div className={styles.notificationContent}>
                       <div className={styles.notificationContentItem}>
-                        Current Stage: {phase.current_phase}/3
+                        Current Phase: {phase.current_phase}
                       </div>
                       <div className={styles.notificationContentItem}>
                         Submissions in this stage: {phase.phase_info.current_submissions}/{phase.phase_info.max_submissions}
@@ -319,10 +345,16 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               </div>
             </div>
           </div>
+          <div className={styles.crowdfundEntry}>
+            <div className={styles.crowdfundText}>Want to get more tokens?</div>
+            <button className={styles.crowdfundButton} onClick={handleCrowdfundClick}>
+              CROWDFUND
+            </button>
+          </div>
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
@@ -427,7 +459,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           <div className={styles.actions}>
             <button className={styles.backButton} href="" tabIndex={0} role="button " onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={styles.nextButton} onClick={nextStep}>
@@ -549,7 +581,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
@@ -638,10 +670,16 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               </div>
             </div>
           </div>
+          <div className={styles.crowdfundEntry}>
+            <div className={styles.crowdfundText}>Want to get more tokens?</div>
+            <button className={styles.crowdfundButton} onClick={handleCrowdfundClick}>
+              CROWDFUND
+            </button>
+          </div>
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {

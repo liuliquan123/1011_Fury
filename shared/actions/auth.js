@@ -29,6 +29,7 @@ export const uploadEvidenceOcr = createAction('auth/UPLOAD_EVIDENCE_OCR')
 export const submitLoss = createAction('auth/SUBMIT_LOSS')
 
 export const linkWallet = createAction('auth/LINK_WALLET')
+export const claimToken = createAction('auth/CLAIM_TOKEN')
 
 export const getCases = createAction('auth/GET_CASES')
 export const updateCases = createAction('auth/UPDATE_CASES')

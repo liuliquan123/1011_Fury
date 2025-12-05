@@ -149,9 +149,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
     event.stopPropagation()
   }, [])
 
-  const toggleAgreement = useCallback(() => {
+  const toggleAgreement = useCallback((e) => {
+    // 阻止链接点击时触发 checkbox
+    if (e.target.tagName === 'A') return
     setChecked(!checked)
-    console.log('toggleAgreement')
   }, [checked])
 
   const logout = useCallback(() => {
@@ -235,7 +236,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
   }, [])
 
   const authByEmail = useCallback(() => {
-    if (isLoginDisabled) return
+    if (isLoginDisabled || !checked) {
+      if (!checked) toast('Please agree to Terms of Service and Privacy Policy')
+      return
+    }
 
     console.log('[Referral] Email login with code:', referralCode)
     setConnectingEmail(true)
@@ -255,10 +259,13 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         setEmail('')
       }
     })
-  }, [email, referralCode, isLoginDisabled])
+  }, [email, referralCode, isLoginDisabled, checked])
 
   const authByWallet = useCallback(() => {
-    if (isLoginDisabled) return
+    if (isLoginDisabled || !checked) {
+      if (!checked) toast('Please agree to Terms of Service and Privacy Policy')
+      return
+    }
 
     const walletInfo = detectWalletBrowser()
 
@@ -317,7 +324,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       setDetectedWallets(wallets)
       setShowWalletSelector(true)
     }
-  }, [referralCode, isNoted, onLoggedIn, isLoginDisabled])
+  }, [referralCode, isNoted, onLoggedIn, isLoginDisabled, checked])
 
   const onWalletSelected = useCallback((wallet) => {
     console.log('[Wallet] User selected:', wallet.name)
@@ -341,7 +348,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
   }, [referralCode, onLoggedIn])
 
   const authByTwitter = useCallback(() => {
-    if (isLoginDisabled) return
+    if (isLoginDisabled || !checked) {
+      if (!checked) toast('Please agree to Terms of Service and Privacy Policy')
+      return
+    }
 
     setConnectingTwitter(true)
 
@@ -357,10 +367,13 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         setConnectingTwitter(false)
       }
     })
-  }, [referralCode, isLoginDisabled])
+  }, [referralCode, isLoginDisabled, checked])
 
   const authByTelegram = useCallback(() => {
-    if (isLoginDisabled) return
+    if (isLoginDisabled || !checked) {
+      if (!checked) toast('Please agree to Terms of Service and Privacy Policy')
+      return
+    }
 
     setConnectingTelegram(true)
 
@@ -376,7 +389,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         setConnectingTelegram(false)
       }
     })
-  }, [referralCode, isLoginDisabled])
+  }, [referralCode, isLoginDisabled, checked])
 
   useEffect(() => {
     setInitializing(true)
@@ -526,7 +539,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
                     value={email}
                     onChange={onEmailChange}
                   />
-                  <div className={classNames(styles.submit, { [styles.disabled]: !email || isLoginDisabled })} onClick={authByEmail}>
+                  <div className={classNames(styles.submit, { [styles.disabled]: !email || isLoginDisabled || !checked })} onClick={authByEmail}>
                     {connectingEmail && (
                       <Spinner />
                     )}
@@ -550,19 +563,19 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         )}
         {!showEmailInput && (
           <div
-            className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })}
-            onClick={isLoginDisabled ? null : () => setShowEmailInput(true)}
+            className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled || !checked })}
+            onClick={(isLoginDisabled || !checked) ? null : () => setShowEmailInput(true)}
           >
             EMAIL
           </div>
         )}
-        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} onClick={authByWallet}>
+        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled || !checked })} onClick={authByWallet}>
           WALLET
         </div>
-        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} onClick={authByTwitter}>
+        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled || !checked })} onClick={authByTwitter}>
           X
         </div>
-        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled })} onClick={authByTelegram}>
+        <div className={classNames(styles.provider, { [styles.disabled]: isLoginDisabled || !checked })} onClick={authByTelegram}>
           TELEGRAM
         </div>
       </div>
@@ -609,9 +622,14 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
           <input type="checkbox" checked={checked} onChange={toggleAgreement} />
         </div>
         <div className={styles.inputText}>
-          I agree to the <a>Terms of Service</a> and <a>Privacy Policy</a>
+          I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
         </div>
       </div>
+      {!checked && (
+        <div className={styles.agreementWarning}>
+          Please check the box above to continue
+        </div>
+      )}
     </div>
   )
 }
@@ -626,3 +644,4 @@ export default connect(
     }, dispatch)
   })
 )(Login)
+

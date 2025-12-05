@@ -259,11 +259,27 @@
                 font-weight: 400;
                 line-height: 48px;
 
+                .tokenName {
+                  font-size: 24px;
+                  margin-left: 8px;
+                  color: #E9FD66;
+                }
+
                 .status {
                   font-size: 20px;
                   margin-left: 10px;
                   color: #7E7E7E;
                 }
+              }
+
+              .congratsMessage {
+                color: #37D375;
+                font-family: "Google Sans Code";
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 24px;
+                margin-left: auto;
               }
 
               .tokenLockTime {
@@ -476,6 +492,68 @@
                 }
               }
             }
+          }
+
+          /* 无 reward 时的提示文字 */
+          .noRewardText {
+            color: #A7ADB9;
+            font-family: "Google Sans Code", system-ui, sans-serif;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+          }
+
+          /* 双按钮布局：GET MORE TOKEN + CLAIM */
+          .dualButtonRow {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+          }
+
+          .getMoreButton {
+            flex: 1;
+            display: flex;
+            height: 52px;
+            justify-content: center;
+            align-items: center;
+            background: #E9FD66;
+            color: #0B0B0C;
+            font-family: "Google Sans Code", system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s;
+          }
+
+          .getMoreButton:hover {
+            background: #d4e650;
+          }
+
+          .claimToButton {
+            flex: 1;
+            display: flex;
+            height: 52px;
+            justify-content: center;
+            align-items: center;
+            background: #141519;
+            border: 1px solid #E9FD66;
+            color: #E9FD66;
+            font-family: "Google Sans Code", system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
+
+          .claimToButton:hover:not(.disabled) {
+            background: #E9FD66;
+            color: #0B0B0C;
+          }
+
+          .claimToButton.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
           }
         }
 

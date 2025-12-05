@@ -266,9 +266,22 @@
       line-height: 20px;
 
       a {
-        color: white;
+        color: #E9FD66;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
       }
     }
+  }
+
+  .agreementWarning {
+    color: #ff6b6b;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    text-align: center;
+    margin-top: 8px;
   }
 
   .loginMethodLabel {

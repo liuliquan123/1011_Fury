@@ -99,6 +99,21 @@
             transition: all 0.3s ease;
           }
         }
+
+        &.secondaryButton {
+          background: transparent;
+          border: 1px solid #E9FD66;
+          color: #E9FD66;
+          margin-top: 16px;
+
+          .buttonText {
+            color: #E9FD66;
+          }
+
+          &:hover {
+            background: rgba(233, 253, 102, 0.1);
+          }
+        }
       }
     }
   }

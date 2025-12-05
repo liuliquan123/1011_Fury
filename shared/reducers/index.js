@@ -5,6 +5,7 @@ import { reducer as form } from 'redux-form'
 import intl from './intl'
 import theme from './theme'
 import auth from './auth'
+import crowdfund from './crowdfund'
 
 enableMapSet()
 
@@ -13,7 +14,8 @@ const createRootReducer = (history) => combineReducers({
   form,
   intl,
   theme,
-  auth
+  auth,
+  crowdfund
 })
 
 export default createRootReducer
