@@ -380,20 +380,54 @@
   font-family: 'Google Sans Code', system-ui, sans-serif;
 }
 
+.claimInfo {
+  font-size: 14px;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  color: #A7ADB9;
+  margin-bottom: 16px;
+}
+
+.claimValue {
+  color: #E9FD66;
+  font-weight: 600;
+}
+
 .claimButton {
+  width: 100%;
   background: #E9FD66;
   color: #050506;
   border: none;
-  padding: 12px 32px;
+  padding: 16px 32px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   font-family: 'Google Sans Code', system-ui, sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
-.claimButton:disabled {
+.claimButton:hover:not(:disabled) {
+  background: #d4e650;
+}
+
+.claimButton:disabled,
+.claimButton.disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.claimTokenButton {
+  width: 100%;
+  background: transparent;
+  color: #A7ADB9;
+  border: 1px solid #A7ADB9;
+  padding: 16px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: not-allowed;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  text-transform: uppercase;
+  opacity: 0.5;
 }
 
 /* 错误提示 */
