@@ -447,7 +447,7 @@ const Landing = ({ cases, actions }) => {
         <div className={styles.bottom}>
           <div className={styles.bottomLeft}>© 2025 Satoshi’s Fury. All rights reserved.</div>
           <div className={styles.bottomRight}>
-            <div className={styles.privacyButton}>Privacy Policy</div> | <div className={styles.tosButton}>Terms of Use</div>
+            <a className={styles.privacyButton} href="/privacy">Privacy Policy</a> | <a className={styles.tosButton} href="/terms">Terms of Use</a>
           </div>
         </div>
       </div>

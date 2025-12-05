@@ -285,7 +285,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     Login Method
                   </div>
                   <div className={styles.listItemContent}>
-                    {profile.login_type}
+                    {profile.login_type ? profile.login_type.charAt(0).toUpperCase() + profile.login_type.slice(1) : ''}
                   </div>
                 </div>
                 <div className={styles.listItem}>

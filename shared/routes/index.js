@@ -14,6 +14,8 @@ import {
 
 // DEBUG: 直接导入 Crowdfund，绕过 syncComponent
 import Crowdfund from 'pages/Crowdfund'
+import Terms from 'pages/Terms'
+import Privacy from 'pages/Privacy'
 
 export const routes = [
   {
@@ -49,6 +51,14 @@ export const routes = [
         component: Crowdfund
       },
       {
+        path: 'terms',
+        component: Terms
+      },
+      {
+        path: 'privacy',
+        component: Privacy
+      },
+      {
         path: 'login',
         component: Login
       },
@@ -70,6 +80,8 @@ export const RootRoutes = () => (
       <Route path="my-case" element={<Cases />} />
       <Route path="invite" element={<Invite />} />
       <Route path="crowdfund" element={<Crowdfund />} />
+      <Route path="terms" element={<Terms />} />
+      <Route path="privacy" element={<Privacy />} />
       <Route path="login" element={<Login />} />
       <Route path="*" element={<NoMatch />} />
     </Route>

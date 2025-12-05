@@ -1,0 +1,136 @@
+/* Privacy Policy 页面样式 */
+.privacy {
+  min-height: 100vh;
+  padding: 60px 72px;
+  color: #fff;
+  background: #14151A;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  font-family: 'Jersey10', system-ui, sans-serif;
+  font-size: 48px;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.lastUpdated {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 14px;
+  color: #A7ADB9;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.intro {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #A7ADB9;
+  margin-bottom: 16px;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.section h2 {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #E9FD66;
+  margin-bottom: 16px;
+  margin-top: 32px;
+}
+
+.section h3 {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+
+.section h4 {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+  margin-top: 20px;
+}
+
+.section p {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #A7ADB9;
+  margin-bottom: 16px;
+}
+
+.section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.section ul li {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #A7ADB9;
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.section ul li::before {
+  content: '•';
+  color: #E9FD66;
+  position: absolute;
+  left: 0;
+}
+
+.section ul li strong {
+  color: #FFFFFF;
+}
+
+.section a {
+  color: #E9FD66;
+  text-decoration: none;
+}
+
+.section a:hover {
+  text-decoration: underline;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .privacy {
+    padding: 40px 24px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .section h2 {
+    font-size: 20px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+  }
+
+  .section h4 {
+    font-size: 14px;
+  }
+}
+

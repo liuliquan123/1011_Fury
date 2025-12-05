@@ -354,7 +354,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
@@ -459,7 +459,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           <div className={styles.actions}>
             <button className={styles.backButton} href="" tabIndex={0} role="button " onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={styles.nextButton} onClick={nextStep}>
@@ -581,7 +581,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
@@ -679,7 +679,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
-              <div className={classNames(styles.text)}>back</div>
+              <div className={classNames(styles.text)}>BACK</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
