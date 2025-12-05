@@ -10,7 +10,7 @@
 
 /* 标题 - 白色（Figma JSON 校正） */
 .title {
-  font-family: 'Jersey 10', system-ui, sans-serif;
+  font-family: 'Jersey10', system-ui, sans-serif;
   font-size: 88px;
   line-height: 1;
   margin-bottom: 16px;
@@ -92,7 +92,7 @@
 
 /* 大百分比 - 无下划线（Figma JSON 校正） */
 .progressPercent {
-  font-family: "Jersey 10", system-ui, sans-serif;
+  font-family: "Jersey10", system-ui, sans-serif;
   font-size: 60px;
   color: #E9FD66;
   text-decoration: underline;
@@ -166,7 +166,7 @@
 }
 
 .statValue {
-  font-family: "Jersey 10", system-ui, sans-serif;
+  font-family: "Jersey10", system-ui, sans-serif;
   font-size: 32px;
   color: #E9FD66;
   margin-bottom: 8px;
@@ -204,13 +204,15 @@
   font-weight: 600;
 }
 
-/* 输入框容器 - 黄边透明底 */
+/* 输入框容器 - 圆角药丸形状 */
 .inputWrapper {
   display: flex;
   align-items: center;
   background: transparent;
   border: 1px solid #39393A;
+  border-radius: 999px;
   padding-right: 0;
+  overflow: hidden;
 }
 
 .inputField {
@@ -228,7 +230,7 @@
   color: #666;
 }
 
-/* ETH 徽章 */
+/* ETH 徽章 - 圆角 */
 .ethBadge {
   background: #E9FD66;
   color: #0B0B0C;
@@ -236,6 +238,8 @@
   font-size: 14px;
   font-weight: 600;
   font-family: 'Google Sans Code', system-ui, sans-serif;
+  border-radius: 999px;
+  margin: 4px;
 }
 
 /* 预估区域 */
@@ -267,7 +271,7 @@
   color: #ff6b6b;
 }
 
-/* 主按钮 */
+/* 主按钮 - 圆角 */
 .primaryButton {
   width: 100%;
   border: none;
@@ -280,6 +284,7 @@
   font-family: 'Google Sans Code', system-ui, sans-serif;
   transition: background 0.2s;
   text-transform: uppercase;
+  border-radius: 8px;
 }
 
 .primaryButton:hover:not(.disabled) {
@@ -317,7 +322,7 @@
 }
 
 .contributionValue {
-  font-family: "Jersey 10", system-ui, sans-serif;
+  font-family: "Jersey10", system-ui, sans-serif;
   font-size: 32px;
   color: #E9FD66;
   margin-bottom: 8px;
@@ -347,7 +352,7 @@
 
 .totalValue {
   color: #FFFFFF;
-  font-family: "Jersey 10", system-ui, sans-serif;
+  font-family: "Jersey10", system-ui, sans-serif;
   font-size: 32px;
 }
 
