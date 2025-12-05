@@ -27,6 +27,9 @@ const formatTimeRemaining = (deadline) => {
   return { d, h, m, s }
 }
 
+// 补零
+const padZero = (num) => String(num).padStart(2, '0')
+
 const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundActions }) => {
   const [amount, setAmount] = useState('')
   const [contributing, setContributing] = useState(false)
@@ -45,6 +48,9 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
   // 计算进度百分比
   const softcapEth = phaseConfig.softcapEth
   const progress = softcapEth > 0 ? Math.min(100, (currentRaised / softcapEth) * 100) : 0
+
+  // ETH 余额
+  const ethBalance = data.ethBalance || null
 
   // 加载数据
   useEffect(() => {
@@ -92,13 +98,19 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
 
   const isEnded = data.ended
   const isLive = !isEnded && !data.isPaused
+  const tokenName = getTokenName(EXCHANGE.toLowerCase()).replace('$', '')
 
   return (
     <div className={styles.crowdfund}>
+      {/* 标题区域 */}
       <div className={styles.title}>Crowdfund</div>
-      
+      <div className={styles.description}>
+        Discover and participate in a diverse range of on-chain asset opportunities powered by the Satoshi's Fury.
+      </div>
+
+      {/* 主卡片 */}
       <div className={styles.card}>
-        {/* 卡片标题 */}
+        {/* 卡片头部 */}
         <div className={styles.cardHeader}>
           <div className={styles.cardTitle}>
             {EXCHANGE} Crowdfund
@@ -108,56 +120,57 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
             [styles.ended]: isEnded,
             [styles.paused]: data.isPaused
           })}>
-            {isLive ? 'LIVE' : isEnded ? 'ENDED' : 'PAUSED'}
+            {isLive ? 'Live' : isEnded ? 'Ended' : 'Paused'}
           </div>
         </div>
 
-        {/* Token 信息 */}
-        <div className={styles.tokenInfo}>
-          <span className={styles.tokenName}>{getTokenName(EXCHANGE.toLowerCase())}</span>
-          <span className={styles.phaseInfo}>Phase {phase}</span>
+        {/* 进度区域：大百分比 + 倒计时 */}
+        <div className={styles.progressHeader}>
+          <div className={styles.progressPercent}>
+            {data.loading ? '...' : `${progress.toFixed(2)}%`}
+          </div>
+          <div className={styles.countdown}>
+            <span className={styles.countdownLabel}>Time Remaining</span>
+            <span className={styles.countdownBlock}>{padZero(time.d)}</span>
+            <span className={styles.countdownUnit}>D</span>
+            <span className={styles.countdownBlock}>{padZero(time.h)}</span>
+            <span className={styles.countdownUnit}>H</span>
+            <span className={styles.countdownBlock}>{padZero(time.m)}</span>
+            <span className={styles.countdownUnit}>M</span>
+            <span className={styles.countdownBlock}>{padZero(time.s)}</span>
+            <span className={styles.countdownUnit}>S</span>
+          </div>
         </div>
 
         {/* 进度条 */}
-        <div className={styles.progressSection}>
-          <div className={styles.progressBar}>
-            <div 
-              className={styles.progressFill} 
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <div className={styles.progressText}>
-            {data.loading ? '...' : `${progress.toFixed(1)}%`}
-          </div>
+        <div className={styles.progressBar}>
+          <div 
+            className={styles.progressFill} 
+            style={{ width: `${progress}%` }}
+          />
         </div>
 
-        {/* 统计网格 */}
+        {/* 统计网格 - 3 列 */}
         <div className={styles.statsGrid}>
           <div className={styles.statItem}>
-            <div className={styles.statLabel}>Softcap</div>
-            <div className={styles.statValue}>
-              {softcapEth} ETH
-            </div>
+            <div className={styles.statValue}>{softcapEth} ETH</div>
+            <div className={styles.statLabel}>Target</div>
           </div>
           <div className={styles.statItem}>
+            <div className={styles.statValue}>
+              {data.loading ? '—' : parseFloat(data.raisedEth || 0).toFixed(2)}
+            </div>
             <div className={styles.statLabel}>Raised</div>
-            <div className={styles.statValue}>
-              {data.loading ? '—' : `${parseFloat(data.raisedEth || 0).toFixed(4)} ETH`}
-            </div>
           </div>
           <div className={styles.statItem}>
-            <div className={styles.statLabel}>Contributors</div>
             <div className={styles.statValue}>
               {data.loading ? '—' : data.contributors || 0}
             </div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statLabel}>Time Remaining</div>
-            <div className={styles.statValue}>
-              {data.loading ? '—' : `${time.d}d ${time.h}h ${time.m}m`}
-            </div>
+            <div className={styles.statLabel}>Contributors</div>
           </div>
         </div>
+
+        <div className={styles.divider} />
 
         {/* 输入区域 - 仅在进行中时显示 */}
         {isLive && (
@@ -165,6 +178,9 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
             <div className={styles.inputSection}>
               <div className={styles.inputLabelRow}>
                 <span>Amount to Contribute</span>
+                <span>
+                  Balance: <span className={styles.balanceValue}>{ethBalance || '--'} ETH</span>
+                </span>
               </div>
               <div className={styles.inputWrapper}>
                 <input
@@ -176,7 +192,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
                   onChange={(e) => setAmount(e.target.value)}
                   disabled={contributing}
                 />
-                <span className={styles.inputSuffix}>ETH</span>
+                <span className={styles.ethBadge}>ETH</span>
               </div>
             </div>
 
@@ -186,7 +202,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
                 <div className={styles.estimateRow}>
                   <span>Estimated Token:</span>
                   <span className={styles.estimateValue}>
-                    ~{formatTokenAmount(estimatedToken)} {getTokenName(EXCHANGE.toLowerCase())}
+                    ~{formatTokenAmount(estimatedToken)} {tokenName}
                   </span>
                 </div>
                 {estimatedRefund > 0 && (
@@ -210,7 +226,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
             >
               {contributing ? 'Contributing...' : 
                !hasWallet ? 'Connect Wallet to Contribute' :
-               `Contribute to ${EXCHANGE}`}
+               `CONTRIBUTE TO ${tokenName}`}
             </button>
           </React.Fragment>
         )}
@@ -225,18 +241,29 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
           </div>
         )}
 
-        {/* 我的贡献 */}
-        <div className={styles.myContribution}>
-          <div className={styles.myContributionTitle}>My Contribution</div>
-          <div className={styles.myContributionValue}>
-            {data.loading ? '—' : `${parseFloat(data.myContribution || 0).toFixed(4)} ETH`}
-          </div>
-        </div>
-
         {/* 错误提示 */}
         {data.error && (
           <div className={styles.errorText}>{data.error}</div>
         )}
+      </div>
+
+      {/* 我的贡献卡片 */}
+      <div className={styles.myContributionsCard}>
+        <div className={styles.myContributionsTitle}>My Total Contributions</div>
+        
+        <div className={styles.contributionItem}>
+          <div className={styles.contributionValue}>
+            {data.loading ? '—' : `${parseFloat(data.myContribution || 0).toFixed(2)} ETH`}
+          </div>
+          <div className={styles.contributionLabel}>Binance</div>
+        </div>
+
+        <div className={styles.totalRow}>
+          <span className={styles.totalLabel}>Total</span>
+          <span className={styles.totalValue}>
+            {data.loading ? '—' : `${parseFloat(data.myContribution || 0).toFixed(2)} ETH`}
+          </span>
+        </div>
       </div>
     </div>
   )

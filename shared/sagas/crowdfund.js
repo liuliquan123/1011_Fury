@@ -27,12 +27,23 @@ function* fetchCrowdfundSaga({ payload }) {
     // 获取合约信息
     const info = yield call([contract, contract.getCrowdfundInfo])
     
-    // 获取用户贡献（如果有钱包地址）
+    // 获取用户贡献和 ETH 余额（如果有钱包地址）
     const profile = yield select(state => state.auth.profile)
     let myContribution = '0'
+    let ethBalance = null
+    
     if (profile?.wallet_address) {
-      const contribution = yield call([contract, contract.getContribution], profile.wallet_address)
-      myContribution = ethers.formatEther(contribution)
+      try {
+        // 获取用户在合约中的贡献
+        const contribution = yield call([contract, contract.getContribution], profile.wallet_address)
+        myContribution = ethers.formatEther(contribution)
+        
+        // 获取用户 ETH 余额
+        const balance = yield call([provider, provider.getBalance], profile.wallet_address)
+        ethBalance = parseFloat(ethers.formatEther(balance)).toFixed(2)
+      } catch (err) {
+        console.error('Error fetching user data:', err)
+      }
     }
     
     yield put(actions.updateCrowdfund({
@@ -47,6 +58,7 @@ function* fetchCrowdfundSaga({ payload }) {
         targetReached: info.targetReached,
         isPaused: info.isPaused,
         myContribution,
+        ethBalance,
       }
     }))
   } catch (error) {

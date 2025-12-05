@@ -1,43 +1,66 @@
+/* Crowdfund 页面样式 - 根据 Figma JSON 校正 */
+
+/* 页面容器 */
 .crowdfund {
   min-height: 100vh;
   padding: 60px 72px;
   color: #fff;
+  background: #14151A;
 }
 
+/* 标题 - 白色（Figma JSON 校正） */
 .title {
   font-family: 'Jersey 10', system-ui, sans-serif;
   font-size: 88px;
   line-height: 1;
-  margin-bottom: 32px;
-  color: #E9FD66;
+  margin-bottom: 16px;
+  color: #FFFFFF;
+  text-align: center;
 }
 
+/* 描述文字 */
+.description {
+  color: #A7ADB9;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 主卡片 */
 .card {
   background: #232326;
-  border-radius: 24px;
   padding: 32px;
-  max-width: 800px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+/* 卡片头部 */
 .cardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #333;
 }
 
 .cardTitle {
   font-family: 'Google Sans Code', system-ui, sans-serif;
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
 }
 
+/* 状态徽章 */
 .statusBadge {
   display: inline-flex;
   align-items: center;
   padding: 4px 12px;
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -59,41 +82,67 @@
   color: #fff;
 }
 
-.tokenInfo {
+/* 进度区域头部 - 大百分比 + 倒计时 */
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* 大百分比 - 无下划线（Figma JSON 校正） */
+.progressPercent {
+  font-family: "Jersey 10", system-ui, sans-serif;
+  font-size: 60px;
+  color: #E9FD66;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}
+
+/* 倒计时容器 */
+.countdown {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 4px;
 }
 
-.tokenName {
-  font-family: 'Jersey 10', system-ui, sans-serif;
-  font-size: 32px;
-  color: #E9FD66;
-}
-
-.phaseInfo {
-  font-family: 'Google Sans Code', system-ui, sans-serif;
+.countdownLabel {
+  color: #FFFFFF;
+  font-family: "Google Sans Code", system-ui, sans-serif;
   font-size: 14px;
-  color: #A7ADB9;
-  background: #141519;
-  padding: 4px 12px;
-  border-radius: 999px;
+  margin-right: 12px;
 }
 
-/* Progress */
-.progressSection {
-  margin-bottom: 24px;
+/* 倒计时方块 - 深色背景白字（Figma JSON 校正） */
+.countdownBlock {
+  background: #14151A;
+  color: #FFFFFF;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
 }
 
+.countdownUnit {
+  color: #FFFFFF;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 16px;
+  margin: 0 4px;
+}
+
+/* 进度条 */
 .progressBar {
   position: relative;
   width: 100%;
   height: 16px;
-  border-radius: 999px;
   overflow: hidden;
-  background: #141519;
+  background: transparent;
   border: 1px solid #E9FD66;
+  margin-bottom: 24px;
 }
 
 .progressFill {
@@ -102,63 +151,66 @@
   transition: width 0.3s ease-out;
 }
 
-.progressText {
-  text-align: right;
-  margin-top: 8px;
-  font-size: 14px;
-  font-family: 'Google Sans Code', system-ui, sans-serif;
-  color: #A7ADB9;
-}
-
-/* Stats grid */
+/* 统计网格 - 3列（Figma JSON 校正） */
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 32px;
 }
 
+/* 统计卡片 - #39393A 背景，直角（Figma JSON 校正） */
 .statItem {
-  background: #141519;
-  border-radius: 16px;
+  background: #39393A;
   padding: 16px;
 }
 
-.statLabel {
-  font-size: 12px;
-  color: #A7ADB9;
-  margin-bottom: 8px;
-  font-family: 'Google Sans Code', system-ui, sans-serif;
-}
-
 .statValue {
-  font-size: 18px;
-  font-weight: 500;
+  font-family: "Jersey 10", system-ui, sans-serif;
+  font-size: 32px;
+  color: #E9FD66;
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: #A7ADB9;
   font-family: 'Google Sans Code', system-ui, sans-serif;
-  color: #fff;
 }
 
-/* Input */
+/* 分隔线 */
+.divider {
+  height: 1px;
+  background: #333;
+  margin: 24px 0;
+}
+
+/* 输入区域 */
 .inputSection {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
+/* 输入标签行 - 全白（Figma JSON 校正） */
 .inputLabelRow {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-size: 14px;
   font-family: 'Google Sans Code', system-ui, sans-serif;
-  color: #A7ADB9;
+  color: #FFFFFF;
 }
 
+.balanceValue {
+  font-weight: 600;
+}
+
+/* 输入框容器 - 黄边透明底 */
 .inputWrapper {
   display: flex;
   align-items: center;
-  border-radius: 999px;
-  background: #141519;
-  border: 1px solid #333;
-  padding-right: 16px;
+  background: transparent;
+  border: 1px solid #39393A;
+  padding-right: 0;
 }
 
 .inputField {
@@ -167,7 +219,7 @@
   outline: none;
   background: transparent;
   padding: 14px 16px;
-  color: #fff;
+  color: #FFFFFF;
   font-size: 18px;
   font-family: 'Google Sans Code', system-ui, sans-serif;
 }
@@ -176,17 +228,19 @@
   color: #666;
 }
 
-.inputSuffix {
+/* ETH 徽章 */
+.ethBadge {
+  background: #E9FD66;
+  color: #0B0B0C;
+  padding: 14px 24px;
   font-size: 14px;
-  font-weight: 500;
-  color: #A7ADB9;
+  font-weight: 600;
   font-family: 'Google Sans Code', system-ui, sans-serif;
 }
 
-/* Estimate */
+/* 预估区域 */
 .estimateSection {
-  background: #141519;
-  border-radius: 16px;
+  background: #39393A;
   padding: 16px;
   margin-bottom: 24px;
 }
@@ -213,10 +267,9 @@
   color: #ff6b6b;
 }
 
-/* Button */
+/* 主按钮 */
 .primaryButton {
   width: 100%;
-  border-radius: 999px;
   border: none;
   background: #E9FD66;
   color: #050506;
@@ -226,6 +279,7 @@
   cursor: pointer;
   font-family: 'Google Sans Code', system-ui, sans-serif;
   transition: background 0.2s;
+  text-transform: uppercase;
 }
 
 .primaryButton:hover:not(.disabled) {
@@ -237,12 +291,71 @@
   cursor: not-allowed;
 }
 
-/* Claim section */
+/* 我的贡献卡片 - 直角（Figma JSON 校正） */
+.myContributionsCard {
+  background: #232326;
+  padding: 32px;
+  margin-top: 24px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.myContributionsTitle {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+/* 贡献项 - #39393A 背景（Figma JSON 校正） */
+.contributionItem {
+  background: #39393A;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.contributionValue {
+  font-family: "Jersey 10", system-ui, sans-serif;
+  font-size: 32px;
+  color: #E9FD66;
+  margin-bottom: 8px;
+}
+
+.contributionLabel {
+  font-size: 14px;
+  color: #A7ADB9;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+}
+
+/* Total 行 */
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #333;
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+.totalLabel {
+  color: #A7ADB9;
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 16px;
+}
+
+.totalValue {
+  color: #FFFFFF;
+  font-family: "Jersey 10", system-ui, sans-serif;
+  font-size: 32px;
+}
+
+/* Claim 区域 */
 .claimSection {
   text-align: center;
   padding: 24px;
-  background: #141519;
-  border-radius: 16px;
+  background: #39393A;
   margin-bottom: 24px;
 }
 
@@ -257,7 +370,6 @@
   background: #E9FD66;
   color: #050506;
   border: none;
-  border-radius: 999px;
   padding: 12px 32px;
   font-size: 14px;
   font-weight: 600;
@@ -270,29 +382,7 @@
   cursor: not-allowed;
 }
 
-/* My contribution */
-.myContribution {
-  margin-top: 24px;
-  border-radius: 16px;
-  background: #141519;
-  padding: 16px;
-}
-
-.myContributionTitle {
-  font-size: 12px;
-  color: #A7ADB9;
-  margin-bottom: 8px;
-  font-family: 'Google Sans Code', system-ui, sans-serif;
-}
-
-.myContributionValue {
-  font-size: 24px;
-  font-weight: 500;
-  font-family: 'Jersey 10', system-ui, sans-serif;
-  color: #E9FD66;
-}
-
-/* Error */
+/* 错误提示 */
 .errorText {
   color: #ff6b6b;
   font-size: 14px;
@@ -301,7 +391,7 @@
   font-family: 'Google Sans Code', system-ui, sans-serif;
 }
 
-/* Responsive */
+/* 响应式 - 平板 */
 @media (max-width: 1024px) {
   .crowdfund {
     padding: 40px 32px;
@@ -311,11 +401,28 @@
     font-size: 64px;
   }
 
+  .progressHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .progressPercent {
+    font-size: 48px;
+  }
+
   .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .countdownBlock {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
   }
 }
 
+/* 响应式 - 移动端 */
 @media (max-width: 768px) {
   .crowdfund {
     padding: 24px 16px;
@@ -323,6 +430,10 @@
 
   .title {
     font-size: 48px;
+  }
+
+  .description {
+    font-size: 12px;
   }
 
   .card {
@@ -333,13 +444,34 @@
     font-size: 20px;
   }
 
-  .tokenName {
-    font-size: 24px;
+  .progressPercent {
+    font-size: 36px;
+  }
+
+  .countdown {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .countdownLabel {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .countdownBlock {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .countdownUnit {
+    font-size: 12px;
+    margin: 0 2px;
   }
 
   .statsGrid {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
   }
 
   .statItem {
@@ -347,7 +479,52 @@
   }
 
   .statValue {
-    font-size: 16px;
+    font-size: 24px;
+  }
+
+  .statLabel {
+    font-size: 12px;
+  }
+
+  .myContributionsCard {
+    padding: 24px 16px;
+  }
+
+  .contributionValue {
+    font-size: 24px;
+  }
+
+  .totalValue {
+    font-size: 24px;
   }
 }
 
+/* 响应式 - 小屏手机 */
+@media (max-width: 480px) {
+  .crowdfund {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .statItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .statValue {
+    margin-bottom: 0;
+  }
+}
