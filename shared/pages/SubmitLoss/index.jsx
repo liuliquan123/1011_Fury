@@ -219,10 +219,27 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     event.stopPropagation()
   }, [])
 
+  const [pendingCrowdfund, setPendingCrowdfund] = useState(false)
+
   const onLoggedIn = useCallback((event) => {
     setIsOpen(false)
     actions.getProfile()
-  }, [])
+    // 如果是从 Crowdfund 入口触发的登录，登录成功后跳转
+    if (pendingCrowdfund) {
+      setPendingCrowdfund(false)
+      history('/crowdfund')
+    }
+  }, [pendingCrowdfund, history])
+
+  // Crowdfund 入口点击处理
+  const handleCrowdfundClick = useCallback(() => {
+    if (!isLoggedIn) {
+      setPendingCrowdfund(true)
+      setIsOpen(true)
+    } else {
+      history('/crowdfund')
+    }
+  }, [isLoggedIn, history])
 
   const exchangeName = getExchangeName(exchangeType)
 
@@ -344,7 +361,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           </div>
           <div className={styles.crowdfundEntry}>
             <div className={styles.crowdfundText}>Want to get more tokens?</div>
-            <button className={styles.crowdfundButton} onClick={() => history('/crowdfund')}>
+            <button className={styles.crowdfundButton} onClick={handleCrowdfundClick}>
               CROWDFUND
             </button>
           </div>
@@ -669,7 +686,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           </div>
           <div className={styles.crowdfundEntry}>
             <div className={styles.crowdfundText}>Want to get more tokens?</div>
-            <button className={styles.crowdfundButton} onClick={() => history('/crowdfund')}>
+            <button className={styles.crowdfundButton} onClick={handleCrowdfundClick}>
               CROWDFUND
             </button>
           </div>

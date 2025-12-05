@@ -431,11 +431,15 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
             )}
             {(!reward) && (
               <div className={styles.locked}>
-                <div className={styles.actionButtons}>
-                  <Link className={styles.actionButton} to="/submit-loss">
-                    <div className={classNames(styles.leftArrow)}>{">"}</div>
-                    <div className={classNames(styles.buttonText)}>SUBMIT LOSS</div>
-                    <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                <div className={styles.noRewardText}>
+                  No tokens yet. Submit your loss or join the crowdfund to get tokens!
+                </div>
+                <div className={styles.dualButtonRow}>
+                  <Link className={styles.getMoreButton} to="/crowdfund">
+                    GET MORE TOKEN
+                  </Link>
+                  <Link className={styles.claimToButton} to="/submit-loss">
+                    SUBMIT LOSS
                   </Link>
                 </div>
               </div>

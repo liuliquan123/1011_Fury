@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import { calculateEstimate, formatTokenAmount, CROWDFUND_PHASES } from 'config/crowdfund'
+import LoginModal from 'components/Login'
 import styles from './style.css'
 
 const EXCHANGE = 'Binance'
@@ -35,9 +36,11 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
   const [contributing, setContributing] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 })
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
   
   const data = crowdfund.byExchange[EXCHANGE] || {}
   const phase = exchangePhase[EXCHANGE]?.current_phase || 1
+  const isLoggedIn = !!profile?.id
   const hasWallet = !!profile?.wallet_address
   const phaseConfig = CROWDFUND_PHASES[phase] || CROWDFUND_PHASES[1]
   
@@ -68,8 +71,33 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
     return () => clearInterval(timer)
   }, [data.deadline])
 
+  // 登录弹窗处理
+  const openLoginModal = useCallback(() => {
+    setIsLoginOpen(true)
+  }, [])
+
+  const closeLoginModal = useCallback(() => {
+    setIsLoginOpen(false)
+  }, [])
+
+  const onModalClick = useCallback((e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }, [])
+
+  const onLoggedIn = useCallback(() => {
+    setIsLoginOpen(false)
+    authActions.getProfile()
+  }, [])
+
   // Connect Wallet 处理
   const handleConnectWallet = useCallback(() => {
+    // 未登录先弹出登录框
+    if (!isLoggedIn) {
+      openLoginModal()
+      return
+    }
+    
     setConnecting(true)
     authActions.linkWallet({
       onSuccess: () => {
@@ -81,7 +109,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
         toast(msg || 'Failed to connect wallet')
       }
     })
-  }, [])
+  }, [isLoggedIn])
 
   // Contribute 处理
   const handleContribute = useCallback(() => {
@@ -118,6 +146,17 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
 
   return (
     <div className={styles.crowdfund}>
+      {/* 登录弹窗 */}
+      {isLoginOpen && !isLoggedIn && (
+        <div className={styles.modal} onClick={closeLoginModal}>
+          <LoginModal
+            onClick={onModalClick}
+            onLoggedIn={onLoggedIn}
+            onClose={closeLoginModal}
+          />
+        </div>
+      )}
+
       {/* 标题区域 */}
       <div className={styles.title}>Crowdfund</div>
       <div className={styles.description}>
