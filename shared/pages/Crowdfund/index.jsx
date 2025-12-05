@@ -271,8 +271,15 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
               </div>
             )}
 
-            {/* Contribute / Connect Wallet 按钮 */}
-            {!hasWallet ? (
+            {/* 按钮：LOGIN -> CONNECT WALLET -> CONTRIBUTE */}
+            {!isLoggedIn ? (
+              <button
+                className={styles.primaryButton}
+                onClick={openLoginModal}
+              >
+                LOGIN
+              </button>
+            ) : !hasWallet ? (
               <button
                 className={classNames(styles.primaryButton, {
                   [styles.disabled]: connecting
