@@ -381,57 +381,49 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
 
                   </div>
                 </div>
-                <div className={styles.actionButtons}>
-                  {/* 状态: locked - 显示 Boost Unlock */}
+                {/* 双按钮布局：GET MORE TOKEN + CLAIM/CONNECT */}
+                <div className={styles.dualButtonRow}>
+                  {/* 左侧：GET MORE TOKEN */}
+                  <Link className={styles.getMoreButton} to="/crowdfund">
+                    GET MORE TOKEN
+                  </Link>
+
+                  {/* 右侧：根据状态显示不同按钮 */}
                   {rewardStatus === 'locked' && (
-                    <Link className={styles.actionButton} to="/referral">
-                      <div className={classNames(styles.leftArrow)}>{">"}</div>
-                      <div className={classNames(styles.buttonText)}>Boost Unlock</div>
-                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                    <Link className={styles.claimToButton} to="/referral">
+                      BOOST UNLOCK
                     </Link>
                   )}
 
-                  {/* 状态: unlocked + 无钱包 - 显示 Connect Wallet */}
                   {rewardStatus === 'unlocked' && !hasWallet && (
                     <button 
-                      className={classNames(styles.actionButton, {
+                      className={classNames(styles.claimToButton, {
                         [styles.disabled]: connectingWallet
                       })} 
                       onClick={linkWallet}
                       disabled={connectingWallet}
                     >
-                      <div className={classNames(styles.leftArrow)}>{">"}</div>
-                      <div className={classNames(styles.buttonText)}>
-                        {connectingWallet ? 'Connecting...' : 'Connect Wallet'}
-                      </div>
-                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                      {connectingWallet ? 'CONNECTING...' : 'CONNECT WALLET'}
                     </button>
                   )}
 
-                  {/* 状态: unlocked + 有钱包 - 显示 Claim */}
                   {rewardStatus === 'unlocked' && hasWallet && (
                     <button
-                      className={classNames(styles.actionButton, {
+                      className={classNames(styles.claimToButton, {
                         [styles.disabled]: claimStatus !== 'idle'
                       })}
                       onClick={() => handleClaim(reward?.exchange)}
                       disabled={claimStatus !== 'idle'}
                     >
-                      <div className={classNames(styles.leftArrow)}>{">"}</div>
-                      <div className={classNames(styles.buttonText)}>{getClaimButtonText()}</div>
-                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                      {claimStatus !== 'idle' 
+                        ? getClaimButtonText().toUpperCase()
+                        : `CLAIM TO: ${truncateAddress(profile?.wallet_address)}`}
                     </button>
                   )}
 
-                  {/* 状态: claimed - 显示 Claimed */}
                   {rewardStatus === 'claimed' && (
-                    <button 
-                      className={classNames(styles.actionButtonDark, styles.disabled)} 
-                      disabled
-                    >
-                      <div className={classNames(styles.leftArrow)}>{">"}</div>
-                      <div className={classNames(styles.buttonText)}>Claimed ✓</div>
-                      <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                    <button className={classNames(styles.claimToButton, styles.disabled)} disabled>
+                      CLAIMED ✓
                     </button>
                   )}
                 </div>

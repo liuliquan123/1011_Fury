@@ -342,6 +342,12 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
           </div>
+          <div className={styles.crowdfundEntry}>
+            <div className={styles.crowdfundText}>Want to get more tokens?</div>
+            <button className={styles.crowdfundButton} onClick={() => history('/crowdfund')}>
+              CROWDFUND
+            </button>
+          </div>
         </Fragment>
       )}
       {stepIndex === 1 && (
@@ -659,6 +665,12 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               <div className={classNames(styles.leftArrow)}>{">"}</div>
               <div className={classNames(styles.text)}>{uploading ? 'SUBMITTING' : 'SUBMIT'}</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </button>
+          </div>
+          <div className={styles.crowdfundEntry}>
+            <div className={styles.crowdfundText}>Want to get more tokens?</div>
+            <button className={styles.crowdfundButton} onClick={() => history('/crowdfund')}>
+              CROWDFUND
             </button>
           </div>
         </Fragment>

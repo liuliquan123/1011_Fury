@@ -893,4 +893,42 @@
       margin-top: 0;
     }
   }
+
+  .submitLoss .crowdfundEntry {
+    padding: 16px;
+  }
+}
+
+/* Crowdfund 入口 */
+.crowdfundEntry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 24px;
+  background: #232326;
+}
+
+.crowdfundText {
+  color: #A7ADB9;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 14px;
+}
+
+.crowdfundButton {
+  background: transparent;
+  border: 1px solid #E9FD66;
+  color: #E9FD66;
+  padding: 12px 24px;
+  font-family: "Google Sans Code", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.crowdfundButton:hover {
+  background: #E9FD66;
+  color: #0B0B0C;
 }

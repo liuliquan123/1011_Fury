@@ -30,9 +30,10 @@ const formatTimeRemaining = (deadline) => {
 // 补零
 const padZero = (num) => String(num).padStart(2, '0')
 
-const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundActions }) => {
+const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundActions, navigate }) => {
   const [amount, setAmount] = useState('')
   const [contributing, setContributing] = useState(false)
+  const [connecting, setConnecting] = useState(false)
   const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 })
   
   const data = crowdfund.byExchange[EXCHANGE] || {}
@@ -67,6 +68,21 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
     return () => clearInterval(timer)
   }, [data.deadline])
 
+  // Connect Wallet 处理
+  const handleConnectWallet = useCallback(() => {
+    setConnecting(true)
+    authActions.linkWallet({
+      onSuccess: () => {
+        setConnecting(false)
+        toast('Wallet connected!')
+      },
+      onError: (msg) => {
+        setConnecting(false)
+        toast(msg || 'Failed to connect wallet')
+      }
+    })
+  }, [])
+
   // Contribute 处理
   const handleContribute = useCallback(() => {
     if (!amount || parseFloat(amount) <= 0) {
@@ -74,7 +90,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
       return
     }
     if (!hasWallet) {
-      toast('Please connect your wallet first')
+      handleConnectWallet()
       return
     }
     
@@ -216,18 +232,28 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
               </div>
             )}
 
-            {/* Contribute 按钮 */}
-            <button
-              className={classNames(styles.primaryButton, {
-                [styles.disabled]: contributing || !hasWallet || !amount
-              })}
-              onClick={handleContribute}
-              disabled={contributing || !hasWallet || !amount}
-            >
-              {contributing ? 'Contributing...' : 
-               !hasWallet ? 'Connect Wallet to Contribute' :
-               `CONTRIBUTE TO ${tokenName}`}
-            </button>
+            {/* Contribute / Connect Wallet 按钮 */}
+            {!hasWallet ? (
+              <button
+                className={classNames(styles.primaryButton, {
+                  [styles.disabled]: connecting
+                })}
+                onClick={handleConnectWallet}
+                disabled={connecting}
+              >
+                {connecting ? 'CONNECTING...' : 'CONNECT WALLET'}
+              </button>
+            ) : (
+              <button
+                className={classNames(styles.primaryButton, {
+                  [styles.disabled]: contributing || !amount
+                })}
+                onClick={handleContribute}
+                disabled={contributing || !amount}
+              >
+                {contributing ? 'CONTRIBUTING...' : `CONTRIBUTE TO ${tokenName}`}
+              </button>
+            )}
           </React.Fragment>
         )}
 
