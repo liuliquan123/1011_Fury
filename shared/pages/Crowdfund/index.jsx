@@ -244,15 +244,17 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
   )
 }
 
-export default connect(
-  state => ({
-    profile: state.auth.profile,
-    crowdfund: state.crowdfund,
-    exchangePhase: state.auth.exchangePhase,
-  }),
-  dispatch => ({
-    authActions: bindActionCreators(authActions, dispatch),
-    crowdfundActions: bindActionCreators(crowdfundActions, dispatch),
-  })
-)(withRouter(Crowdfund))
+export default withRouter(
+  connect(
+    state => ({
+      profile: state.auth.profile,
+      crowdfund: state.crowdfund,
+      exchangePhase: state.auth.exchangePhase,
+    }),
+    dispatch => ({
+      authActions: bindActionCreators(authActions, dispatch),
+      crowdfundActions: bindActionCreators(crowdfundActions, dispatch),
+    })
+  )(Crowdfund)
+)
 
