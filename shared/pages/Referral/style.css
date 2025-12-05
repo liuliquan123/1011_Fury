@@ -423,6 +423,42 @@
       width: 100%;
       background: #232326;
 
+      .noReward {
+        padding: 60px 40px;
+        text-align: center;
+
+        .noRewardTitle {
+          color: #FFF;
+          font-family: "Google Sans Code";
+          font-size: 24px;
+          font-weight: 600;
+          margin-bottom: 12px;
+        }
+
+        .noRewardText {
+          color: #A7ADB9;
+          font-family: "Google Sans Code";
+          font-size: 14px;
+          margin-bottom: 24px;
+        }
+
+        .submitButton {
+          display: inline-block;
+          background: #E9FD66;
+          color: black;
+          font-family: "Google Sans Code";
+          font-size: 16px;
+          font-weight: 500;
+          padding: 12px 32px;
+          text-decoration: none;
+          cursor: pointer;
+
+          &:hover {
+            background: #d4e650;
+          }
+        }
+      }
+
       .exchange {
         background: #39393A;
         display: flex;
@@ -501,11 +537,27 @@
               font-weight: 400;
               line-height: 48px;
 
+              .tokenName {
+                font-size: 24px;
+                margin-left: 8px;
+                color: #E9FD66;
+              }
+
               .status {
                 font-size: 20px;
                 margin-left: 10px;
                 color: #7E7E7E;
               }
+            }
+
+            .congratsMessage {
+              color: #37D375;
+              font-family: "Google Sans Code";
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 24px;
+              margin-left: auto;
             }
 
             .tokenLockTime {

@@ -10,7 +10,7 @@ import okxLogo from 'resources/images/logos/okx-logo.svg'
 import bybitLogo from 'resources/images/logos/bybit-logo.svg'
 import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
 import classNames from 'classnames'
-import { isExchangeVisible } from 'config/exchanges'
+import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import styles from './style.css'
 
 const getInviteCode = (code, exchangeType) => {
@@ -232,97 +232,116 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
         </div>
       </div>
       <div className={styles.content}>
-        {(!!reward) && (
-          <div className={styles.myToken}>
-            <div className={styles.exchange}>{reward.exchange}</div>
-            <div className={styles.bottom}>
-              <div className={styles.tokens}>
-                <div className={styles.token}>
-                  <div className={styles.tokenAmount}>
-                    {reward.token_amount || 0}
-                    <span className={styles.status}>{reward.status}</span>
-                  </div>
-                  <div className={styles.tokenLockTime}>
-                    <div className={styles.tokenLockTimeName}>
-                      Unlocks in
+        <div className={styles.myToken}>
+          {reward ? (
+            <>
+              <div className={styles.exchange}>{reward.exchange}</div>
+              <div className={styles.bottom}>
+                <div className={styles.tokens}>
+                  <div className={styles.token}>
+                    <div className={styles.tokenAmount}>
+                      {reward.token_amount || 0}
+                      <span className={styles.tokenName}>{getTokenName(reward?.exchange)}</span>
+                      <span className={styles.status}>{reward.status}</span>
                     </div>
-                    <div className={styles.tokenLockTimeContent}>
-                      <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
-                      <div className={styles.tokenLockTimeContentCellText}>D</div>
-                      <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.h}</div>
-                      <div className={styles.tokenLockTimeContentCellText}>H</div>
-                      <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.m}</div>
-                      <div className={styles.tokenLockTimeContentCellText}>M</div>
-                      <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.s}</div>
-                      <div className={styles.tokenLockTimeContentCellText}>S</div>
+                    {/* Unlocked/Claimed 时显示祝贺文案，否则显示倒计时 */}
+                    {rewardStatus === 'unlocked' || rewardStatus === 'claimed' ? (
+                      <div className={styles.congratsMessage}>
+                        Congrats! You can claim the token now!
+                      </div>
+                    ) : (
+                      <div className={styles.tokenLockTime}>
+                        <div className={styles.tokenLockTimeName}>
+                          Unlocks in
+                        </div>
+                        <div className={styles.tokenLockTimeContent}>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>D</div>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.h}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>H</div>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.m}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>M</div>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.s}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>S</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.progress}>
+                  <div className={styles.percentage} style={{ width: `${percentage}%` }}>
+
+                  </div>
+                </div>
+                {/* Claim 按钮 - 根据状态显示不同内容 */}
+                <div className={styles.actionButtons}>
+                  {/* 状态: locked - 显示 Locked */}
+                  {rewardStatus === 'locked' && (
+                    <button className={classNames(styles.withdrawalButton, styles.disabled)} disabled>
+                      Locked
+                    </button>
+                  )}
+
+                  {/* 状态: unlocked + 无钱包 - 显示提示 */}
+                  {rewardStatus === 'unlocked' && !hasWallet && (
+                    <button className={styles.withdrawalButton} disabled>
+                      Connect Wallet First
+                    </button>
+                  )}
+
+                  {/* 状态: unlocked + 有钱包 - 显示 Claim */}
+                  {rewardStatus === 'unlocked' && hasWallet && (
+                    <button
+                      className={classNames(styles.withdrawalButton, {
+                        [styles.disabled]: claimStatus !== 'idle'
+                      })}
+                      onClick={() => handleClaim(reward?.exchange)}
+                      disabled={claimStatus !== 'idle'}
+                    >
+                      {getClaimButtonText()}
+                    </button>
+                  )}
+
+                  {/* 状态: claimed - 显示 Claimed */}
+                  {rewardStatus === 'claimed' && (
+                    <button className={classNames(styles.withdrawalButton, styles.claimed)} disabled>
+                      Claimed ✓
+                    </button>
+                  )}
+                </div>
+
+                {/* 轮播按钮 - 只有多个 reward 时才显示 */}
+                {exchangeCount > 1 && (
+                  <div className={styles.nav}>
+                    <div className={classNames(styles.leftButton, {
+                      [styles.disabled]: activeIdx === 0
+                    })} onClick={prev}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
+                        <path d="M0.113852 5.56483C0.103751 5.57951 0.0957266 5.59583 0.0869215 5.6111C0.0387433 5.69507 0.0108409 5.78666 0.00267635 5.8804C-0.0138618 6.06774 0.0465054 6.26109 0.189811 6.40452L5.46894 11.6837C5.7261 11.9406 6.14327 11.9398 6.40047 11.683C6.65744 11.4258 6.65745 11.0093 6.40047 10.7521L2.01627 6.36792H13.794C14.1578 6.36792 14.4528 6.07295 14.4528 5.70915C14.4528 5.34537 14.1578 5.05038 13.794 5.05038H2.47479L6.40047 1.1247C6.65768 0.867487 6.65762 0.449726 6.40047 0.192476C6.1432 -0.0644227 5.72607 -0.0639614 5.46894 0.193166L0.190502 5.47161C0.16168 5.50047 0.136207 5.5324 0.113852 5.56483Z" fill="black" />
+                      </svg>
+                    </div>
+                    <div className={classNames(styles.rightButton, {
+                      [styles.disabled]: activeIdx === exchangeCount - 1
+                    })} onClick={next}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
+                        <path d="M14.272 5.48209C14.3215 5.53372 14.3599 5.59201 14.3894 5.65334C14.4053 5.68642 14.418 5.72074 14.428 5.75554C14.4335 5.77454 14.4402 5.79353 14.4439 5.81285C14.484 6.02032 14.4236 6.24327 14.263 6.40395L8.98455 11.6824C8.72737 11.9396 8.31027 11.9401 8.05302 11.6831C7.79607 11.4258 7.79587 11.008 8.05302 10.7509L12.4358 6.36804L0.65878 6.36873C0.295167 6.36873 0.000307519 6.07351 1.08056e-05 5.70996C1.06422e-05 5.34617 0.294985 5.05119 0.65878 5.05119L11.9787 5.0505L8.05233 1.12413C7.79558 0.866846 7.79594 0.449676 8.05302 0.192598C8.31011 -0.0643469 8.72662 -0.0641074 8.98386 0.192598L14.2637 5.47242C14.2666 5.47532 14.2692 5.47911 14.272 5.48209Z" fill="black" />
+                      </svg>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className={styles.progress}>
-                <div className={styles.percentage} style={{ width: `${percentage}%` }}>
-
-                </div>
-              </div>
-              {/* Claim 按钮 - 根据状态显示不同内容 */}
-              <div className={styles.actionButtons}>
-                {/* 状态: locked - 显示 Locked */}
-                {rewardStatus === 'locked' && (
-                  <button className={classNames(styles.withdrawalButton, styles.disabled)} disabled>
-                    Locked
-                  </button>
-                )}
-
-                {/* 状态: unlocked + 无钱包 - 显示提示 */}
-                {rewardStatus === 'unlocked' && !hasWallet && (
-                  <button className={styles.withdrawalButton} disabled>
-                    Connect Wallet First
-                  </button>
-                )}
-
-                {/* 状态: unlocked + 有钱包 - 显示 Claim */}
-                {rewardStatus === 'unlocked' && hasWallet && (
-                  <button
-                    className={classNames(styles.withdrawalButton, {
-                      [styles.disabled]: claimStatus !== 'idle'
-                    })}
-                    onClick={() => handleClaim(reward?.exchange)}
-                    disabled={claimStatus !== 'idle'}
-                  >
-                    {getClaimButtonText()}
-                  </button>
-                )}
-
-                {/* 状态: claimed - 显示 Claimed */}
-                {rewardStatus === 'claimed' && (
-                  <button className={classNames(styles.withdrawalButton, styles.claimed)} disabled>
-                    Claimed ✓
-                  </button>
                 )}
               </div>
-
-              {/* 轮播按钮 - 只有多个 reward 时才显示 */}
-              {exchangeCount > 1 && (
-                <div className={styles.nav}>
-                  <div className={classNames(styles.leftButton, {
-                    [styles.disabled]: activeIdx === 0
-                  })} onClick={prev}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
-                      <path d="M0.113852 5.56483C0.103751 5.57951 0.0957266 5.59583 0.0869215 5.6111C0.0387433 5.69507 0.0108409 5.78666 0.00267635 5.8804C-0.0138618 6.06774 0.0465054 6.26109 0.189811 6.40452L5.46894 11.6837C5.7261 11.9406 6.14327 11.9398 6.40047 11.683C6.65744 11.4258 6.65745 11.0093 6.40047 10.7521L2.01627 6.36792H13.794C14.1578 6.36792 14.4528 6.07295 14.4528 5.70915C14.4528 5.34537 14.1578 5.05038 13.794 5.05038H2.47479L6.40047 1.1247C6.65768 0.867487 6.65762 0.449726 6.40047 0.192476C6.1432 -0.0644227 5.72607 -0.0639614 5.46894 0.193166L0.190502 5.47161C0.16168 5.50047 0.136207 5.5324 0.113852 5.56483Z" fill="black" />
-                    </svg>
-                  </div>
-                  <div className={classNames(styles.rightButton, {
-                    [styles.disabled]: activeIdx === exchangeCount - 1
-                  })} onClick={next}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
-                      <path d="M14.272 5.48209C14.3215 5.53372 14.3599 5.59201 14.3894 5.65334C14.4053 5.68642 14.418 5.72074 14.428 5.75554C14.4335 5.77454 14.4402 5.79353 14.4439 5.81285C14.484 6.02032 14.4236 6.24327 14.263 6.40395L8.98455 11.6824C8.72737 11.9396 8.31027 11.9401 8.05302 11.6831C7.79607 11.4258 7.79587 11.008 8.05302 10.7509L12.4358 6.36804L0.65878 6.36873C0.295167 6.36873 0.000307519 6.07351 1.08056e-05 5.70996C1.06422e-05 5.34617 0.294985 5.05119 0.65878 5.05119L11.9787 5.0505L8.05233 1.12413C7.79558 0.866846 7.79594 0.449676 8.05302 0.192598C8.31011 -0.0643469 8.72662 -0.0641074 8.98386 0.192598L14.2637 5.47242C14.2666 5.47532 14.2692 5.47911 14.272 5.48209Z" fill="black" />
-                    </svg>
-                  </div>
-                </div>
-              )}
+            </>
+          ) : (
+            /* 无 reward 时显示引导 */
+            <div className={styles.noReward}>
+              <div className={styles.noRewardTitle}>No Tokens Yet</div>
+              <div className={styles.noRewardText}>Submit your loss to earn tokens</div>
+              <Link className={styles.submitButton} to="/submit-loss">
+                Submit Loss
+              </Link>
             </div>
-          </div>
-        )}
+          )}
+        </div>
         <div className={styles.myReferral}>
           <div className={styles.contentTitle}>
             Pick & Spread

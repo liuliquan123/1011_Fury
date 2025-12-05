@@ -21,3 +21,21 @@ export const isExchangeVisible = (exchange) => {
   return VISIBLE_EXCHANGES.includes(String(exchange).toLowerCase())
 }
 
+// 交易所对应的 Token 名称
+export const EXCHANGE_TOKENS = {
+  binance: '$CDNB',
+  okx: '$COKX',
+  bybit: 'Anti-Bybit',
+  bitget: 'Anti-Bitget',
+}
+
+/**
+ * 获取交易所对应的 Token 名称
+ * @param {string} exchange - 交易所名称
+ * @returns {string}
+ */
+export const getTokenName = (exchange) => {
+  if (!exchange) return ''
+  return EXCHANGE_TOKENS[String(exchange).toLowerCase()] || ''
+}
+

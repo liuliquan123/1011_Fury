@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { formatDate } from 'utils'
-import { isExchangeVisible } from 'config/exchanges'
+import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import styles from './style.css'
 
 // 基础数字格式化（内部使用）
@@ -349,23 +349,31 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     <div className={styles.tokenLogo}></div>
                     <div className={styles.tokenAmount}>
                       {(reward && reward.token_amount) || 0}
+                      <span className={styles.tokenName}>{getTokenName(reward?.exchange)}</span>
                       <span className={styles.status}>{reward && reward.status}</span>
                     </div>
-                    <div className={styles.tokenLockTime}>
-                      <div className={styles.tokenLockTimeName}>
-                        Unlocks in
+                    {/* Unlocked/Claimed 时显示祝贺文案，否则显示倒计时 */}
+                    {rewardStatus === 'unlocked' || rewardStatus === 'claimed' ? (
+                      <div className={styles.congratsMessage}>
+                        Congrats! You can claim the token now!
                       </div>
-                      <div className={styles.tokenLockTimeContent}>
-                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
-                        <div className={styles.tokenLockTimeContentCellText}>D</div>
-                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.h}</div>
-                        <div className={styles.tokenLockTimeContentCellText}>H</div>
-                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.m}</div>
-                        <div className={styles.tokenLockTimeContentCellText}>M</div>
-                        <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.s}</div>
-                        <div className={styles.tokenLockTimeContentCellText}>S</div>
+                    ) : (
+                      <div className={styles.tokenLockTime}>
+                        <div className={styles.tokenLockTimeName}>
+                          Unlocks in
+                        </div>
+                        <div className={styles.tokenLockTimeContent}>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.d}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>D</div>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.h}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>H</div>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.m}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>M</div>
+                          <div className={styles.tokenLockTimeContentCellNumber}>{formattedTime.s}</div>
+                          <div className={styles.tokenLockTimeContentCellText}>S</div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
                 <div className={styles.progress}>

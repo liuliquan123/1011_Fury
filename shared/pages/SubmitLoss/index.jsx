@@ -317,7 +317,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     </div>
                     <div className={styles.notificationContent}>
                       <div className={styles.notificationContentItem}>
-                        Current Stage: {phase.current_phase}/3
+                        Current Phase: {phase.current_phase}
                       </div>
                       <div className={styles.notificationContentItem}>
                         Submissions in this stage: {phase.phase_info.current_submissions}/{phase.phase_info.max_submissions}
