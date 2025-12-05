@@ -41,7 +41,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 })
 
-let web3auth
+// 导出 web3auth 供其他 saga 使用
+export let web3auth
 
 function* waitUntil(web3auth, status) {
   return new Promise((resolve, reject) => {

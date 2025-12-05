@@ -207,9 +207,9 @@ function* claimCrowdfundTokenSaga({ payload }) {
 }
 
 export default function* crowdfundSaga() {
-  yield takeEvery(actions.fetchCrowdfund, fetchCrowdfundSaga)
-  yield takeEvery(actions.contribute, contributeSaga)
-  yield takeEvery(actions.claimRefund, claimRefundSaga)
-  yield takeEvery(actions.claimCrowdfundToken, claimCrowdfundTokenSaga)
+  yield takeEvery(String(actions.fetchCrowdfund), fetchCrowdfundSaga)
+  yield takeEvery(String(actions.contribute), contributeSaga)
+  yield takeEvery(String(actions.claimRefund), claimRefundSaga)
+  yield takeEvery(String(actions.claimCrowdfundToken), claimCrowdfundTokenSaga)
 }
 
