@@ -9,9 +9,11 @@ import {
   Login,
   Referral,
   Cases,
-  Invite,
-  Crowdfund
+  Invite
 } from 'routes/sync'
+
+// DEBUG: 直接导入 Crowdfund，绕过 syncComponent
+import Crowdfund from 'pages/Crowdfund'
 
 export const routes = [
   {

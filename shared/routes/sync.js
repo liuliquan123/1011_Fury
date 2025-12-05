@@ -7,4 +7,4 @@ export const Login = syncComponent('Login', require('pages/Login'))
 export const Referral = syncComponent('Referral', require('pages/Referral'))
 export const Cases = syncComponent('Cases', require('pages/Cases'))
 export const Invite = syncComponent('INvite', require('pages/Invite'))
-export const Crowdfund = syncComponent('Crowdfund', require('pages/Crowdfund'))
+// Crowdfund 已移至 routes/index.js 直接导入
