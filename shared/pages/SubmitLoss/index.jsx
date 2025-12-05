@@ -33,6 +33,7 @@ import bitgetScreenshotStep2 from 'resources/images/screenshots/bitget/bitget-st
 import bitgetScreenshotStep3 from 'resources/images/screenshots/bitget/bitget-step3.jpeg'
 import bitgetScreenshotStep4 from 'resources/images/screenshots/bitget/bitget-step4.jpeg'
 
+import { isExchangeVisible } from 'config/exchanges'
 import styles from './style.css'
 
 const getExchangeName = (exchangeType) => {
@@ -249,50 +250,58 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                   Exchanges currently eligible for claims
                 </div>
                 <div className={styles.exchanges}>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'binance'
-                    })}
-                    onClick={selectExchange('binance')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={binanceLogo} alt={`binance logo`} />
+                  {isExchangeVisible('binance') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'binance'
+                      })}
+                      onClick={selectExchange('binance')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={binanceLogo} alt={`binance logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>Binance</div>
                     </div>
-                    <div className={styles.exchangeName}>Binance</div>
-                  </div>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'okx'
-                    })}
-                    onClick={selectExchange('okx')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={okxLogo} alt={`okx logo`} />
+                  )}
+                  {isExchangeVisible('okx') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'okx'
+                      })}
+                      onClick={selectExchange('okx')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={okxLogo} alt={`okx logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>OKX</div>
                     </div>
-                    <div className={styles.exchangeName}>OKX</div>
-                  </div>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'bybit'
-                    })}
-                    onClick={selectExchange('bybit')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={bybitLogo} alt={`bybit logo`} />
+                  )}
+                  {isExchangeVisible('bybit') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'bybit'
+                      })}
+                      onClick={selectExchange('bybit')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={bybitLogo} alt={`bybit logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>Bybit</div>
                     </div>
-                    <div className={styles.exchangeName}>Bybit</div>
-                  </div>
-                  <div
-                    className={classNames(styles.exchange, {
-                      [styles.selected]: exchangeType === 'bitget'
-                    })}
-                    onClick={selectExchange('bitget')}
-                  >
-                    <div className={styles.exchangeLogo}>
-                      <img src={bitgetLogo} alt={`bitget logo`} />
+                  )}
+                  {isExchangeVisible('bitget') && (
+                    <div
+                      className={classNames(styles.exchange, {
+                        [styles.selected]: exchangeType === 'bitget'
+                      })}
+                      onClick={selectExchange('bitget')}
+                    >
+                      <div className={styles.exchangeLogo}>
+                        <img src={bitgetLogo} alt={`bitget logo`} />
+                      </div>
+                      <div className={styles.exchangeName}>Bitget</div>
                     </div>
-                    <div className={styles.exchangeName}>Bitget</div>
-                  </div>
+                  )}
                 </div>
                 {phase && (
                   <div className={classNames(styles.notification, {

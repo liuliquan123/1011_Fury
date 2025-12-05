@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { formatDate } from 'utils'
+import { isExchangeVisible } from 'config/exchanges'
 import styles from './style.css'
 
 // 基础数字格式化（内部使用）
@@ -140,7 +141,9 @@ const getPercentage = (reward) => {
 }
 
 const Profile = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
-  const rewards = userTokens.rewards || []
+  const allRewards = Array.isArray(userTokens?.rewards) ? userTokens.rewards : []
+  // 过滤只显示可见交易所的 rewards
+  const rewards = allRewards.filter(r => isExchangeVisible(r.exchange))
   const exchangeTypes = rewards.map(reward => reward.exchange)
   const exchangeCount = exchangeTypes.length
   const [activeIdx, setActiveIdx] = useState(0)

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import { isExchangeVisible } from 'config/exchanges'
 import styles from './style.css'
 
 // 基础数字格式化（内部使用）
@@ -82,7 +83,9 @@ const Landing = ({ cases, actions }) => {
     actions.getCases({})
   }, [])
 
-  const caseList = Array.isArray(cases) ? cases : []
+  const allCases = Array.isArray(cases) ? cases : []
+  // 过滤只显示可见交易所的 cases
+  const caseList = allCases.filter(c => isExchangeVisible(c.exchange))
   const activeCases = caseList.length
   const totalParticipants = caseList.reduce((sum, c) => sum + (c.participant_count || 0), 0)
   const totalDamage = caseList.reduce((sum, c) => sum + (c.total_damage || 0), 0)
