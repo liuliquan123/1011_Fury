@@ -16,4 +16,8 @@ export const submitLoss = (params, options) => supabaseApi('POST', '/submit-loss
 export const linkWeb3Auth = (params, options) => supabaseApi('POST', '/link-web3auth', params, options)
 export const claimSignature = (params, options) => supabaseApi('POST', '/claim-signature', params, options)
 
+// Crowdfund APIs
+export const crowdfundClaimSignature = (params, options) => supabaseApi('POST', '/crowdfund-claim-signature', params, options)
+export const crowdfundRefundSignature = (params, options) => supabaseApi('POST', '/crowdfund-refund-signature', params, options)
+
 export const getAuthToken = (params, options) => supabaseRestApi('GET', '/auth_tokens', params, options)

@@ -9,7 +9,8 @@ import {
   Login,
   Referral,
   Cases,
-  Invite
+  Invite,
+  Crowdfund
 } from 'routes/sync'
 
 export const routes = [
@@ -42,6 +43,10 @@ export const routes = [
         component: Invite
       },
       {
+        path: 'crowdfund',
+        component: Crowdfund
+      },
+      {
         path: 'login',
         component: Login
       },
@@ -62,6 +67,7 @@ export const RootRoutes = () => (
       <Route path="referral" element={<Referral />} />
       <Route path="my-case" element={<Cases />} />
       <Route path="invite" element={<Invite />} />
+      <Route path="crowdfund" element={<Crowdfund />} />
       <Route path="login" element={<Login />} />
       <Route path="*" element={<NoMatch />} />
     </Route>

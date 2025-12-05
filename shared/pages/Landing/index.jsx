@@ -119,6 +119,11 @@ const Landing = ({ cases, actions }) => {
             <div className={classNames(styles.buttonText)}>SUBMIT YOUR LOSS</div>
             <div className={classNames(styles.rightArrow)}>{"<"}</div>
           </Link>
+          <Link className={classNames(styles.button, styles.secondaryButton)} to="/crowdfund">
+            <div className={classNames(styles.leftArrow)}>{">"}</div>
+            <div className={classNames(styles.buttonText)}>CROWDFUND</div>
+            <div className={classNames(styles.rightArrow)}>{"<"}</div>
+          </Link>
         </div>
       </div>
       <div className={styles.sections}>

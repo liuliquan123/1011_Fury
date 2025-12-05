@@ -40,24 +40,39 @@ export const CONTRACTS = {
   // 测试用（单一合约，用于开发测试）
   test: {
     signatureClaim: '0x0c500663300c053affA1f9f49Ba6846D80693A89',
+    crowdfund: '0xf893Db8f7708377120f6B50f78c23Eb17118338f', // Base Sepolia Crowdfund
   },
   // 每个交易所独立的合约地址（待部署）
   Binance: {
     signatureClaim: null, // TBD - 待合约工程师部署
+    crowdfund: null,      // TBD - Binance Crowdfund 合约
     token: null,          // CDNB token 地址
   },
   OKX: {
     signatureClaim: null, // TBD
+    crowdfund: null,      // TBD
     token: null,          // COKX token 地址
   },
   Bybit: {
     signatureClaim: null, // TBD
+    crowdfund: null,      // TBD
     token: null,          // Anti-Bybit token 地址
   },
   Bitget: {
     signatureClaim: null, // TBD
+    crowdfund: null,      // TBD
     token: null,          // Anti-Bitget token 地址
   },
+}
+
+/**
+ * 获取交易所对应的 Crowdfund 合约地址
+ * @param {string} exchange - 交易所名称
+ * @returns {string|null} 合约地址
+ */
+export const getCrowdfundAddress = (exchange) => {
+  // 优先使用交易所专用合约，fallback 到测试合约
+  return CONTRACTS[exchange]?.crowdfund || CONTRACTS.test.crowdfund
 }
 
 /**

@@ -477,9 +477,15 @@ function* uploadEvidenceOcr(action) {
 
     // 检查 OCR 是否成功
     if (evidenceResponse.data.ocr) {
-    evidenceResponse.data.ocr.user_note = ''
-    yield put(actions.updateOcrForm(evidenceResponse.data.ocr))
-    onSuccess()
+      // FIX: 保存 file_url 到 ocrForm
+      const upload = evidenceResponse.data.upload || {}  // 防御性处理
+      const ocrData = {
+        ...evidenceResponse.data.ocr,
+        user_note: '',
+        file_url: upload.file_url || null
+      }
+      yield put(actions.updateOcrForm(ocrData))
+      onSuccess()
     } else {
       // OCR 失败，传递 ocr_details
       const errorDetails = evidenceResponse.data.ocr_details || evidenceResponse.data.ocr_error || 'OCR verification failed'
@@ -500,7 +506,14 @@ function* submitLoss(action) {
 
     const authToken = localStorage.getItem('auth_token')
 
-    const submitLossResponse = yield call(api.submitLoss, ocrForm, {
+    // FIX: 构建 files 数组发送给后端
+    const { file_url, ...restOcrForm } = ocrForm
+    const submitData = {
+      ...restOcrForm,
+      files: file_url ? [file_url] : []  // 后端只接收 files 数组
+    }
+
+    const submitLossResponse = yield call(api.submitLoss, submitData, {
       requireAuth: true,
       tokenFetcher: () => authToken
     })

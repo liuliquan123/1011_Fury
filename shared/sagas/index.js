@@ -4,12 +4,14 @@ import intlSaga from './intl'
 import themeSaga from './theme'
 import authSaga from './auth'
 import loggerSaga from './logger'
+import crowdfundSaga from './crowdfund'
 
 const sagas = {
   intlSaga: fork(intlSaga),
   themeSaga: fork(themeSaga),
   authSaga: fork(authSaga),
-  loggerSaga: fork(loggerSaga)
+  loggerSaga: fork(loggerSaga),
+  crowdfundSaga: fork(crowdfundSaga)
 }
 
 if (ENV === 'production') {
