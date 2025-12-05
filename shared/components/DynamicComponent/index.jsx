@@ -3,6 +3,14 @@ import Loading from 'components/Loading'
 
 export function syncComponent(chunkName, module) {
   const Component = module.default || module
+  
+  // DEBUG: 打印模块和组件信息
+  console.log(`[syncComponent] ${chunkName}:`, {
+    module: module,
+    moduleDefault: module?.default,
+    Component: Component,
+    typeofComponent: typeof Component
+  })
 
   function SyncComponent(props) {
     return (<Component {...props} />)
