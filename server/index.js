@@ -42,7 +42,7 @@ if (cluster.isMaster) {
   <head>
     <meta charset="utf-8">
     <meta name="description" content="Crypto Don't need Binance" data-react-helmet="true">
-    <meta name="keywords" content="satoshi,nft,programming system,visual programming,smart contract,blockchain,cryptocurrencies,bitcoin,ethereum" data-react-helmet="true">
+    <meta name="keywords" content="cdnb,crypto,nft,smart contract,blockchain,cryptocurrencies,bitcoin,ethereum" data-react-helmet="true">
     <title>${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <link rel="icon" type="image/png" href="/images/favicon.svg?v=3">
