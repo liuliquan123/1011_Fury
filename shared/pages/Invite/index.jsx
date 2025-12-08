@@ -156,7 +156,8 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
                 Featured Case
               </div>
               <div className={styles.subtext}>
-                {exchangePool.exchange || 'Binance'} - Malicious Liquidation
+                {/* 单交易所模式：隐藏 exchange 名称 */}
+                Malicious Liquidation
               </div>
               <div className={styles.description}>
                 This case is currently collecting victim evidence. Submit proof and reclaim what's yours.

@@ -175,9 +175,11 @@ const Landing = ({ cases, actions }) => {
             <div className={styles.cases}>
               <div className={styles.case}>
                 <div className={styles.caseTitle}>
-                  <div className={styles.text}>{featuredCase.exchange || 'Binance'} {featuredCase.trading_pair || ''} - Malicious Liquidation</div>
+                  {/* 单交易所模式：隐藏 exchange 名称 */}
+                  <div className={styles.text}>{featuredCase.trading_pair || ''} Malicious Liquidation</div>
                 </div>
                 <div className={styles.caseCards}>
+                  {/* 单交易所模式：隐藏 Exchange 卡片
                   <div className={styles.caseCard}>
                     <div className={styles.caseContent}>
                       {featuredCase.exchange || 'Binance'}
@@ -186,6 +188,7 @@ const Landing = ({ cases, actions }) => {
                       Exchange
                     </div>
                   </div>
+                  */}
                   <div className={styles.caseCard}>
                     <div className={styles.caseContent}>
                       {formatNumber(featuredCase.participant_count || 0)}

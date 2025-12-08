@@ -379,7 +379,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
         <Fragment>
           <div className={styles.stepTwo}>
             <div className={styles.title}>
-              Step 2: Gather Your Proof
+              Gather Your Proof
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
@@ -482,7 +482,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
         <Fragment>
           <div className={styles.stepThree}>
             <div className={styles.title}>
-              Step 3: Send Your Proof
+              Send Your Proof
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>

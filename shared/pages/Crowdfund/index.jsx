@@ -381,7 +381,9 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
           <div className={styles.contributionValue}>
             {(data.loading || data.myContribution === undefined) ? '—' : `${parseFloat(data.myContribution || 0).toFixed(2)} ETH`}
           </div>
+          {/* 单交易所模式：隐藏 exchange 标签
           <div className={styles.contributionLabel}>Binance</div>
+          */}
         </div>
 
         <div className={styles.totalRow}>
