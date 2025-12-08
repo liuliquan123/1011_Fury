@@ -3,6 +3,7 @@ import { supabaseApi, supabaseRestApi } from 'api'
 export const authToken = (params, options) => supabaseRestApi('POST', '/auth_tokens', params, options)
 export const web3AuthLogin = (params, options) => supabaseApi('POST', '/web3auth-login', params, options)
 export const getProfile = (params, options) => supabaseApi('GET', '/get-profile', params, options)
+export const updateProfileApi = (params, options) => supabaseApi('PUT', '/update-profile', params, options)
 export const getUserTokens = (params, options) => supabaseApi('GET', '/get-user-tokens', params, options)
 export const getMySubmissions = (params, options) => supabaseApi('GET', '/get-my-submissions', params, options)
 export const getReferralStats = (params, options) => supabaseApi('GET', '/get-referral-stats', params, options)

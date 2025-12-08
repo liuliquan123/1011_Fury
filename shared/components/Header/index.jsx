@@ -36,7 +36,7 @@ const Header = ({ profile, actions, history }) => {
           </svg>
         </div>
         <div className={classNames(styles.text)}>
-          Satoshi's Fury
+          CDNB
         </div>
       </Link>
       {profile.id && (

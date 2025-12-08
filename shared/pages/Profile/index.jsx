@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { formatDate } from 'utils'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
+import tokenLogo from 'resources/images/token-logo.jpg'
 import styles from './style.css'
 
 // 基础数字格式化（内部使用）
@@ -153,6 +154,11 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   let reward = !!exchangeCount ? rewards[activeIdx] : null
   const [formattedTime, setFormattedTime] = useState(getFormattedTime(reward))
   const [percentage, setPercentage] = useState(getPercentage(reward))
+  
+  // 用户名编辑状态
+  const [isEditingUsername, setIsEditingUsername] = useState(false)
+  const [editedUsername, setEditedUsername] = useState('')
+  const [savingUsername, setSavingUsername] = useState(false)
 
   // 派生变量：空值防御
   const rewardStatus = reward?.status
@@ -217,6 +223,48 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
     })
   }, [])
 
+  // 开始编辑用户名
+  const startEditUsername = useCallback(() => {
+    setEditedUsername(profile.username || '')
+    setIsEditingUsername(true)
+  }, [profile.username])
+
+  // 取消编辑
+  const cancelEditUsername = useCallback(() => {
+    setIsEditingUsername(false)
+    setEditedUsername('')
+  }, [])
+
+  // 保存用户名
+  const saveUsername = useCallback(() => {
+    if (!editedUsername.trim()) {
+      toast('Username cannot be empty')
+      return
+    }
+    if (editedUsername.trim().length < 3) {
+      toast('Username must be at least 3 characters')
+      return
+    }
+    if (editedUsername.trim().length > 30) {
+      toast('Username must be less than 30 characters')
+      return
+    }
+    
+    setSavingUsername(true)
+    actions.saveProfile({
+      username: editedUsername.trim(),
+      onSuccess: () => {
+        setSavingUsername(false)
+        setIsEditingUsername(false)
+        toast('Username updated!')
+      },
+      onError: (message) => {
+        setSavingUsername(false)
+        toast(message || 'Failed to update username')
+      }
+    })
+  }, [editedUsername, actions])
+
   // Claim Token 处理函数
   const handleClaim = useCallback((exchange) => {
     // 防止重复点击
@@ -275,7 +323,46 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
           <div className={styles.user}>
             <div className={styles.top}>
               <div className={styles.logo}></div>
-              <div className={styles.name}>{profile.username}</div>
+              {isEditingUsername ? (
+                <div className={styles.editNameRow}>
+                  <input
+                    type="text"
+                    className={styles.nameInput}
+                    value={editedUsername}
+                    onChange={(e) => setEditedUsername(e.target.value)}
+                    placeholder="Enter username"
+                    maxLength={30}
+                    disabled={savingUsername}
+                    autoFocus
+                  />
+                  <div className={styles.editButtons}>
+                    <button 
+                      className={styles.saveButton} 
+                      onClick={saveUsername}
+                      disabled={savingUsername}
+                    >
+                      {savingUsername ? '...' : '✓'}
+                    </button>
+                    <button 
+                      className={styles.cancelButton} 
+                      onClick={cancelEditUsername}
+                      disabled={savingUsername}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.nameRow}>
+                  <div className={styles.name}>{profile.username}</div>
+                  <button className={styles.editButton} onClick={startEditUsername} title="Edit username">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                </div>
+              )}
               <div className={styles.description}>{profile.id}</div>
             </div>
             <div className={styles.bottom}>
@@ -346,7 +433,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 <div className={styles.text}>{reward && reward.exchange}</div>
                 <div className={styles.tokens}>
                   <div className={styles.token}>
-                    <div className={styles.tokenLogo}></div>
+                    <div className={styles.tokenLogo}>
+                      <img src={tokenLogo} alt="CDNB Token" />
+                    </div>
                     <div className={styles.tokenAmount}>
                       {(reward && reward.token_amount) || 0}
                       <span className={styles.tokenName}>{getTokenName(reward?.exchange)}</span>

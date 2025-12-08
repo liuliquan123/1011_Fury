@@ -263,7 +263,7 @@ const Landing = ({ cases, actions }) => {
                 </svg>
               </div>
               <div className={styles.featureTitle}>
-                Stand With Fury
+                Stand With CDNB
               </div>
               <div className={styles.featureText}>
                 Every witness strengthens the chain we build together.
@@ -340,13 +340,13 @@ const Landing = ({ cases, actions }) => {
         </div>
         <div className={classNames(styles.section, styles.questions)}>
           <div className={styles.sectionTitle}>
-            _> DECODE THE FURY
+            _> DECODE THE CDNB
           </div>
           <div className={styles.sectionContent}>
             {[
               { 
-                q: "What is Satoshi's Fury?", 
-                a: "Satoshi's Fury is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
+                q: "What is CDNB?", 
+                a: "CDNB (Crypto Don't need Binance) is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
               },
               { 
                 q: "Why was this created?", 
@@ -422,7 +422,7 @@ const Landing = ({ cases, actions }) => {
               </svg>
             </div>
             <div className={classNames(styles.text)}>
-              Satoshi's Fury
+              Crypto Don't need Binance
             </div>
           </Link>
 
@@ -445,7 +445,7 @@ const Landing = ({ cases, actions }) => {
           </div>
         </div>
         <div className={styles.bottom}>
-          <div className={styles.bottomLeft}>© 2025 Satoshi’s Fury. All rights reserved.</div>
+          <div className={styles.bottomLeft}>© 2025 Crypto Don't need Binance. All rights reserved.</div>
           <div className={styles.bottomRight}>
             <a className={styles.privacyButton} href="/privacy">Privacy Policy</a> | <a className={styles.tosButton} href="/terms">Terms of Use</a>
           </div>

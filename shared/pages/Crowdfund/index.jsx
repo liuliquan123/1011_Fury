@@ -191,7 +191,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
       {/* 标题区域 */}
       <div className={styles.title}>Crowdfund</div>
       <div className={styles.description}>
-        Discover and participate in a diverse range of on-chain asset opportunities powered by the Satoshi's Fury.
+        Discover and participate in a diverse range of on-chain asset opportunities powered by CDNB.
       </div>
 
       {/* 主卡片 */}
