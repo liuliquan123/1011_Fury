@@ -350,6 +350,8 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: 48px;
+                display: flex;
+                align-items: center;
 
                 .tokenName {
                   font-size: 24px;
