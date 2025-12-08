@@ -263,6 +263,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           />
         </div>
       )}
+      {/* 单交易所模式：隐藏 Step 0 交易所选择界面
       {stepIndex === 0 && (
         <Fragment>
           <div className={styles.stepOne}>
@@ -334,7 +335,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                   })}>
                     {hasSubmittedInCurrentPhase && (
                       <div className={styles.warningText}>
-                        You've already submitted for this exchange in Phase {phase.current_phase}. Please wait for the next phase to submit again.
+                        You've already submitted in Phase {phase.current_phase}. Please wait for the next phase to submit again.
                       </div>
                     )}
                     <div className={styles.notificationTitle}>
@@ -375,6 +376,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           </div>
         </Fragment>
       )}
+      */}
       {stepIndex === 1 && (
         <Fragment>
           <div className={styles.stepTwo}>
