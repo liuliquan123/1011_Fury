@@ -430,7 +430,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     </div>
                   </div>
                 )}
+                {/* 单交易所模式：隐藏 exchange 名称
                 <div className={styles.text}>{reward && reward.exchange}</div>
+                */}
                 <div className={styles.tokens}>
                   <div className={styles.token}>
                     <div className={styles.tokenLogo}>

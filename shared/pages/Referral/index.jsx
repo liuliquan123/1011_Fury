@@ -236,7 +236,9 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
         <div className={styles.myToken}>
           {reward ? (
             <>
+              {/* 单交易所模式：隐藏 exchange 名称
               <div className={styles.exchange}>{reward.exchange}</div>
+              */}
               <div className={styles.bottom}>
                 <div className={styles.tokens}>
                   <div className={styles.token}>
@@ -348,8 +350,9 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
         </div>
         <div className={styles.myReferral}>
           <div className={styles.contentTitle}>
-            Pick & Spread
+            Share & Spread
           </div>
+          {/* 单交易所模式：隐藏交易所选择区域
           <div className={styles.exchanges}>
             {isExchangeVisible('binance') && (
               <div
@@ -404,6 +407,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
               </div>
             )}
           </div>
+          */}
           <div className={styles.code}>
             {inviteCode}
           </div>

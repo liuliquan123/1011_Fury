@@ -109,13 +109,20 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const [uploadError, setUploadError] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [exchangeType, setExchangeType] = useState()
-  const [loadingPhase, setLoadingPhase] = useState(false)
+  // 单交易所模式：自动选择 Binance，跳过 Step 0
+  const [exchangeType, setExchangeType] = useState('binance')
+  const [loadingPhase, setLoadingPhase] = useState(true)
   const [file, setFile] = useState()
   const [previewUrl, setPreviewUrl] = useState()
-  const [stepIndex, setStepIndex] = useState(0)
+  // 单交易所模式：直接从 Step 1 开始
+  const [stepIndex, setStepIndex] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
   const fileInputRef = useRef(null)
+
+  // 单交易所模式：组件挂载时自动加载 Binance 的 phase 信息
+  useEffect(() => {
+    actions.getExchangePhase({ exchange: 'Binance' })
+  }, [])
 
   // 每次步骤发生变化时，自动滚动到页面顶部
   useEffect(() => {
@@ -152,10 +159,11 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   }, [stepIndex])
 
   const prevStep = useCallback(() => {
-    if (stepIndex > 0) {
+    // 单交易所模式：Step 1 直接返回首页，其他步骤返回上一步
+    if (stepIndex > 1) {
       setStepIndex(stepIndex - 1)
     } else {
-      // 在 Step 0 (Select Exchange)，返回首页
+      // Step 1 返回首页
       history('/')
     }
   }, [stepIndex, history])
@@ -255,6 +263,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           />
         </div>
       )}
+      {/* 单交易所模式：隐藏 Step 0 交易所选择界面
       {stepIndex === 0 && (
         <Fragment>
           <div className={styles.stepOne}>
@@ -326,7 +335,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                   })}>
                     {hasSubmittedInCurrentPhase && (
                       <div className={styles.warningText}>
-                        You've already submitted for this exchange in Phase {phase.current_phase}. Please wait for the next phase to submit again.
+                        You've already submitted in Phase {phase.current_phase}. Please wait for the next phase to submit again.
                       </div>
                     )}
                     <div className={styles.notificationTitle}>
@@ -367,11 +376,12 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
           </div>
         </Fragment>
       )}
+      */}
       {stepIndex === 1 && (
         <Fragment>
           <div className={styles.stepTwo}>
             <div className={styles.title}>
-              Step 2: Gather Your Proof
+              Gather Your Proof
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
@@ -474,7 +484,7 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
         <Fragment>
           <div className={styles.stepThree}>
             <div className={styles.title}>
-              Step 3: Send Your Proof
+              Send Your Proof
             </div>
             <div className={styles.sections}>
               <div className={styles.section}>
