@@ -9,6 +9,7 @@ import classNames from 'classnames'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import { calculateEstimate, formatTokenAmount, CROWDFUND_PHASES } from 'config/crowdfund'
 import LoginModal from 'components/Login'
+import tokenLogo from 'resources/images/token-logo.jpg'
 import styles from './style.css'
 
 const EXCHANGE = 'Binance'
@@ -199,6 +200,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
         {/* 卡片头部 */}
         <div className={styles.cardHeader}>
           <div className={styles.cardTitle}>
+            <img src={tokenLogo} alt="CDNB" className={styles.titleLogo} />
             CDNB Crowdfund
           </div>
           <div className={classNames(styles.statusBadge, {
