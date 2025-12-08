@@ -26,10 +26,10 @@ const getAppTheme = (mode) => {
 }
 
 const Root = ({ location, history, theme, actions }) => {
-  const [title, setTitle] = useState('Satoshis Fury')
+  const [title, setTitle] = useState('CDNB')
 
   useEffect(() => {
-    setTitle('Satoshis Fury')
+    setTitle('CDNB')
     actions.getProfile()
   }, [])
 

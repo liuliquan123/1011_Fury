@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { formatDate } from 'utils'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
+import tokenLogo from 'resources/images/token-logo.jpg'
 import styles from './style.css'
 
 // 基础数字格式化（内部使用）
@@ -346,7 +347,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 <div className={styles.text}>{reward && reward.exchange}</div>
                 <div className={styles.tokens}>
                   <div className={styles.token}>
-                    <div className={styles.tokenLogo}></div>
+                    <div className={styles.tokenLogo}>
+                      <img src={tokenLogo} alt="CDNB Token" />
+                    </div>
                     <div className={styles.tokenAmount}>
                       {(reward && reward.token_amount) || 0}
                       <span className={styles.tokenName}>{getTokenName(reward?.exchange)}</span>
