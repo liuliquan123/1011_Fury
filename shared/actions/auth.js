@@ -33,3 +33,5 @@ export const claimToken = createAction('auth/CLAIM_TOKEN')
 
 export const getCases = createAction('auth/GET_CASES')
 export const updateCases = createAction('auth/UPDATE_CASES')
+
+export const saveProfile = createAction('auth/SAVE_PROFILE')

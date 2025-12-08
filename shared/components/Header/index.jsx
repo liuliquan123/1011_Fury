@@ -36,7 +36,7 @@ const Header = ({ profile, actions, history }) => {
           </svg>
         </div>
         <div className={classNames(styles.text)}>
-          Crypto Don't need Binance
+          CDNB
         </div>
       </Link>
       {profile.id && (

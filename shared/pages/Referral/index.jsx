@@ -11,6 +11,7 @@ import bybitLogo from 'resources/images/logos/bybit-logo.svg'
 import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
 import classNames from 'classnames'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
+import tokenLogo from 'resources/images/token-logo.jpg'
 import styles from './style.css'
 
 const getInviteCode = (code, exchangeType) => {
@@ -239,6 +240,9 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
               <div className={styles.bottom}>
                 <div className={styles.tokens}>
                   <div className={styles.token}>
+                    <div className={styles.tokenLogo}>
+                      <img src={tokenLogo} alt="CDNB Token" />
+                    </div>
                     <div className={styles.tokenAmount}>
                       {reward.token_amount || 0}
                       <span className={styles.tokenName}>{getTokenName(reward?.exchange)}</span>

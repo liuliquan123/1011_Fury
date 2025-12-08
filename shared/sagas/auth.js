@@ -603,6 +603,35 @@ function* getReferralInfo(action) {
   }
 }
 
+function* saveProfile(action) {
+  const { username, onSuccess, onError } = action.payload
+
+  try {
+    const authToken = localStorage.getItem('auth_token')
+    
+    if (!authToken) {
+      onError && onError('Not authenticated')
+      return
+    }
+
+    const response = yield call(api.updateProfileApi, { username }, {
+      requireAuth: true,
+      tokenFetcher: () => authToken
+    })
+
+    if (response.success) {
+      // 更新 Redux store 中的 profile
+      yield put(actions.updateProfile(response.data))
+      onSuccess && onSuccess()
+    } else {
+      onError && onError(response.error || 'Failed to update profile')
+    }
+  } catch (error) {
+    console.log('saveProfile error', error)
+    onError && onError(error.message || 'Failed to update profile')
+  }
+}
+
 function* logout(action) {
   const { onSuccess, onError } = action.payload
 
@@ -969,4 +998,5 @@ export default function* authSaga() {
   yield takeEvery(String(actions.logout), logout)
   yield takeEvery(String(actions.linkWallet), linkWallet)
   yield takeEvery(String(actions.claimToken), claimToken)
+  yield takeEvery(String(actions.saveProfile), saveProfile)
 }

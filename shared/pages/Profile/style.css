@@ -63,6 +63,91 @@
             line-height: 48px;
           }
 
+          .nameRow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .editButton {
+            background: transparent;
+            border: none;
+            color: #A7ADB9;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+
+            &:hover {
+              color: #E9FD66;
+            }
+          }
+
+          .editNameRow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .nameInput {
+            background: #232326;
+            border: 1px solid #E9FD66;
+            color: #E9FD66;
+            font-family: "Jersey10";
+            font-size: 32px;
+            padding: 8px 12px;
+            text-align: center;
+            width: 200px;
+            outline: none;
+
+            &:disabled {
+              opacity: 0.6;
+            }
+          }
+
+          .editButtons {
+            display: flex;
+            gap: 4px;
+          }
+
+          .saveButton,
+          .cancelButton {
+            width: 32px;
+            height: 32px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: opacity 0.2s;
+
+            &:disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+          }
+
+          .saveButton {
+            background: #E9FD66;
+            color: #000;
+
+            &:hover:not(:disabled) {
+              opacity: 0.9;
+            }
+          }
+
+          .cancelButton {
+            background: #39393A;
+            color: #fff;
+
+            &:hover:not(:disabled) {
+              opacity: 0.9;
+            }
+          }
+
           .description {
             color: #A7ADB9;
             text-align: center;
