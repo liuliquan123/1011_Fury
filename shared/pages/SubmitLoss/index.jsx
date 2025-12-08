@@ -109,13 +109,20 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const [uploadError, setUploadError] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [exchangeType, setExchangeType] = useState()
-  const [loadingPhase, setLoadingPhase] = useState(false)
+  // 单交易所模式：自动选择 Binance，跳过 Step 0
+  const [exchangeType, setExchangeType] = useState('binance')
+  const [loadingPhase, setLoadingPhase] = useState(true)
   const [file, setFile] = useState()
   const [previewUrl, setPreviewUrl] = useState()
-  const [stepIndex, setStepIndex] = useState(0)
+  // 单交易所模式：直接从 Step 1 开始
+  const [stepIndex, setStepIndex] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
   const fileInputRef = useRef(null)
+
+  // 单交易所模式：组件挂载时自动加载 Binance 的 phase 信息
+  useEffect(() => {
+    actions.getExchangePhase({ exchange: 'Binance' })
+  }, [])
 
   // 每次步骤发生变化时，自动滚动到页面顶部
   useEffect(() => {
@@ -152,10 +159,11 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   }, [stepIndex])
 
   const prevStep = useCallback(() => {
-    if (stepIndex > 0) {
+    // 单交易所模式：Step 1 直接返回首页，其他步骤返回上一步
+    if (stepIndex > 1) {
       setStepIndex(stepIndex - 1)
     } else {
-      // 在 Step 0 (Select Exchange)，返回首页
+      // Step 1 返回首页
       history('/')
     }
   }, [stepIndex, history])

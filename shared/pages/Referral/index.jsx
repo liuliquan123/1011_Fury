@@ -347,6 +347,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
           )}
         </div>
         <div className={styles.myReferral}>
+          {/* 单交易所模式：隐藏交易所选择区域
           <div className={styles.contentTitle}>
             Pick & Spread
           </div>
@@ -404,6 +405,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
               </div>
             )}
           </div>
+          */}
           <div className={styles.code}>
             {inviteCode}
           </div>
