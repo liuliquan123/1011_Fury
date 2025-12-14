@@ -133,7 +133,7 @@ const Terms = () => {
         <section className={styles.section}>
           <h2>13. Contact Us</h2>
           <p>
-            If you have any questions about these Terms or the CDNB service, please contact us at: <a href="mailto:support@cdnb.io">support@cdnb.io</a>
+            If you have any questions about these Terms or the CDNB service, please contact us at: <a href="mailto:support@cdnb.com">support@cdnb.com</a>
           </p>
         </section>
       </div>
