@@ -277,56 +277,56 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 </div>
                 <div className={styles.exchanges}>
                   {isExchangeVisible('binance') && (
-                    <div
-                      className={classNames(styles.exchange, {
-                        [styles.selected]: exchangeType === 'binance'
-                      })}
-                      onClick={selectExchange('binance')}
-                    >
-                      <div className={styles.exchangeLogo}>
-                        <img src={binanceLogo} alt={`binance logo`} />
-                      </div>
-                      <div className={styles.exchangeName}>Binance</div>
+                  <div
+                    className={classNames(styles.exchange, {
+                      [styles.selected]: exchangeType === 'binance'
+                    })}
+                    onClick={selectExchange('binance')}
+                  >
+                    <div className={styles.exchangeLogo}>
+                      <img src={binanceLogo} alt={`binance logo`} />
                     </div>
+                    <div className={styles.exchangeName}>Binance</div>
+                  </div>
                   )}
                   {isExchangeVisible('okx') && (
-                    <div
-                      className={classNames(styles.exchange, {
-                        [styles.selected]: exchangeType === 'okx'
-                      })}
-                      onClick={selectExchange('okx')}
-                    >
-                      <div className={styles.exchangeLogo}>
-                        <img src={okxLogo} alt={`okx logo`} />
-                      </div>
-                      <div className={styles.exchangeName}>OKX</div>
+                  <div
+                    className={classNames(styles.exchange, {
+                      [styles.selected]: exchangeType === 'okx'
+                    })}
+                    onClick={selectExchange('okx')}
+                  >
+                    <div className={styles.exchangeLogo}>
+                      <img src={okxLogo} alt={`okx logo`} />
                     </div>
+                    <div className={styles.exchangeName}>OKX</div>
+                  </div>
                   )}
                   {isExchangeVisible('bybit') && (
-                    <div
-                      className={classNames(styles.exchange, {
-                        [styles.selected]: exchangeType === 'bybit'
-                      })}
-                      onClick={selectExchange('bybit')}
-                    >
-                      <div className={styles.exchangeLogo}>
-                        <img src={bybitLogo} alt={`bybit logo`} />
-                      </div>
-                      <div className={styles.exchangeName}>Bybit</div>
+                  <div
+                    className={classNames(styles.exchange, {
+                      [styles.selected]: exchangeType === 'bybit'
+                    })}
+                    onClick={selectExchange('bybit')}
+                  >
+                    <div className={styles.exchangeLogo}>
+                      <img src={bybitLogo} alt={`bybit logo`} />
                     </div>
+                    <div className={styles.exchangeName}>Bybit</div>
+                  </div>
                   )}
                   {isExchangeVisible('bitget') && (
-                    <div
-                      className={classNames(styles.exchange, {
-                        [styles.selected]: exchangeType === 'bitget'
-                      })}
-                      onClick={selectExchange('bitget')}
-                    >
-                      <div className={styles.exchangeLogo}>
-                        <img src={bitgetLogo} alt={`bitget logo`} />
-                      </div>
-                      <div className={styles.exchangeName}>Bitget</div>
+                  <div
+                    className={classNames(styles.exchange, {
+                      [styles.selected]: exchangeType === 'bitget'
+                    })}
+                    onClick={selectExchange('bitget')}
+                  >
+                    <div className={styles.exchangeLogo}>
+                      <img src={bitgetLogo} alt={`bitget logo`} />
                     </div>
+                    <div className={styles.exchangeName}>Bitget</div>
+                  </div>
                   )}
                 </div>
                 {phase && (

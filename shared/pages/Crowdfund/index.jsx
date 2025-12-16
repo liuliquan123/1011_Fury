@@ -192,7 +192,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
       {/* 标题区域 */}
       <div className={styles.title}>Crowdfund</div>
       <div className={styles.description}>
-        Discover and participate in a diverse range of on-chain asset opportunities powered by 1011.
+        Discover and participate in a diverse range of on-chain asset opportunities powered by Fury.
       </div>
 
       {/* 主卡片 */}
@@ -201,7 +201,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
         <div className={styles.cardHeader}>
           <div className={styles.cardTitle}>
             <img src={tokenLogo} alt="1011" className={styles.titleLogo} />
-            1011 Crowdfund
+            Fury Crowdfund
           </div>
           <div className={classNames(styles.statusBadge, {
             [styles.live]: isLive,

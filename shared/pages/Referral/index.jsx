@@ -168,7 +168,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   const handleShareTwitter = useCallback(() => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
     const link = `${baseUrl}/invite?code=${inviteCode}`
-    const text = `Join me on 1011! Use my referral code: ${inviteCode}\n${link}`
+    const text = `Join me on Fury! Use my referral code: ${inviteCode}\n${link}`
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`
     window.open(url, '_blank')
   }, [inviteCode])
@@ -176,7 +176,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   const handleShareTelegram = useCallback(() => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
     const link = `${baseUrl}/invite?code=${inviteCode}`
-    const text = `Join me on 1011! Use my referral code: ${inviteCode}\n${link}`;
+    const text = `Join me on Fury! Use my referral code: ${inviteCode}\n${link}`;
     const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`
     window.open(url, '_blank')
   }, [inviteCode])
@@ -226,7 +226,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
     <div className={styles.referral}>
       <div className={styles.title}>
         <div className={styles.text}>
-          Spread the 1011
+          Spread the Fury
         </div>
         <div className={styles.description}>
           Ignite action, inspire others, and unlock your rightful value.
