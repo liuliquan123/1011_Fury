@@ -22,12 +22,14 @@
     cursor: pointer;
 
     .logo {
-      width: 24px;
-      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 10px;
+
+      img {
+        height: 24px;
+        width: auto;
+      }
     }
 
     .text {
@@ -232,6 +234,11 @@
 @media (max-width: 767px) {
   .header {
     padding: 0 16px;
+  }
+
+  .header .branding .logo img {
+    height: 20px;
+    max-width: 60px;
   }
 
   .header .branding .text {

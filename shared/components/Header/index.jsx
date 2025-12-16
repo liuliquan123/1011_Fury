@@ -32,7 +32,7 @@ const Header = ({ profile, actions, history }) => {
     <div className={classNames(styles.header)}>
       <Link className={classNames(styles.branding)} to="/">
         <div className={classNames(styles.logo)}>
-          <img src={furyLogo} alt="Fury" style={{ height: '32px' }} />
+          <img src={furyLogo} alt="Fury" />
         </div>
       </Link>
       {profile.id && (
