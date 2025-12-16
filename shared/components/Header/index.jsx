@@ -7,7 +7,7 @@ import * as actions from 'actions/auth'
 import { useSearchParams, useLocation } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
-import furyLogo from 'assets/Logo_v2.svg'
+import furyLogo from 'resources/images/Logo_v2.svg'
 
 const Header = ({ profile, actions, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()

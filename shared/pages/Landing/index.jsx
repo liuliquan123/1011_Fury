@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { isExchangeVisible } from 'config/exchanges'
 import styles from './style.css'
-import furyLogo from 'assets/Logo_v2.svg'
+import furyLogo from 'resources/images/Logo_v2.svg'
 
 // 基础数字格式化（内部使用）
 const formatNumberWithUnit = (num) => {
