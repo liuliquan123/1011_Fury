@@ -81,7 +81,7 @@
             transition: color 0.2s;
 
             &:hover {
-              color: #E9FD66;
+              color: #D90A20;
             }
           }
 
@@ -93,8 +93,8 @@
 
           .nameInput {
             background: #232326;
-            border: 1px solid #E9FD66;
-            color: #E9FD66;
+            border: 1px solid #D90A20;
+            color: #D90A20;
             font-family: "Jersey10";
             font-size: 32px;
             padding: 8px 12px;
@@ -131,7 +131,7 @@
           }
 
           .saveButton {
-            background: #E9FD66;
+            background: #D90A20;
             color: #000;
 
             &:hover:not(:disabled) {
@@ -201,7 +201,7 @@
           .button {
             width: 100%;
             margin-top: 20px;
-            background: #E9FD66;
+            background: #D90A20;
             color: black;
             display: flex;
             height: 48px;
@@ -237,7 +237,7 @@
             }
 
             &:hover {
-              background: #E9FD66;
+              background: #D90A20;
 
               .buttonText {
                 color: black;
@@ -344,7 +344,7 @@
               }
 
               .tokenAmount {
-                color: #E9FD66;
+                color: #D90A20;
                 font-family: "Jersey10";
                 font-size: 48px;
                 font-style: normal;
@@ -356,7 +356,7 @@
                 .tokenName {
                   font-size: 24px;
                   margin-left: 8px;
-                  color: #E9FD66;
+                  color: #D90A20;
                 }
 
                 .status {
@@ -407,7 +407,7 @@
                   }
 
                   .tokenLockTimeContentCellNumber {
-                    color: #E9FD66;
+                    color: #D90A20;
                     text-align: center;
                     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
                     font-family: "Google Sans Code";
@@ -437,13 +437,13 @@
           .progress {
             margin-top: 20px;
             width: 100%;
-            border: 1px solid #E9FD66;
+            border: 1px solid #D90A20;
             height: 16px;
 
             .percentage {
               height: 100%;
               width: 0%;
-              background: #E9FD66;
+              background: #D90A20;
             }
           }
 
@@ -462,8 +462,8 @@
               padding: 24px 16px;
               justify-content: center;
               align-items: center;
-              background: #E9FD66;
-              border: 1px solid #E9FD66;
+              background: #D90A20;
+              border: 1px solid #D90A20;
               color: #141519;
               cursor: pointer;
               min-width: 300px;
@@ -487,7 +487,7 @@
               }
 
               &:hover {
-                background: #E9FD66;
+                background: #D90A20;
 
                 .buttonText {
                   color: black;
@@ -527,8 +527,8 @@
               justify-content: center;
               align-items: center;
               background: #141519;
-              border: 1px solid #E9FD66;
-              color: #E9FD66;
+              border: 1px solid #D90A20;
+              color: #D90A20;
               cursor: pointer;
 
               &.disabled {
@@ -541,7 +541,7 @@
                 margin: 0 5px;
                 white-space: pre;
                 font-size: 16px;
-                color: #E9FD66;
+                color: #D90A20;
               }
 
               .leftArrow {
@@ -555,7 +555,7 @@
               }
 
               &:hover {
-                background: #E9FD66;
+                background: #D90A20;
 
                 .buttonText {
                   color: black;
@@ -610,7 +610,7 @@
             height: 52px;
             justify-content: center;
             align-items: center;
-            background: #E9FD66;
+            background: #D90A20;
             color: #0B0B0C;
             font-family: "Google Sans Code", system-ui, sans-serif;
             font-size: 14px;
@@ -631,8 +631,8 @@
             justify-content: center;
             align-items: center;
             background: #141519;
-            border: 1px solid #E9FD66;
-            color: #E9FD66;
+            border: 1px solid #D90A20;
+            color: #D90A20;
             font-family: "Google Sans Code", system-ui, sans-serif;
             font-size: 14px;
             font-weight: 600;
@@ -641,7 +641,7 @@
           }
 
           .claimToButton:hover:not(.disabled) {
-            background: #E9FD66;
+            background: #D90A20;
             color: #0B0B0C;
           }
 
@@ -678,7 +678,7 @@
               flex-direction: column;
 
               .listItemNumber {
-                color: #E9FD66;
+                color: #D90A20;
                 font-family: "Jersey10";
                 font-size: 40px;
                 font-style: normal;

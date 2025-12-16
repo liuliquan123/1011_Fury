@@ -41,8 +41,8 @@ if (cluster.isMaster) {
   <!--[if !(IE)]><!--> <html> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
-    <meta name="description" content="Crypto Don't need Binance" data-react-helmet="true">
-    <meta name="keywords" content="cdnb,crypto,nft,smart contract,blockchain,cryptocurrencies,bitcoin,ethereum" data-react-helmet="true">
+    <meta name="description" content="1011" data-react-helmet="true">
+    <meta name="keywords" content="1011,crypto,nft,smart contract,blockchain,cryptocurrencies,bitcoin,ethereum" data-react-helmet="true">
     <title>${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <link rel="icon" type="image/png" href="/images/favicon.png?v=4">

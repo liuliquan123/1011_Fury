@@ -225,7 +225,7 @@ const Landing = ({ cases, actions }) => {
                           width: '8px',
                           height: '8px',
                           borderRadius: '50%',
-                          backgroundColor: idx === activeIdx ? '#E9FD66' : '#666',
+                          backgroundColor: idx === activeIdx ? '#D90A20' : '#666',
                           display: 'inline-block',
                           margin: '0 4px',
                           cursor: 'pointer'
@@ -267,7 +267,7 @@ const Landing = ({ cases, actions }) => {
                 </svg>
               </div>
               <div className={styles.featureTitle}>
-                Stand With CDNB
+                Stand With 1011
               </div>
               <div className={styles.featureText}>
                 Every witness strengthens the chain we build together.
@@ -344,13 +344,13 @@ const Landing = ({ cases, actions }) => {
         </div>
         <div className={classNames(styles.section, styles.questions)}>
           <div className={styles.sectionTitle}>
-            _> DECODE THE CDNB
+            _> DECODE THE 1011
           </div>
           <div className={styles.sectionContent}>
             {[
               { 
-                q: "What is CDNB?", 
-                a: "CDNB (Crypto Don't need Binance) is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
+                q: "What is 1011?", 
+                a: "1011 is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
               },
               { 
                 q: "Why was this created?", 
@@ -421,10 +421,10 @@ const Landing = ({ cases, actions }) => {
         <div className={styles.content}>
           <Link className={classNames(styles.branding)} to="/">
             <div className={classNames(styles.logo)}>
-              <img src={cdnbLogo} alt="CDNB" style={{ width: '32px', height: '32px', borderRadius: '4px' }} />
+              <img src={cdnbLogo} alt="1011" style={{ width: '32px', height: '32px', borderRadius: '4px' }} />
             </div>
             <div className={classNames(styles.text)}>
-              Crypto Don't need Binance
+              1011
             </div>
           </Link>
 
@@ -447,7 +447,7 @@ const Landing = ({ cases, actions }) => {
           </div>
         </div>
         <div className={styles.bottom}>
-          <div className={styles.bottomLeft}>© 2025 Crypto Don't need Binance. All rights reserved.</div>
+          <div className={styles.bottomLeft}>© 2025 1011. All rights reserved.</div>
           <div className={styles.bottomRight}>
             <a className={styles.privacyButton} href="/privacy">Privacy Policy</a> | <a className={styles.tosButton} href="/terms">Terms of Use</a>
           </div>

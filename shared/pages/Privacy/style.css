@@ -44,7 +44,7 @@
   font-family: 'Google Sans Code', system-ui, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #E9FD66;
+  color: #D90A20;
   margin-bottom: 16px;
   margin-top: 32px;
 }
@@ -93,7 +93,7 @@
 
 .section ul li::before {
   content: '•';
-  color: #E9FD66;
+  color: #D90A20;
   position: absolute;
   left: 0;
 }
@@ -103,7 +103,7 @@
 }
 
 .section a {
-  color: #E9FD66;
+  color: #D90A20;
   text-decoration: none;
 }
 

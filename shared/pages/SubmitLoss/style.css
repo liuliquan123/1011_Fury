@@ -121,7 +121,7 @@
               width: 100%;
 
               .sectionStepTitle {
-                color: #E9FD66;
+                color: #D90A20;
                 font-family: "Google Sans Code";
                 font-size: 20px;
                 font-style: normal;
@@ -239,7 +239,7 @@
         gap: 20px;
 
         &.selected {
-          border: 1px solid #E9FD66;
+          border: 1px solid #D90A20;
         }
 
         .exchangeLogo {
@@ -578,14 +578,14 @@
       align-items: center;
       gap: 10px;
       flex-shrink: 0;
-      color: #E9FD66;
-      border: 1px solid #E9FD66;
+      color: #D90A20;
+      border: 1px solid #D90A20;
       cursor: pointer;
 
       .text {
         margin: 0 5px;
         white-space: pre;
-        color: #E9FD66;
+        color: #D90A20;
         font-size: 16px;
       }
 
@@ -600,7 +600,7 @@
       }
 
       &:hover {
-        background: #E9FD66;
+        background: #D90A20;
 
         .text {
           color: black;
@@ -644,8 +644,8 @@
       gap: 10px;
       flex-shrink: 0;
       color: black;
-      border: 1px solid #E9FD66;
-      background: #E9FD66;
+      border: 1px solid #D90A20;
+      background: #D90A20;
       cursor: pointer;
       transition: all 0.3s ease;
 
@@ -918,8 +918,8 @@
 
 .crowdfundButton {
   background: transparent;
-  border: 1px solid #E9FD66;
-  color: #E9FD66;
+  border: 1px solid #D90A20;
+  color: #D90A20;
   padding: 12px 24px;
   font-family: "Google Sans Code", system-ui, sans-serif;
   font-size: 14px;
@@ -929,6 +929,6 @@
 }
 
 .crowdfundButton:hover {
-  background: #E9FD66;
+  background: #D90A20;
   color: #0B0B0C;
 }

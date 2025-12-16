@@ -35,7 +35,7 @@
         text-decoration: none;
         width: 250px;
         margin-top: 20px;
-        background: #E9FD66;
+        background: #D90A20;
         color: black;
         display: flex;
         height: 48px;
@@ -161,7 +161,7 @@
                 }
 
                 .value {
-                  color: #E9FD66;
+                  color: #D90A20;
                   font-family: "Google Sans Code";
                   font-size: 24px;
                   font-style: normal;
@@ -209,7 +209,7 @@
           .button {
             width: 100%;
             margin-top: 20px;
-            background: #E9FD66;
+            background: #D90A20;
             color: black;
             display: flex;
             height: 48px;
@@ -285,7 +285,7 @@
               flex-direction: column;
 
               .listItemNumber {
-                color: #E9FD66;
+                color: #D90A20;
                 font-family: "Jersey10";
                 font-size: 40px;
                 font-style: normal;

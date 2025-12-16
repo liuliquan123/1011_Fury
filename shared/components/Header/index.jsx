@@ -32,10 +32,10 @@ const Header = ({ profile, actions, history }) => {
     <div className={classNames(styles.header)}>
       <Link className={classNames(styles.branding)} to="/">
         <div className={classNames(styles.logo)}>
-          <img src={cdnbLogo} alt="CDNB" style={{ width: '32px', height: '32px', borderRadius: '4px' }} />
+          <img src={cdnbLogo} alt="1011" style={{ width: '32px', height: '32px', borderRadius: '4px' }} />
         </div>
         <div className={classNames(styles.text)}>
-          CDNB
+          1011
         </div>
       </Link>
       {profile.id && (
@@ -98,7 +98,7 @@ const Header = ({ profile, actions, history }) => {
                 justifyContent: 'center',
                 padding: '2px 16px',
                 height: '52px',
-                background: '#E9FD66',
+                background: '#D90A20',
                 border: 'none',
                 textDecoration: 'none',
                 cursor: 'pointer',

@@ -436,7 +436,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 <div className={styles.tokens}>
                   <div className={styles.token}>
                     <div className={styles.tokenLogo}>
-                      <img src={tokenLogo} alt="CDNB Token" />
+                      <img src={tokenLogo} alt="1011 Token" />
                     </div>
                     <div className={styles.tokenAmount}>
                       {(reward && reward.token_amount) || 0}

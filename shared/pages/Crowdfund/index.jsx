@@ -192,7 +192,7 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
       {/* 标题区域 */}
       <div className={styles.title}>Crowdfund</div>
       <div className={styles.description}>
-        Discover and participate in a diverse range of on-chain asset opportunities powered by CDNB.
+        Discover and participate in a diverse range of on-chain asset opportunities powered by 1011.
       </div>
 
       {/* 主卡片 */}
@@ -200,8 +200,8 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
         {/* 卡片头部 */}
         <div className={styles.cardHeader}>
           <div className={styles.cardTitle}>
-            <img src={tokenLogo} alt="CDNB" className={styles.titleLogo} />
-            CDNB Crowdfund
+            <img src={tokenLogo} alt="1011" className={styles.titleLogo} />
+            1011 Crowdfund
           </div>
           <div className={classNames(styles.statusBadge, {
             [styles.live]: isLive,

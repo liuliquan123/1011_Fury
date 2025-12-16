@@ -1,6 +1,6 @@
 .header {
   width: 100%;
-  background: #E9FD66;
+  background: #D90A20;
   height: 60px;
   color: #151515;
   font-size: 32px;
@@ -76,7 +76,7 @@
       justify-content: center;
       font-weight: 500;
       cursor: pointer;
-      background: #E9FD66;
+      background: #D90A20;
       border: 1px solid black;
       font-family: "Google Sans Code";
 
@@ -114,7 +114,7 @@
         right: 0;
         width: 200px;
         height: 40px;
-        background: #E9FD66;
+        background: #D90A20;
         border: 1px solid black;
         cursor: pointer;
         display: none;

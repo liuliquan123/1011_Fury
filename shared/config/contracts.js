@@ -47,7 +47,7 @@ export const CONTRACTS = {
   Binance: {
     signatureClaim: null, // TBD - 待合约工程师部署
     crowdfund: null,      // TBD - Binance Crowdfund 合约
-    token: null,          // CDNB token 地址
+    token: null,          // 1011 token 地址
   },
   OKX: {
     signatureClaim: null, // TBD

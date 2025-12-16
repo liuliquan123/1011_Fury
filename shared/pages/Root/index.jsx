@@ -26,10 +26,10 @@ const getAppTheme = (mode) => {
 }
 
 const Root = ({ location, history, theme, actions }) => {
-  const [title, setTitle] = useState('CDNB')
+  const [title, setTitle] = useState('1011')
 
   useEffect(() => {
-    setTitle('CDNB')
+    setTitle('1011')
     actions.getProfile()
   }, [])
 
