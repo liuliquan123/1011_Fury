@@ -11,7 +11,7 @@ import bybitLogo from 'resources/images/logos/bybit-logo.svg'
 import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
 import classNames from 'classnames'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
-import tokenLogo from 'resources/images/token-logo.jpg'
+import tokenLogo from 'resources/images/token-logo_v2.svg'
 import styles from './style.css'
 
 const getInviteCode = (code, exchangeType) => {

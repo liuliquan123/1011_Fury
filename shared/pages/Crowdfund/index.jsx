@@ -9,7 +9,7 @@ import classNames from 'classnames'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import { calculateEstimate, formatTokenAmount, CROWDFUND_PHASES } from 'config/crowdfund'
 import LoginModal from 'components/Login'
-import tokenLogo from 'resources/images/token-logo.jpg'
+import tokenLogo from 'resources/images/token-logo_v2.svg'
 import styles from './style.css'
 
 const EXCHANGE = 'Binance'
