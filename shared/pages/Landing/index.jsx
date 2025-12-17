@@ -76,9 +76,12 @@ const formatNumber = (num) => {
   return formatNumberWithUnit(num)
 }
 
-const Landing = ({ cases, actions }) => {
+const Landing = ({ cases, submissions, actions }) => {
   const [activeIdx, setActiveIdx] = useState(0)
   const [expandedFAQ, setExpandedFAQ] = useState(null)
+  
+  // 判断用户是否已提交过
+  const hasSubmitted = submissions?.statistics?.total_submissions > 0
 
   useEffect(() => {
     actions.getCases({})
@@ -115,11 +118,13 @@ const Landing = ({ cases, actions }) => {
           <div className={styles.text}>
             They Took Control. We Take It Back
           </div>
-          <Link className={styles.button} to="/submit-loss">
-            <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.buttonText)}>SUBMIT YOUR LOSS</div>
-            <div className={classNames(styles.rightArrow)}>{"<"}</div>
-          </Link>
+          {!hasSubmitted && (
+            <Link className={styles.button} to="/submit-loss">
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.buttonText)}>SUBMIT YOUR LOSS</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </Link>
+          )}
           {/* 隐藏 Crowdfund 入口
           <Link className={classNames(styles.button, styles.secondaryButton)} to="/crowdfund">
             <div className={classNames(styles.leftArrow)}>{">"}</div>
@@ -454,13 +459,15 @@ const Landing = ({ cases, actions }) => {
           </div>
         </div>
       </div>
-      <div className={styles.bottomButtons}>
-        <Link className={styles.button} to="/submit-loss">
-          <div className={classNames(styles.leftArrow)}>{">"}</div>
-          <div className={classNames(styles.text)}>SUBMIT YOUR LOSS</div>
-          <div className={classNames(styles.rightArrow)}>{"<"}</div>
-        </Link>
-      </div>
+      {!hasSubmitted && (
+        <div className={styles.bottomButtons}>
+          <Link className={styles.button} to="/submit-loss">
+            <div className={classNames(styles.leftArrow)}>{">"}</div>
+            <div className={classNames(styles.text)}>SUBMIT YOUR LOSS</div>
+            <div className={classNames(styles.rightArrow)}>{"<"}</div>
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
@@ -468,7 +475,8 @@ const Landing = ({ cases, actions }) => {
 export default withRouter(
   connect(
     state => ({
-      cases: state.auth.cases
+      cases: state.auth.cases,
+      submissions: state.auth.submissions
     }),
     dispatch => ({
       actions: bindActionCreators({

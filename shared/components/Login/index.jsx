@@ -116,7 +116,7 @@ const detectAllWallets = () => {
 
 const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => {
   const [initializing, setInitializing] = useState(true)
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(true)
 
   const [connectingWallet, setConnectingWallet] = useState(false)
   const [connectingTwitter, setConnectingTwitter] = useState(false)

@@ -72,6 +72,7 @@ const formatAmount = (amount) => {
 }
 
 const Cases = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
+  const hasSubmitted = submissions?.statistics?.total_submissions > 0
   return (
     <div className={styles.cases}>
       <div className={styles.title}>
@@ -81,13 +82,15 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
         <div className={styles.description}>
           Track your submissions and monitor case progress
         </div>
-        <div className={styles.buttons}>
-          <Link className={styles.button} to="/submit-loss">
-            <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.buttonText)}>SUBMIT NEW LOSS</div>
-            <div className={classNames(styles.rightArrow)}>{"<"}</div>
-          </Link>
-        </div>
+        {!hasSubmitted && (
+          <div className={styles.buttons}>
+            <Link className={styles.button} to="/submit-loss">
+              <div className={classNames(styles.leftArrow)}>{">"}</div>
+              <div className={classNames(styles.buttonText)}>SUBMIT NEW LOSS</div>
+              <div className={classNames(styles.rightArrow)}>{"<"}</div>
+            </Link>
+          </div>
+        )}
       </div>
       <div className={styles.content}>
         <div className={styles.account}>
@@ -139,11 +142,13 @@ const Cases = ({ profile, userTokens, referralStats, actions, submissions, histo
                   <div className={classNames(styles.buttonText)}>INVITE</div>
                   <div className={classNames(styles.rightArrow)}>{"<"}</div>
                 </Link>
-                <Link className={styles.submitButton} to="/submit-loss">
-                  <div className={classNames(styles.leftArrow)}>{">"}</div>
-                  <div className={classNames(styles.buttonText)}>SUBMIT NEW LOSS</div>
-                  <div className={classNames(styles.rightArrow)}>{"<"}</div>
-                </Link>
+                {!hasSubmitted && (
+                  <Link className={styles.submitButton} to="/submit-loss">
+                    <div className={classNames(styles.leftArrow)}>{">"}</div>
+                    <div className={classNames(styles.buttonText)}>SUBMIT NEW LOSS</div>
+                    <div className={classNames(styles.rightArrow)}>{"<"}</div>
+                  </Link>
+                )}
               </div>
             </div>
             <div className={styles.bottom}>

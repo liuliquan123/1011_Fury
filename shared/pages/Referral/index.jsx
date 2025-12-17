@@ -92,6 +92,7 @@ const getPercentage = (reward) => {
 }
 
 const Referral = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
+  const hasSubmitted = submissions?.statistics?.total_submissions > 0
   // 过滤只显示可见交易所的 rewards
   const allRewards = Array.isArray(userTokens?.rewards) ? userTokens.rewards : []
   const rewards = allRewards.filter(r => isExchangeVisible(r.exchange))
@@ -341,10 +342,14 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
             /* 无 reward 时显示引导 */
             <div className={styles.noReward}>
               <div className={styles.noRewardTitle}>No Tokens Yet</div>
-              <div className={styles.noRewardText}>Submit your loss to earn tokens</div>
-              <Link className={styles.submitButton} to="/submit-loss">
-                Submit Loss
-              </Link>
+              <div className={styles.noRewardText}>
+                {hasSubmitted ? 'Your submission is being reviewed.' : 'Submit your loss to earn tokens'}
+              </div>
+              {!hasSubmitted && (
+                <Link className={styles.submitButton} to="/submit-loss">
+                  Submit Loss
+                </Link>
+              )}
             </div>
           )}
         </div>

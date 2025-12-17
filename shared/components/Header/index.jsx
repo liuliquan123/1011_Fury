@@ -9,11 +9,14 @@ import classNames from 'classnames'
 import styles from './style.css'
 import furyLogo from 'resources/images/Logo_v2.svg'
 
-const Header = ({ profile, actions, history }) => {
+const Header = ({ profile, submissions, actions, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const [showMenu, setShowMenu] = useState(true)
   const location = useLocation()
+  
+  // 判断用户是否已提交过
+  const hasSubmitted = submissions?.statistics?.total_submissions > 0
 
   useEffect(() => {
     actions.getProfile()
@@ -64,26 +67,30 @@ const Header = ({ profile, actions, history }) => {
         </div>
       )}
       <div className={classNames(styles.buttons)} style={{ gap: '10px' }}>
-        <Link
-          className={classNames(styles.button, styles.large)}
-          to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}
-        >
-          <div className={classNames(styles.leftArrow)}>{">"}</div>
-          <div className={classNames(styles.text)}>
-            SUBMIT YOUR LOSS
-          </div>
-          <div className={classNames(styles.rightArrow)}>{"<"}</div>
-        </Link>
-        <Link
-          className={classNames(styles.button, styles.small)}
-          to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}
-        >
-          <div className={classNames(styles.leftArrow)}>{">"}</div>
-          <div className={classNames(styles.text)}>
-            SUBMIT
-          </div>
-          <div className={classNames(styles.rightArrow)}>{"<"}</div>
-        </Link>
+        {!hasSubmitted && (
+          <Link
+            className={classNames(styles.button, styles.large)}
+            to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}
+          >
+            <div className={classNames(styles.leftArrow)}>{">"}</div>
+            <div className={classNames(styles.text)}>
+              SUBMIT YOUR LOSS
+            </div>
+            <div className={classNames(styles.rightArrow)}>{"<"}</div>
+          </Link>
+        )}
+        {!hasSubmitted && (
+          <Link
+            className={classNames(styles.button, styles.small)}
+            to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}
+          >
+            <div className={classNames(styles.leftArrow)}>{">"}</div>
+            <div className={classNames(styles.text)}>
+              SUBMIT
+            </div>
+            <div className={classNames(styles.rightArrow)}>{"<"}</div>
+          </Link>
+        )}
         {!profile.id && (
           <Fragment>
             <Link 
@@ -165,7 +172,8 @@ const Header = ({ profile, actions, history }) => {
 export default withRouter(
   connect(
     state => ({
-      profile: state.auth.profile
+      profile: state.auth.profile,
+      submissions: state.auth.submissions
     }),
     dispatch => ({
       actions: bindActionCreators({

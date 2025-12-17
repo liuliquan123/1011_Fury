@@ -29,7 +29,7 @@ const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZE
 const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
 const SUPABASE_ANON_KEY = "sb_publishable_wl9QBcaEFGJWauO77gIDiQ_VEmbEnxv"
 const API_BASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co/functions/v1"
-const TELEGRAM_BOT_USERNAME = "SatoshiFuryBot"
+const TELEGRAM_BOT_USERNAME = "Fury1011Bot"
 const APP_URL = "https://satoshis-fury-nextjs.vercel.app"
 
 // console.log('WALLET_CONNECTORS', WALLET_CONNECTORS)
