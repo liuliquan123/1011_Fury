@@ -354,14 +354,13 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               </div>
             </div>
           </div>
-          {/* 隐藏 Crowdfund 入口
+                    隐藏 Crowdfund 入口
           <div className={styles.crowdfundEntry}>
             <div className={styles.crowdfundText}>Want to get more tokens?</div>
             <button className={styles.crowdfundButton} onClick={handleCrowdfundClick}>
               CROWDFUND
             </button>
           </div>
-          */}
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
