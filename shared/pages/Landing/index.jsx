@@ -159,6 +159,7 @@ const Landing = ({ cases, actions }) => {
                 Total Damage
               </div>
             </div>
+            {/* 隐藏 Token Distributed - 待后端提供 API
             <div className={styles.statistic}>
               <div className={styles.statisticNumber}>
                 1250K
@@ -167,6 +168,7 @@ const Landing = ({ cases, actions }) => {
                 Token Distributed
               </div>
             </div>
+            */}
           </div>
         </div>
         <div className={classNames(styles.section, styles.featured)}>
