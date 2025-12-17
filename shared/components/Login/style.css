@@ -84,10 +84,10 @@
         align-items: center;
         gap: 10px;
         flex: 1 0 0;
-        border: 1px solid #E9FD66;
+        border: 1px solid #D90A20;
         white-space: pre;
 
-        color: #E9FD66;
+        color: #D90A20;
         font-family: "Google Sans Code";
         font-size: 16px;
         font-style: normal;
@@ -105,10 +105,10 @@
         align-items: center;
         gap: 10px;
         flex: 1 0 0;
-        border: 1px solid #E9FD66;
+        border: 1px solid #D90A20;
         white-space: pre;
 
-        background: #E9FD66;
+        background: #D90A20;
         color: black;
         font-family: "Google Sans Code";
         font-size: 16px;
@@ -142,7 +142,7 @@
     transition: color 0.2s;
     
     &:hover {
-      color: #E9FD66;
+      color: #D90A20;
     }
     
     svg {
@@ -172,8 +172,8 @@
     font-weight: 500;
     cursor: pointer;
     margin-top: 32px;
-    background: #E9FD66;
-    border-color: #E9FD66;
+    background: #D90A20;
+    border-color: #D90A20;
     color: black;
     font-family: "Google Sans Code";
   }
@@ -266,7 +266,7 @@
       line-height: 20px;
 
       a {
-        color: #E9FD66;
+        color: #D90A20;
         text-decoration: none;
       }
 

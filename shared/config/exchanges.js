@@ -23,7 +23,7 @@ export const isExchangeVisible = (exchange) => {
 
 // 交易所对应的 Token 名称
 export const EXCHANGE_TOKENS = {
-  binance: '$CDNB',
+  binance: '$1011',
   okx: '$COKX',
   bybit: 'Anti-Bybit',
   bitget: 'Anti-Bitget',

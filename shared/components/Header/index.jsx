@@ -7,7 +7,7 @@ import * as actions from 'actions/auth'
 import { useSearchParams, useLocation } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './style.css'
-import cdnbLogo from 'resources/images/cdnb-logo.jpg'
+import furyLogo from 'resources/images/Logo_v2.svg'
 
 const Header = ({ profile, actions, history }) => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -32,10 +32,7 @@ const Header = ({ profile, actions, history }) => {
     <div className={classNames(styles.header)}>
       <Link className={classNames(styles.branding)} to="/">
         <div className={classNames(styles.logo)}>
-          <img src={cdnbLogo} alt="CDNB" style={{ width: '32px', height: '32px', borderRadius: '4px' }} />
-        </div>
-        <div className={classNames(styles.text)}>
-          CDNB
+          <img src={furyLogo} alt="Fury" />
         </div>
       </Link>
       {profile.id && (
@@ -98,7 +95,7 @@ const Header = ({ profile, actions, history }) => {
                 justifyContent: 'center',
                 padding: '2px 16px',
                 height: '52px',
-                background: '#E9FD66',
+                background: '#D90A20',
                 border: 'none',
                 textDecoration: 'none',
                 cursor: 'pointer',

@@ -11,7 +11,7 @@ import bybitLogo from 'resources/images/logos/bybit-logo.svg'
 import bitgetLogo from 'resources/images/logos/bitget-logo.svg'
 import classNames from 'classnames'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
-import tokenLogo from 'resources/images/token-logo.jpg'
+import tokenLogo from 'resources/images/token-logo_v2.svg'
 import styles from './style.css'
 
 const getInviteCode = (code, exchangeType) => {
@@ -168,7 +168,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   const handleShareTwitter = useCallback(() => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
     const link = `${baseUrl}/invite?code=${inviteCode}`
-    const text = `Join me on CDNB! Use my referral code: ${inviteCode}\n${link}`
+    const text = `Join me on Fury! Use my referral code: ${inviteCode}\n${link}`
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`
     window.open(url, '_blank')
   }, [inviteCode])
@@ -176,7 +176,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
   const handleShareTelegram = useCallback(() => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
     const link = `${baseUrl}/invite?code=${inviteCode}`
-    const text = `Join me on CDNB! Use my referral code: ${inviteCode}\n${link}`;
+    const text = `Join me on Fury! Use my referral code: ${inviteCode}\n${link}`;
     const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`
     window.open(url, '_blank')
   }, [inviteCode])
@@ -226,7 +226,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
     <div className={styles.referral}>
       <div className={styles.title}>
         <div className={styles.text}>
-          Spread the CDNB
+          Spread the Fury
         </div>
         <div className={styles.description}>
           Ignite action, inspire others, and unlock your rightful value.
@@ -243,7 +243,7 @@ const Referral = ({ profile, userTokens, referralStats, actions, submissions, hi
                 <div className={styles.tokens}>
                   <div className={styles.token}>
                     <div className={styles.tokenLogo}>
-                      <img src={tokenLogo} alt="CDNB Token" />
+                      <img src={tokenLogo} alt="1011 Token" />
                     </div>
                     <div className={styles.tokenAmount}>
                       {reward.token_amount || 0}

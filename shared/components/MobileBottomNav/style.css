@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   background: #141519;
-  background: #E9FD66;
+  background: #D90A20;
   z-index: 90;
   display: none;
   align-items: center;
@@ -27,7 +27,7 @@
 }
 
 .navItem.active {
-  color: #E9FD66;
+  color: #D90A20;
   color: black;
 }
 

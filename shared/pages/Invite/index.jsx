@@ -196,13 +196,13 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
 
         <div className={classNames(styles.section, styles.questions)}>
           <div className={styles.sectionTitle}>
-            _> Decode the CDNB
+            _> Decode the Fury
           </div>
           <div className={styles.sectionContent}>
             {[
               { 
-                q: "What is CDNB?", 
-                a: "CDNB (Crypto Don't need Binance) is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
+                q: "What is Fury?", 
+                a: "Fury is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
               },
               { 
                 q: "Why was this created?", 

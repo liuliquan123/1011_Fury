@@ -92,7 +92,7 @@
 }
 
 .statusBadge.live {
-  background: #E9FD66;
+  background: #D90A20;
   color: #0b0b0c;
 }
 
@@ -118,7 +118,7 @@
 .progressPercent {
   font-family: "Jersey10", system-ui, sans-serif;
   font-size: 60px;
-  color: #E9FD66;
+  color: #D90A20;
   text-decoration: underline;
   text-underline-offset: 8px;
 }
@@ -165,13 +165,13 @@
   height: 16px;
   overflow: hidden;
   background: transparent;
-  border: 1px solid #E9FD66;
+  border: 1px solid #D90A20;
   margin-bottom: 24px;
 }
 
 .progressFill {
   height: 100%;
-  background: #E9FD66;
+  background: #D90A20;
   transition: width 0.3s ease-out;
 }
 
@@ -192,7 +192,7 @@
 .statValue {
   font-family: "Jersey10", system-ui, sans-serif;
   font-size: 32px;
-  color: #E9FD66;
+  color: #D90A20;
   margin-bottom: 8px;
 }
 
@@ -233,7 +233,7 @@
   display: flex;
   align-items: center;
   background: transparent;
-  border: 1px solid #E9FD66;
+  border: 1px solid #D90A20;
   padding-right: 0;
 }
 
@@ -254,7 +254,7 @@
 
 /* ETH 徽章 - 方角 */
 .ethBadge {
-  background: #E9FD66;
+  background: #D90A20;
   color: #0B0B0C;
   padding: 14px 24px;
   font-size: 14px;
@@ -283,7 +283,7 @@
 }
 
 .estimateValue {
-  color: #E9FD66;
+  color: #D90A20;
   font-weight: 500;
 }
 
@@ -295,7 +295,7 @@
 .primaryButton {
   width: 100%;
   border: none;
-  background: #E9FD66;
+  background: #D90A20;
   color: #050506;
   padding: 16px 24px;
   font-size: 16px;
@@ -343,7 +343,7 @@
 .contributionValue {
   font-family: "Jersey10", system-ui, sans-serif;
   font-size: 32px;
-  color: #E9FD66;
+  color: #D90A20;
   margin-bottom: 8px;
 }
 
@@ -398,13 +398,13 @@
 }
 
 .claimValue {
-  color: #E9FD66;
+  color: #D90A20;
   font-weight: 600;
 }
 
 .claimButton {
   width: 100%;
-  background: #E9FD66;
+  background: #D90A20;
   color: #050506;
   border: none;
   padding: 16px 32px;

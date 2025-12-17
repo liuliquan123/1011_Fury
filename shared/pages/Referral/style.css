@@ -35,7 +35,7 @@
         text-decoration: none;
         width: 250px;
         margin-top: 20px;
-        background: #E9FD66;
+        background: #D90A20;
         color: black;
         display: flex;
         height: 48px;
@@ -94,7 +94,7 @@
           gap: 20px;
 
           &.selected {
-            border: 1px solid #E9FD66;
+            border: 1px solid #D90A20;
           }
 
           .exchangeLogo {
@@ -116,7 +116,7 @@
       .code {
         width: 100%;
         padding: 40px;
-        color: #E9FD66;
+        color: #D90A20;
         font-family: "Jersey10";
         font-size: 40px;
         font-style: normal;
@@ -145,10 +145,10 @@
           align-items: center;
           gap: 10px;
           flex: 1 0 0;
-          border: 1px solid #E9FD66;
+          border: 1px solid #D90A20;
           white-space: pre;
 
-          color: #E9FD66;
+          color: #D90A20;
           font-family: "Google Sans Code";
           font-size: 16px;
           font-style: normal;
@@ -162,7 +162,7 @@
             white-space: pre;
             color: black;
             font-size: 16px;
-            color: #E9FD66;
+            color: #D90A20;
           }
 
           .leftArrow {
@@ -176,7 +176,7 @@
           }
 
           &:hover {
-            background: #E9FD66;
+            background: #D90A20;
 
             .buttonText {
               color: black;
@@ -216,10 +216,10 @@
           align-items: center;
           gap: 10px;
           flex: 1 0 0;
-          border: 1px solid #E9FD66;
+          border: 1px solid #D90A20;
           white-space: pre;
 
-          background: #E9FD66;
+          background: #D90A20;
           color: black;
           font-family: "Google Sans Code";
           font-size: 16px;
@@ -247,7 +247,7 @@
           }
 
           &:hover {
-            background: #E9FD66;
+            background: #D90A20;
 
             .buttonText {
               color: black;
@@ -321,10 +321,10 @@
           align-items: center;
           gap: 10px;
           flex: 1 0 0;
-          border: 1px solid #E9FD66;
+          border: 1px solid #D90A20;
           white-space: pre;
 
-          background: #E9FD66;
+          background: #D90A20;
           color: black;
           font-family: "Google Sans Code";
           font-size: 16px;
@@ -368,7 +368,7 @@
           gap: 10px;
 
           .contentStatsItemName {
-            color: #E9FD66;
+            color: #D90A20;
             font-family: "Jersey10";
             font-size: 40px;
             font-style: normal;
@@ -404,10 +404,10 @@
           align-items: center;
           gap: 10px;
           flex: 1 0 0;
-          border: 1px solid #E9FD66;
+          border: 1px solid #D90A20;
           white-space: pre;
 
-          background: #E9FD66;
+          background: #D90A20;
           color: black;
           font-family: "Google Sans Code";
           font-size: 16px;
@@ -444,7 +444,7 @@
 
         .submitButton {
           display: inline-block;
-          background: #E9FD66;
+          background: #D90A20;
           color: black;
           font-family: "Google Sans Code";
           font-size: 16px;
@@ -477,7 +477,7 @@
         padding: 40px;
 
         .withdrawalButton {
-          background: #E9FD66;
+          background: #D90A20;
           border: 1px solid black;
           color: black;
           font-family: "Google Sans Code";
@@ -502,7 +502,7 @@
         }
 
         .name {
-          color: #E9FD66;
+          color: #D90A20;
           text-align: center;
           font-family: "Google Sans Code";
           font-size: 14px;
@@ -537,7 +537,7 @@
             }
 
             .tokenAmount {
-              color: #E9FD66;
+              color: #D90A20;
               font-family: "Jersey10";
               font-size: 48px;
               font-style: normal;
@@ -549,7 +549,7 @@
               .tokenName {
                 font-size: 24px;
                 margin-left: 8px;
-                color: #E9FD66;
+                color: #D90A20;
               }
 
               .status {
@@ -600,7 +600,7 @@
                 }
 
                 .tokenLockTimeContentCellNumber {
-                  color: #E9FD66;
+                  color: #D90A20;
                   text-align: center;
                   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
                   font-family: "Google Sans Code";
@@ -630,13 +630,13 @@
         .progress {
           margin-top: 20px;
           width: 100%;
-          border: 1px solid #E9FD66;
+          border: 1px solid #D90A20;
           height: 16px;
 
           .percentage {
             height: 100%;
             width: 0%;
-            background: #E9FD66;
+            background: #D90A20;
           }
         }
 

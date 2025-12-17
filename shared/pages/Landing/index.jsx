@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { isExchangeVisible } from 'config/exchanges'
 import styles from './style.css'
-import cdnbLogo from 'resources/images/cdnb-logo.jpg'
+import furyLogo from 'resources/images/Logo_v2.svg'
 
 // 基础数字格式化（内部使用）
 const formatNumberWithUnit = (num) => {
@@ -225,7 +225,7 @@ const Landing = ({ cases, actions }) => {
                           width: '8px',
                           height: '8px',
                           borderRadius: '50%',
-                          backgroundColor: idx === activeIdx ? '#E9FD66' : '#666',
+                          backgroundColor: idx === activeIdx ? '#D90A20' : '#666',
                           display: 'inline-block',
                           margin: '0 4px',
                           cursor: 'pointer'
@@ -267,7 +267,7 @@ const Landing = ({ cases, actions }) => {
                 </svg>
               </div>
               <div className={styles.featureTitle}>
-                Stand With CDNB
+                Stand With Fury
               </div>
               <div className={styles.featureText}>
                 Every witness strengthens the chain we build together.
@@ -344,13 +344,13 @@ const Landing = ({ cases, actions }) => {
         </div>
         <div className={classNames(styles.section, styles.questions)}>
           <div className={styles.sectionTitle}>
-            _> DECODE THE CDNB
+            _> DECODE THE FURY
           </div>
           <div className={styles.sectionContent}>
             {[
               { 
-                q: "What is CDNB?", 
-                a: "CDNB (Crypto Don't need Binance) is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
+                q: "What is Fury?", 
+                a: "Fury is a decentralized rights-protection network built by volunteers and users.\n\nIt uses AI evidence verification, community voting, and on-chain transparency to help crypto users surface losses, submit proof, drive collective action, and earn tokens for contributing." 
               },
               { 
                 q: "Why was this created?", 
@@ -421,10 +421,7 @@ const Landing = ({ cases, actions }) => {
         <div className={styles.content}>
           <Link className={classNames(styles.branding)} to="/">
             <div className={classNames(styles.logo)}>
-              <img src={cdnbLogo} alt="CDNB" style={{ width: '32px', height: '32px', borderRadius: '4px' }} />
-            </div>
-            <div className={classNames(styles.text)}>
-              Crypto Don't need Binance
+              <img src={furyLogo} alt="Fury" style={{ height: '32px' }} />
             </div>
           </Link>
 
@@ -447,7 +444,7 @@ const Landing = ({ cases, actions }) => {
           </div>
         </div>
         <div className={styles.bottom}>
-          <div className={styles.bottomLeft}>© 2025 Crypto Don't need Binance. All rights reserved.</div>
+          <div className={styles.bottomLeft}>© 2025 Fury. All rights reserved.</div>
           <div className={styles.bottomRight}>
             <a className={styles.privacyButton} href="/privacy">Privacy Policy</a> | <a className={styles.tosButton} href="/terms">Terms of Use</a>
           </div>
