@@ -12,8 +12,8 @@ import {
   Invite
 } from 'routes/sync'
 
-// DEBUG: 直接导入 Crowdfund，绕过 syncComponent
-import Crowdfund from 'pages/Crowdfund'
+// 隐藏 Crowdfund 功能
+// import Crowdfund from 'pages/Crowdfund'
 import Terms from 'pages/Terms'
 import Privacy from 'pages/Privacy'
 
@@ -46,10 +46,12 @@ export const routes = [
         path: 'invite',
         component: Invite
       },
+      /* 隐藏 Crowdfund 路由
       {
         path: 'crowdfund',
         component: Crowdfund
       },
+      */
       {
         path: 'terms',
         component: Terms
@@ -79,7 +81,7 @@ export const RootRoutes = () => (
       <Route path="referral" element={<Referral />} />
       <Route path="my-case" element={<Cases />} />
       <Route path="invite" element={<Invite />} />
-      <Route path="crowdfund" element={<Crowdfund />} />
+      {/* <Route path="crowdfund" element={<Crowdfund />} /> */}
       <Route path="terms" element={<Terms />} />
       <Route path="privacy" element={<Privacy />} />
       <Route path="login" element={<Login />} />
