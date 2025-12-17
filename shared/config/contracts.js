@@ -21,7 +21,7 @@ export const CHAIN_CONFIG = {
     chainId: '0x2105', // 8453 十六进制
     chainName: 'Base',
     nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: ['https://mainnet.base.org'],
+    rpcUrls: ['https://base-mainnet.g.alchemy.com/v2/pMrL8GqUkE5zs50Y1x6ZX'],
     blockExplorerUrls: ['https://basescan.org'],
   },
 }
