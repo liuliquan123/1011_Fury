@@ -142,6 +142,7 @@ const getPercentage = (reward) => {
 }
 
 const Profile = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
+  const hasSubmitted = submissions?.statistics?.total_submissions > 0
   const allRewards = Array.isArray(userTokens?.rewards) ? userTokens.rewards : []
   // 过滤只显示可见交易所的 rewards
   const rewards = allRewards.filter(r => isExchangeVisible(r.exchange))
@@ -524,18 +525,15 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
             {(!reward) && (
               <div className={styles.locked}>
                 <div className={styles.noRewardText}>
-                  No tokens yet. Submit your loss to get tokens!
+                  {hasSubmitted ? 'Your submission is being reviewed.' : 'No tokens yet. Submit your loss to get tokens!'}
                 </div>
-                <div className={styles.dualButtonRow}>
-                  {/* 隐藏 Crowdfund 入口
-                  <Link className={styles.getMoreButton} to="/crowdfund">
-                    GET MORE TOKEN
-                  </Link>
-                  */}
-                  <Link className={styles.claimToButton} to="/submit-loss">
-                    SUBMIT LOSS
-                  </Link>
-                </div>
+                {!hasSubmitted && (
+                  <div className={styles.dualButtonRow}>
+                    <Link className={styles.claimToButton} to="/submit-loss">
+                      SUBMIT LOSS
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
 
@@ -579,9 +577,11 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
             Quick Actions
           </div>
           <div className={styles.list}>
-            <Link className={styles.listItem} to="/submit-loss">
-              submit new loss
-            </Link>
+            {!hasSubmitted && (
+              <Link className={styles.listItem} to="/submit-loss">
+                submit new loss
+              </Link>
+            )}
             <Link className={styles.listItem} to="/referral">
               view referral program
             </Link>

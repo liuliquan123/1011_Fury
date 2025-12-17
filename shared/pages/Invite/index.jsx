@@ -88,6 +88,7 @@ const parseExchangeFromCode = (code) => {
 }
 
 const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actions, submissions, history }) => {
+  const hasSubmitted = submissions?.statistics?.total_submissions > 0
   const [searchParams, setSearchParams] = useSearchParams()
   const [referralCode, setReferralCode] = useState(searchParams.get('code') || '')
   const [expandedFAQ, setExpandedFAQ] = useState(null)
@@ -116,13 +117,15 @@ const Invite = ({ profile, userTokens, referralStats, referralInfo, cases, actio
           {info.referrer.username || 'Someone'} wants you to take back what's yours.
         </div>
         <div className={styles.description}>
-          Submit your loss, claim your rights, and join the fight.
+          {hasSubmitted ? 'Your submission is being reviewed.' : 'Submit your loss, claim your rights, and join the fight.'}
         </div>
-        <div className={styles.buttons}>
-          <Link className={styles.button} to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}>
-            Submit My Proof
-          </Link>
-        </div>
+        {!hasSubmitted && (
+          <div className={styles.buttons}>
+            <Link className={styles.button} to={referralCode ? `/submit-loss?code=${referralCode}` : '/submit-loss'}>
+              Submit My Proof
+            </Link>
+          </div>
+        )}
       </div>
       <div className={styles.content}>
         <div className={styles.account}>
