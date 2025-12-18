@@ -66,6 +66,23 @@ export const CONTRACTS = {
   },
 }
 
+// LP Staking 配置
+export const LP_STAKING = {
+  84532: { // Base Sepolia (测试)
+    stakingContract: '0x82Fd3C14e01E5b1c647AA14E5Db146070a47d204',
+    lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
+  },
+  8453: { // Base Mainnet (上线前填入)
+    stakingContract: null,
+    lpToken: null,
+  }
+}
+
+// 获取当前链的 LP Staking 配置
+export const getLpStakingConfig = () => {
+  return LP_STAKING[CHAIN_ID] || LP_STAKING[84532]
+}
+
 /**
  * 获取交易所对应的 Crowdfund 合约地址
  * @param {string} exchange - 交易所名称

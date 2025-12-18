@@ -3,7 +3,7 @@
 
   .banner {
     height: 700px;
-    background-image: url("resources/images/banner_v2.png");
+    background-image: url("resources/images/Banner_v3_desktop.png");
     background-position-x: center;
     background-position-y: center;
     background-repeat: no-repeat;
@@ -692,7 +692,7 @@
 
     .banner {
       height: 500px;
-      background-image: url("resources/images/banner_mobile.png");
+      background-image: url("resources/images/Banner_v3_mobile.png");
 
       .content {
         padding: 20px;

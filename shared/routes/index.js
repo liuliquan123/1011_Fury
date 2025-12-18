@@ -16,6 +16,7 @@ import {
 // import Crowdfund from 'pages/Crowdfund'
 import Terms from 'pages/Terms'
 import Privacy from 'pages/Privacy'
+import LpStaking from 'pages/LpStaking'
 
 export const routes = [
   {
@@ -61,6 +62,10 @@ export const routes = [
         component: Privacy
       },
       {
+        path: 'lp-staking',
+        component: LpStaking
+      },
+      {
         path: 'login',
         component: Login
       },
@@ -84,6 +89,7 @@ export const RootRoutes = () => (
       {/* <Route path="crowdfund" element={<Crowdfund />} /> */}
       <Route path="terms" element={<Terms />} />
       <Route path="privacy" element={<Privacy />} />
+      <Route path="lp-staking" element={<LpStaking />} />
       <Route path="login" element={<Login />} />
       <Route path="*" element={<NoMatch />} />
     </Route>

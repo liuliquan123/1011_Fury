@@ -6,6 +6,7 @@ import intl from './intl'
 import theme from './theme'
 import auth from './auth'
 import crowdfund from './crowdfund'
+import lpStaking from './lpStaking'
 
 enableMapSet()
 
@@ -15,7 +16,8 @@ const createRootReducer = (history) => combineReducers({
   intl,
   theme,
   auth,
-  crowdfund
+  crowdfund,
+  lpStaking
 })
 
 export default createRootReducer
