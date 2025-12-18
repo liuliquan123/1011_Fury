@@ -117,9 +117,10 @@ function* initWeb3Auth(action) {
 
 /**
  * 等待 Web3Auth 初始化完成
- * 用于 claimToken 和 linkWallet 共用的钱包连接前置逻辑
+ * 用于 claimToken、linkWallet、lpStaking、crowdfund 等需要钱包的操作
+ * 导出供其他 saga 使用
  */
-function* waitWeb3AuthReady() {
+export function* waitWeb3AuthReady() {
   // 1. 仅在未初始化时才 init
   if (!web3auth || web3auth.status === 'not_ready' || web3auth.status === 'errored') {
     yield call(initWeb3Auth, {
