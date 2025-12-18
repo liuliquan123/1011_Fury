@@ -1,10 +1,11 @@
 import { takeEvery, call, put, select, apply, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
+import { WALLET_CONNECTORS, CHAIN_NAMESPACES } from '@web3auth/modal'
 import * as actions from 'actions/lpStaking'
-import { RPC_URL, getLpStakingConfig, CHAIN_CONFIG, CHAIN_ID } from 'config/contracts'
+import { RPC_URL, getLpStakingConfig, CHAIN_CONFIG, CHAIN_ID, CHAIN_ID_HEX } from 'config/contracts'
 import LP_STAKING_ABI from 'config/abi/lp-staking.json'
-import { web3auth } from './auth'
+import { web3auth, waitWeb3AuthReady, isTransientConnectError } from './auth'
 
 // ERC20 ABI (只需要 balanceOf, allowance, approve)
 const ERC20_ABI = [
@@ -103,21 +104,67 @@ function* fetchUserStakingSaga() {
 }
 
 /**
- * 等待 Web3Auth 就绪
+ * 获取钱包 Provider（复用 claimToken 的模式）
+ * 1. 等待 Web3Auth 初始化
+ * 2. 如果已连接，直接使用 provider
+ * 3. 如果未连接，调用 connectTo 连接钱包
  */
-function* waitWeb3AuthReady() {
-  let waitCount = 0
-  const maxWait = 20
-  
-  while (web3auth && web3auth.status !== 'ready' && web3auth.status !== 'connected' && waitCount < maxWait) {
-    console.log('[LpStaking] waiting for Web3Auth, status:', web3auth?.status)
-    yield delay(500)
-    waitCount++
+function* getWalletProvider() {
+  // 1. 等待 Web3Auth 初始化完成
+  yield call(waitWeb3AuthReady)
+
+  // 2. 检查是否已连接
+  let provider
+  if (web3auth.status === 'connected' && web3auth.provider) {
+    provider = web3auth.provider
+    console.log('[LpStaking] Using existing provider')
+  } else {
+    // 3. 没有连接 → 调用 connectTo（带重试逻辑）
+    console.log('[LpStaking] Connecting to MetaMask...')
+    
+    let retryCount = 0
+    const maxRetries = 3
+    
+    while (retryCount < maxRetries) {
+      try {
+        provider = yield apply(web3auth, web3auth.connectTo, [
+          WALLET_CONNECTORS.METAMASK, {
+            chainNamespace: CHAIN_NAMESPACES.EIP155,
+            chainId: CHAIN_ID_HEX,
+            rpcTarget: RPC_URL,
+          }
+        ])
+        break
+      } catch (connectError) {
+        const code = connectError?.code
+        
+        // 用户拒绝：不重试
+        if (code === 4001) {
+          throw new Error('User rejected wallet connection.')
+        }
+        
+        // 不属于临时错误：不重试
+        if (!isTransientConnectError(connectError)) {
+          throw connectError
+        }
+        
+        retryCount++
+        console.log(`[LpStaking] Connection attempt ${retryCount} failed:`, connectError.message)
+        
+        if (retryCount >= maxRetries) {
+          throw connectError
+        }
+        
+        yield delay(1000)
+      }
+    }
   }
-  
-  if (!web3auth || (web3auth.status !== 'ready' && web3auth.status !== 'connected')) {
-    throw new Error('Web3Auth not ready. Please refresh and try again.')
+
+  if (!provider) {
+    throw new Error('Failed to connect wallet')
   }
+
+  return provider
 }
 
 /**
@@ -155,13 +202,8 @@ function* approveLpSaga({ payload }) {
   const { amount, onSuccess, onError } = payload
   
   try {
-    yield call(waitWeb3AuthReady)
-    
-    const provider = web3auth.provider
-    if (!provider) {
-      throw new Error('Wallet not connected')
-    }
-    
+    // 获取钱包 provider（会自动初始化和连接）
+    const provider = yield call(getWalletProvider)
     yield call(switchToTargetChain, provider)
     
     const ethersProvider = new ethers.BrowserProvider(provider)
@@ -201,13 +243,8 @@ function* depositLpSaga({ payload }) {
   const { amount, onSuccess, onError } = payload
   
   try {
-    yield call(waitWeb3AuthReady)
-    
-    const provider = web3auth.provider
-    if (!provider) {
-      throw new Error('Wallet not connected')
-    }
-    
+    // 获取钱包 provider（会自动初始化和连接）
+    const provider = yield call(getWalletProvider)
     yield call(switchToTargetChain, provider)
     
     const ethersProvider = new ethers.BrowserProvider(provider)
@@ -247,13 +284,8 @@ function* withdrawLpSaga({ payload }) {
   const { amount, onSuccess, onError } = payload
   
   try {
-    yield call(waitWeb3AuthReady)
-    
-    const provider = web3auth.provider
-    if (!provider) {
-      throw new Error('Wallet not connected')
-    }
-    
+    // 获取钱包 provider（会自动初始化和连接）
+    const provider = yield call(getWalletProvider)
     yield call(switchToTargetChain, provider)
     
     const ethersProvider = new ethers.BrowserProvider(provider)
@@ -293,13 +325,8 @@ function* withdrawAllLpSaga({ payload }) {
   const { onSuccess, onError } = payload || {}
   
   try {
-    yield call(waitWeb3AuthReady)
-    
-    const provider = web3auth.provider
-    if (!provider) {
-      throw new Error('Wallet not connected')
-    }
-    
+    // 获取钱包 provider（会自动初始化和连接）
+    const provider = yield call(getWalletProvider)
     yield call(switchToTargetChain, provider)
     
     const ethersProvider = new ethers.BrowserProvider(provider)
