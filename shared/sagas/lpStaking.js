@@ -5,7 +5,6 @@ import * as actions from 'actions/lpStaking'
 import { RPC_URL, getLpStakingConfig, CHAIN_CONFIG, CHAIN_ID } from 'config/contracts'
 import LP_STAKING_ABI from 'config/abi/lp-staking.json'
 import { web3auth } from './auth'
-import logger from './logger'
 
 // ERC20 ABI (只需要 balanceOf, allowance, approve)
 const ERC20_ABI = [
@@ -45,12 +44,12 @@ function* fetchContractInfoSaga() {
       isCampaignEnded,
     }))
     
-    logger.info('[LpStaking] Contract info fetched', {
+    console.log('[LpStaking] Contract info fetched', {
       totalDeposits: ethers.formatEther(info._totalDeposits),
       participantCount: Number(info._participantCount),
     })
   } catch (error) {
-    logger.error('[LpStaking] fetchContractInfo error:', error)
+    console.error('[LpStaking] fetchContractInfo error:', error)
     yield put(actions.updateContractInfo({ loading: false, error: error.message }))
   }
 }
@@ -93,12 +92,12 @@ function* fetchUserStakingSaga() {
       allowance: ethers.formatEther(allowance),
     }))
     
-    logger.info('[LpStaking] User staking fetched', {
+    console.log('[LpStaking] User staking fetched', {
       balance: ethers.formatEther(userState.balance),
       points: ethers.formatEther(userState.points),
     })
   } catch (error) {
-    logger.error('[LpStaking] fetchUserStaking error:', error)
+    console.error('[LpStaking] fetchUserStaking error:', error)
     yield put(actions.updateUserStaking({ loading: false, error: error.message }))
   }
 }
@@ -111,7 +110,7 @@ function* waitWeb3AuthReady() {
   const maxWait = 20
   
   while (web3auth && web3auth.status !== 'ready' && web3auth.status !== 'connected' && waitCount < maxWait) {
-    logger.info('[LpStaking] waiting for Web3Auth, status:', web3auth?.status)
+    console.log('[LpStaking] waiting for Web3Auth, status:', web3auth?.status)
     yield delay(500)
     waitCount++
   }
@@ -173,13 +172,13 @@ function* approveLpSaga({ payload }) {
     
     // 授权最大值
     const maxApproval = ethers.MaxUint256
-    logger.info('[LpStaking] Approving LP Token...')
+    console.log('[LpStaking] Approving LP Token...')
     
     const tx = yield call([lpTokenContract, lpTokenContract.approve], config.stakingContract, maxApproval)
-    logger.info('[LpStaking] Approve tx sent:', tx.hash)
+    console.log('[LpStaking] Approve tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    logger.info('[LpStaking] Approve confirmed')
+    console.log('[LpStaking] Approve confirmed')
     
     toast.success('LP Token approved!')
     
@@ -188,7 +187,7 @@ function* approveLpSaga({ payload }) {
     
     onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
-    logger.error('[LpStaking] approve error:', error)
+    console.error('[LpStaking] approve error:', error)
     const message = error.reason || error.message || 'Approve failed'
     toast.error(message)
     onError && onError(message)
@@ -218,13 +217,13 @@ function* depositLpSaga({ payload }) {
     const stakingContract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
     
     const amountWei = ethers.parseEther(amount)
-    logger.info('[LpStaking] Depositing', amount, 'LP')
+    console.log('[LpStaking] Depositing', amount, 'LP')
     
     const tx = yield call([stakingContract, stakingContract.deposit], amountWei)
-    logger.info('[LpStaking] Deposit tx sent:', tx.hash)
+    console.log('[LpStaking] Deposit tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    logger.info('[LpStaking] Deposit confirmed')
+    console.log('[LpStaking] Deposit confirmed')
     
     toast.success(`Deposited ${amount} LP!`)
     
@@ -234,7 +233,7 @@ function* depositLpSaga({ payload }) {
     
     onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
-    logger.error('[LpStaking] deposit error:', error)
+    console.error('[LpStaking] deposit error:', error)
     const message = error.reason || error.message || 'Deposit failed'
     toast.error(message)
     onError && onError(message)
@@ -264,13 +263,13 @@ function* withdrawLpSaga({ payload }) {
     const stakingContract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
     
     const amountWei = ethers.parseEther(amount)
-    logger.info('[LpStaking] Withdrawing', amount, 'LP')
+    console.log('[LpStaking] Withdrawing', amount, 'LP')
     
     const tx = yield call([stakingContract, stakingContract.withdraw], amountWei)
-    logger.info('[LpStaking] Withdraw tx sent:', tx.hash)
+    console.log('[LpStaking] Withdraw tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    logger.info('[LpStaking] Withdraw confirmed')
+    console.log('[LpStaking] Withdraw confirmed')
     
     toast.success(`Withdrawn ${amount} LP!`)
     
@@ -280,7 +279,7 @@ function* withdrawLpSaga({ payload }) {
     
     onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
-    logger.error('[LpStaking] withdraw error:', error)
+    console.error('[LpStaking] withdraw error:', error)
     const message = error.reason || error.message || 'Withdraw failed'
     toast.error(message)
     onError && onError(message)
@@ -309,13 +308,13 @@ function* withdrawAllLpSaga({ payload }) {
     const config = getLpStakingConfig()
     const stakingContract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
     
-    logger.info('[LpStaking] Withdrawing all LP')
+    console.log('[LpStaking] Withdrawing all LP')
     
     const tx = yield call([stakingContract, stakingContract.withdrawAll])
-    logger.info('[LpStaking] WithdrawAll tx sent:', tx.hash)
+    console.log('[LpStaking] WithdrawAll tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    logger.info('[LpStaking] WithdrawAll confirmed')
+    console.log('[LpStaking] WithdrawAll confirmed')
     
     toast.success('All LP withdrawn!')
     
@@ -325,7 +324,7 @@ function* withdrawAllLpSaga({ payload }) {
     
     onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
-    logger.error('[LpStaking] withdrawAll error:', error)
+    console.error('[LpStaking] withdrawAll error:', error)
     const message = error.reason || error.message || 'Withdraw all failed'
     toast.error(message)
     onError && onError(message)
