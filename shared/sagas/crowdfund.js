@@ -91,18 +91,24 @@ function* getWalletProvider() {
     // 3. 没有连接 → 调用 connectTo（带重试逻辑）
     console.log('[Crowdfund] Connecting to MetaMask...')
     
+    // 额外等待确保 MetaMask connector 完全初始化
+    // initWeb3Auth 中的 logout 会重置 connectors，需要更多时间
+    yield delay(1000)
+    
     let retryCount = 0
-    const maxRetries = 3
+    const maxRetries = 5  // 增加重试次数
     
     while (retryCount < maxRetries) {
       try {
-        provider = yield apply(web3auth, web3auth.connectTo, [
+        // 使用 call 包装 Promise，确保能正确捕获 rejection
+        const connectPromise = () => web3auth.connectTo(
           WALLET_CONNECTORS.METAMASK, {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
             chainId: CHAIN_ID_HEX,
             rpcTarget: RPC_URL,
           }
-        ])
+        )
+        provider = yield call(connectPromise)
         break
       } catch (connectError) {
         const code = connectError?.code
@@ -118,13 +124,15 @@ function* getWalletProvider() {
         }
         
         retryCount++
-        console.log(`[Crowdfund] Connection attempt ${retryCount} failed:`, connectError.message)
+        console.log(`[Crowdfund] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
         
         if (retryCount >= maxRetries) {
           throw connectError
         }
         
-        yield delay(1000)
+        // 增加等待时间：第一次 2 秒，之后递增
+        yield delay(2000 + retryCount * 500)
+        console.log(`[Crowdfund] Retrying...`)
       }
     }
   }
