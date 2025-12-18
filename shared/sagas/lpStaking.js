@@ -180,21 +180,28 @@ function* getWalletProvider() {
  */
 function* switchToTargetChain(provider) {
   const chainConfig = CHAIN_CONFIG[CHAIN_ID]
+  console.log('[LpStaking] Target chain:', CHAIN_ID, chainConfig?.chainId)
+  
   if (!chainConfig) {
     throw new Error(`Chain ${CHAIN_ID} not configured`)
   }
   
   try {
+    console.log('[LpStaking] Switching to chain:', chainConfig.chainId)
     yield apply(provider, provider.request, [{
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: chainConfig.chainId }]
     }])
+    console.log('[LpStaking] Network switched successfully')
   } catch (switchError) {
+    console.log('[LpStaking] Switch error:', switchError.code, switchError.message)
     if (switchError.code === 4902) {
+      console.log('[LpStaking] Adding chain...')
       yield apply(provider, provider.request, [{
         method: 'wallet_addEthereumChain',
         params: [chainConfig]
       }])
+      console.log('[LpStaking] Chain added')
     } else if (switchError.code === 4001) {
       throw new Error('User rejected network switch')
     } else {
