@@ -33,7 +33,7 @@ const Terms = () => {
           <ul>
             <li><strong>Loss Evidence Submission:</strong> Users can submit screenshots and related information regarding their contract trading losses or liquidations according to the Platform's guidelines.</li>
             <li><strong>User Verification:</strong> Users can register by binding a crypto wallet, social media account, or email, which serves as their identity for the Submission.</li>
-            <li><strong>Token Compensation (Airdrop):</strong> The Platform will, according to its own rules, evaluate the validity of User Submissions. Eligible Users will qualify to receive an airdrop of a certain amount of 1011 Tokens.</li>
+            <li><strong>Token Compensation (Airdrop):</strong> The Platform will, according to its own rules, evaluate the validity of User Submissions. Eligible Users will qualify to receive an airdrop of a certain amount of Fury Tokens.</li>
             <li><strong>Vesting and Acceleration Mechanism:</strong>
               <ul>
                 <li><strong>Vesting Period:</strong> Airdropped Tokens received by Users will be subject to a vesting (or lock-up) period and cannot be immediately withdrawn or traded.</li>
@@ -119,7 +119,7 @@ const Terms = () => {
           <h2>11. Dispute Resolution</h2>
           <ul>
             <li><strong>Governing Law:</strong> These Terms shall be governed by and construed in accordance with the laws of the State of California.</li>
-            <li><strong>Dispute Resolution:</strong> Any dispute arising from or related to these Terms shall first be resolved through friendly negotiation. If negotiation fails, the dispute shall be submitted to arbitration in accordance with its then-effective arbitration rules.</li>
+            <li><strong>Dispute Resolution:</strong> Any dispute arising from or related to these Terms shall first be resolved through friendly negotiation. If negotiation fails, the dispute shall be submitted to [Arbitration Institution] for arbitration in accordance with its then-effective arbitration rules.</li>
           </ul>
         </section>
 
@@ -133,7 +133,7 @@ const Terms = () => {
         <section className={styles.section}>
           <h2>13. Contact Us</h2>
           <p>
-            If you have any questions about these Terms or the Fury service, please contact us at: <a href="mailto:support@1011.wtf">support@1011.wtf</a>
+            If you have any questions about these Terms or the Fury service, please contact us at: <a href="mailto:support@Fury.com">support@Fury.com</a>
           </p>
         </section>
       </div>

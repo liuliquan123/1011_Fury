@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { formatDate } from 'utils'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
-import tokenLogo from 'resources/images/token-logo_v2.svg'
+import tokenLogo from 'resources/images/token-logo_v3.png'
 import styles from './style.css'
 
 // 基础数字格式化（内部使用）
