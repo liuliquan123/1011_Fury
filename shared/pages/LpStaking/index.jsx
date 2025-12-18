@@ -8,7 +8,11 @@ import styles from './style.css'
 const LpStaking = () => {
   const dispatch = useDispatch()
   const { contractInfo, userStaking } = useSelector(state => state.lpStaking)
-  const { profile, isLoggedIn } = useSelector(state => state.auth)
+  const { profile } = useSelector(state => state.auth)
+  
+  // 判断登录状态（与 Crowdfund 页面保持一致）
+  const isLoggedIn = !!profile?.id
+  const hasWallet = !!profile?.wallet_address
   
   const [depositAmount, setDepositAmount] = useState('')
   const [withdrawAmount, setWithdrawAmount] = useState('')
