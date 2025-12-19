@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import * as actions from 'actions/lpStaking'
-import { getLpStakingConfig } from 'config/contracts'
+import { getLpStakingConfig, isFeatureAvailable } from 'config/contracts'
 import styles from './style.css'
 
 const LpStaking = () => {
@@ -86,6 +86,25 @@ const LpStaking = () => {
   // 设置最大值
   const setMaxDeposit = () => setDepositAmount(userStaking.lpBalance)
   const setMaxWithdraw = () => setWithdrawAmount(userStaking.balance)
+  
+  // 检查功能是否可用
+  const lpStakingAvailable = isFeatureAvailable('lpStaking')
+  
+  // 合约未部署时显示即将上线提示
+  if (!lpStakingAvailable) {
+    return (
+      <div className={styles.container}>
+        <h1 className={styles.title}>LP Staking</h1>
+        <div className={styles.comingSoon}>
+          <div className={styles.comingSoonIcon}>🚀</div>
+          <div className={styles.comingSoonTitle}>Coming Soon</div>
+          <div className={styles.comingSoonText}>
+            LP Staking feature is not yet available on mainnet. Stay tuned!
+          </div>
+        </div>
+      </div>
+    )
+  }
   
   return (
     <div className={styles.container}>
