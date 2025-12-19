@@ -12,10 +12,11 @@ import {
   Invite
 } from 'routes/sync'
 
-// 隐藏 Crowdfund 功能
-// import Crowdfund from 'pages/Crowdfund'
+// Crowdfund 功能（入口隐藏，但链接可访问）
+import Crowdfund from 'pages/Crowdfund'
 import Terms from 'pages/Terms'
 import Privacy from 'pages/Privacy'
+import LpStaking from 'pages/LpStaking'
 
 export const routes = [
   {
@@ -61,6 +62,10 @@ export const routes = [
         component: Privacy
       },
       {
+        path: 'lp-staking',
+        component: LpStaking
+      },
+      {
         path: 'login',
         component: Login
       },
@@ -81,9 +86,10 @@ export const RootRoutes = () => (
       <Route path="referral" element={<Referral />} />
       <Route path="my-case" element={<Cases />} />
       <Route path="invite" element={<Invite />} />
-      {/* <Route path="crowdfund" element={<Crowdfund />} /> */}
+      <Route path="crowdfund" element={<Crowdfund />} />
       <Route path="terms" element={<Terms />} />
       <Route path="privacy" element={<Privacy />} />
+      <Route path="lp-staking" element={<LpStaking />} />
       <Route path="login" element={<Login />} />
       <Route path="*" element={<NoMatch />} />
     </Route>

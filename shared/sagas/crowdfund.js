@@ -1,12 +1,13 @@
 import { takeEvery, call, put, select, apply, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
+import { WALLET_CONNECTORS, CHAIN_NAMESPACES } from '@web3auth/modal'
 import * as actions from 'actions/crowdfund'
 import * as api from 'api/supabase'
-import { RPC_URL, getCrowdfundAddress, getSignatureClaimETHAddress, CHAIN_CONFIG, CHAIN_ID } from 'config/contracts'
+import { RPC_URL, getCrowdfundAddress, getSignatureClaimETHAddress, CHAIN_CONFIG, CHAIN_ID, CHAIN_ID_HEX } from 'config/contracts'
 import CROWDFUND_ABI from 'config/abi/crowdfund.json'
 import SIGNATURE_CLAIM_ETH_ABI from 'config/abi/signatureClaimETH.json'
-import { web3auth } from './auth'
+import { web3auth, waitWeb3AuthReady, isTransientConnectError } from './auth'
 
 /**
  * 读取合约数据（只读，使用 JsonRpcProvider）
@@ -72,21 +73,75 @@ function* fetchCrowdfundSaga({ payload }) {
 }
 
 /**
- * 等待 Web3Auth 就绪
+ * 获取钱包 Provider（复用 claimToken 的模式）
+ * 1. 等待 Web3Auth 初始化
+ * 2. 如果已连接，直接使用 provider
+ * 3. 如果未连接，调用 connectTo 连接钱包
  */
-function* waitWeb3AuthReady() {
-  let waitCount = 0
-  const maxWait = 20
-  
-  while (web3auth && web3auth.status !== 'ready' && web3auth.status !== 'connected' && waitCount < maxWait) {
-    console.log('[Crowdfund] waiting for Web3Auth, status:', web3auth?.status)
-    yield delay(500)
-    waitCount++
+function* getWalletProvider() {
+  // 1. 等待 Web3Auth 初始化完成
+  yield call(waitWeb3AuthReady)
+
+  // 2. 检查是否已连接
+  let provider
+  if (web3auth.status === 'connected' && web3auth.provider) {
+    provider = web3auth.provider
+    console.log('[Crowdfund] Using existing provider')
+  } else {
+    // 3. 没有连接 → 调用 connectTo（带重试逻辑）
+    console.log('[Crowdfund] Connecting to MetaMask...')
+    
+    // 额外等待确保 MetaMask connector 完全初始化
+    // initWeb3Auth 中的 logout 会重置 connectors，需要更多时间
+    yield delay(1000)
+    
+    let retryCount = 0
+    const maxRetries = 5  // 增加重试次数
+    
+    while (retryCount < maxRetries) {
+      try {
+        // 使用 call 包装 Promise，确保能正确捕获 rejection
+        const connectPromise = () => web3auth.connectTo(
+          WALLET_CONNECTORS.METAMASK, {
+            chainNamespace: CHAIN_NAMESPACES.EIP155,
+            chainId: CHAIN_ID_HEX,
+            rpcTarget: RPC_URL,
+          }
+        )
+        provider = yield call(connectPromise)
+        break
+      } catch (connectError) {
+        const code = connectError?.code
+        
+        // 用户拒绝：不重试
+        if (code === 4001) {
+          throw new Error('User rejected wallet connection.')
+        }
+        
+        // 不属于临时错误：不重试
+        if (!isTransientConnectError(connectError)) {
+          throw connectError
+        }
+        
+        retryCount++
+        console.log(`[Crowdfund] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
+        
+        if (retryCount >= maxRetries) {
+          throw connectError
+        }
+        
+        // 增加等待时间：第一次 2 秒，之后递增
+        yield delay(2000 + retryCount * 500)
+        console.log(`[Crowdfund] Retrying...`)
+      }
+    }
   }
-  
-  if (!web3auth || (web3auth.status !== 'ready' && web3auth.status !== 'connected')) {
-    throw new Error('Web3Auth not ready. Please refresh and try again.')
+
+  if (!provider) {
+    throw new Error('Failed to connect wallet')
   }
+
+  return provider
 }
 
 /**
@@ -124,13 +179,8 @@ function* contributeSaga({ payload }) {
   const { exchange, amount, onSuccess, onError } = payload
   
   try {
-    yield call(waitWeb3AuthReady)
-    
-    // 获取 provider
-    const provider = web3auth.provider
-    if (!provider) {
-      throw new Error('Wallet not connected')
-    }
+    // 获取钱包 provider（会自动初始化和连接）
+    const provider = yield call(getWalletProvider)
     
     // 切换网络
     yield call(switchToTargetChain, provider)
@@ -171,13 +221,8 @@ function* claimRefundSaga({ payload }) {
   const { exchange, onSuccess, onError } = payload
   
   try {
-    yield call(waitWeb3AuthReady)
-    
-    // 获取 Web3Auth provider
-    const provider = web3auth.provider
-    if (!provider) {
-      throw new Error('Wallet not connected')
-    }
+    // 获取钱包 provider（会自动初始化和连接）
+    const provider = yield call(getWalletProvider)
     
     // 切换网络
     yield call(switchToTargetChain, provider)
