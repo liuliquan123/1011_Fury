@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf static/* && npm run build:server && npm run build:client",
-    "build:client": "cross-env NODE_ENV=production APP_ENV=production TARGET=browser webpack",
-    "build:server": "cross-env NODE_ENV=production APP_ENV=production TARGET=server webpack",
+    "build:client": "cross-env NODE_ENV=production TARGET=browser webpack",
+    "build:server": "cross-env NODE_ENV=production TARGET=server webpack",
     "client": "cross-env NODE_ENV=production http-server static",
     "server": "cross-env NODE_ENV=production nodemon --icu-data-dir=/usr/local/lib/node_modules/full-icu static/app.js",
     "start": "cross-env NODE_ENV=development APP_ENV=development TARGET=browser webpack-dev-server --host 0.0.0.0",
