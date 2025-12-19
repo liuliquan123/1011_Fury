@@ -135,6 +135,7 @@ const Landing = ({ cases, submissions, actions }) => {
         </div>
       </div>
       <div className={styles.sections}>
+        {/* 隐藏 UNBURIED-NUMBERS 区域 - 暂时不显示
         <div className={classNames(styles.section, styles.platform)}>
           <div className={styles.sectionTitle}>
             _> UNBURIED-NUMBERS
@@ -176,6 +177,7 @@ const Landing = ({ cases, submissions, actions }) => {
             */}
           </div>
         </div>
+        */}
         <div className={classNames(styles.section, styles.featured)}>
           <div className={styles.sectionTitle}>
             _> FEATURED CASES
