@@ -206,7 +206,7 @@ function* switchToTargetChain(provider) {
  * @param {Error} err - 错误对象
  * @returns {boolean} 是否可重试
  */
-const isTransientConnectError = (err) => {
+export const isTransientConnectError = (err) => {
   const msg = (err?.message || '').toLowerCase()
   return msg.includes('wallet connector is not ready yet') ||
          msg.includes('adapter not ready') ||

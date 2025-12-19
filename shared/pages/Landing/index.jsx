@@ -135,10 +135,11 @@ const Landing = ({ cases, submissions, actions }) => {
         </div>
       </div>
       <div className={styles.sections}>
-        {/* 隐藏 UNBURIED-NUMBERS 区域 - 暂时不显示
+        {/* 隐藏 UNBURIED-NUMBERS 区域 - 暂时不显示 */}
+        {false && (
         <div className={classNames(styles.section, styles.platform)}>
           <div className={styles.sectionTitle}>
-            _> UNBURIED-NUMBERS
+            _&gt; UNBURIED-NUMBERS
           </div>
           <div className={styles.sectionContent}>
             <div className={styles.statistic}>
@@ -165,19 +166,9 @@ const Landing = ({ cases, submissions, actions }) => {
                 Total Damage
               </div>
             </div>
-            {/* 隐藏 Token Distributed - 待后端提供 API
-            <div className={styles.statistic}>
-              <div className={styles.statisticNumber}>
-                1250K
-              </div>
-              <div className={styles.statisticName}>
-                Token Distributed
-              </div>
-            </div>
-            */}
           </div>
         </div>
-        */}
+        )}
         <div className={classNames(styles.section, styles.featured)}>
           <div className={styles.sectionTitle}>
             _> FEATURED CASES
