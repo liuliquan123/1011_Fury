@@ -192,6 +192,37 @@
   background: #a00;
 }
 
+/* Coming Soon 提示 */
+.comingSoon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.comingSoonIcon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.comingSoonTitle {
+  font-size: 36px;
+  color: #D90A20;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+.comingSoonText {
+  font-size: 14px;
+  color: #888;
+  max-width: 400px;
+}
+
 /* 移动端适配 */
 @media (max-width: 600px) {
   .container {

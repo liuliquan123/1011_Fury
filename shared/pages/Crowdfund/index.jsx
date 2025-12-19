@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import { calculateEstimate, formatTokenAmount, CROWDFUND_PHASES } from 'config/crowdfund'
+import { isFeatureAvailable } from 'config/contracts'
 import LoginModal from 'components/Login'
 import tokenLogo from 'resources/images/token-logo_v3.png'
 import styles from './style.css'
@@ -172,9 +173,31 @@ const Crowdfund = ({ profile, crowdfund, exchangePhase, authActions, crowdfundAc
 
   if (!isExchangeVisible(EXCHANGE.toLowerCase())) return null
 
+  const crowdfundAvailable = isFeatureAvailable('crowdfund')
   const isEnded = data.ended
   const isLive = !isEnded && !data.isPaused
   const tokenName = getTokenName(EXCHANGE.toLowerCase()).replace('$', '')
+
+  // 合约未部署时显示即将上线提示
+  if (!crowdfundAvailable) {
+    return (
+      <div className={styles.crowdfund}>
+        <div className={styles.title}>Crowdfund</div>
+        <div className={styles.description}>
+          Discover and participate in a diverse range of on-chain asset opportunities powered by Fury.
+        </div>
+        <div className={styles.card}>
+          <div className={styles.comingSoon}>
+            <div className={styles.comingSoonIcon}>🚀</div>
+            <div className={styles.comingSoonTitle}>Coming Soon</div>
+            <div className={styles.comingSoonText}>
+              Crowdfund feature is not yet available on mainnet. Stay tuned!
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.crowdfund}>

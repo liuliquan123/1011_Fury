@@ -18,9 +18,9 @@ function* fetchCrowdfundSaga({ payload }) {
   try {
     yield put(actions.updateCrowdfund({ exchange, data: { loading: true, error: null } }))
     
-    const contractAddress = getCrowdfundAddress(exchange)
+    const contractAddress = getCrowdfundAddress()
     if (!contractAddress) {
-      throw new Error('Crowdfund contract not configured for this exchange')
+      throw new Error('Crowdfund contract not deployed on this network')
     }
     
     const provider = new ethers.JsonRpcProvider(RPC_URL)
@@ -190,7 +190,10 @@ function* contributeSaga({ payload }) {
     const signer = yield apply(ethersProvider, ethersProvider.getSigner)
     
     // 获取合约
-    const contractAddress = getCrowdfundAddress(exchange)
+    const contractAddress = getCrowdfundAddress()
+    if (!contractAddress) {
+      throw new Error('Crowdfund contract not deployed on this network')
+    }
     const contract = new ethers.Contract(contractAddress, CROWDFUND_ABI, signer)
     
     // 发送交易
@@ -233,9 +236,9 @@ function* claimRefundSaga({ payload }) {
     const userAddress = yield apply(signer, signer.getAddress)
     
     // 获取 SignatureClaimETH 合约
-    const contractAddress = getSignatureClaimETHAddress(exchange)
+    const contractAddress = getSignatureClaimETHAddress()
     if (!contractAddress) {
-      throw new Error('SignatureClaimETH contract not configured')
+      throw new Error('SignatureClaimETH contract not deployed on this network')
     }
     const contract = new ethers.Contract(contractAddress, SIGNATURE_CLAIM_ETH_ABI, signer)
     

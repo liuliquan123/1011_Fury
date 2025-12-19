@@ -884,7 +884,7 @@ function* claimToken(action) {
     if (onStatusChange) onStatusChange('claiming')
 
     // 6. 获取合约地址并创建合约实例
-    const contractAddress = getSignatureClaimAddress(exchange)
+    const contractAddress = getSignatureClaimAddress()
     if (!contractAddress) {
       throw new Error(`No contract address configured for ${exchange}`)
     }

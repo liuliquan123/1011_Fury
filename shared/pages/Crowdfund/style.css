@@ -586,3 +586,32 @@
     margin-bottom: 0;
   }
 }
+
+/* Coming Soon 提示 */
+.comingSoon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.comingSoonIcon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.comingSoonTitle {
+  font-family: 'Jersey10', system-ui, sans-serif;
+  font-size: 48px;
+  color: #D90A20;
+  margin-bottom: 16px;
+}
+
+.comingSoonText {
+  font-family: 'Google Sans Code', system-ui, sans-serif;
+  font-size: 16px;
+  color: #A7ADB9;
+  max-width: 400px;
+}

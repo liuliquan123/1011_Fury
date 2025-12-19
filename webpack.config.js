@@ -9,6 +9,24 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const { getIfUtils, removeEmpty } = require('webpack-config-utils')
 const { ifProduction, ifNotProduction } = getIfUtils(process.env.NODE_ENV)
 
+// 根据 Vercel 环境自动选择配置
+// VERCEL_ENV: 'production' | 'preview' | 'development'
+// 只有 production 部署使用主网，其他都使用测试网
+const getAppEnv = () => {
+  // 优先使用显式设置的 APP_ENV
+  if (process.env.APP_ENV) {
+    return process.env.APP_ENV
+  }
+  // 根据 Vercel 环境自动判断
+  if (process.env.VERCEL_ENV === 'production') {
+    return 'production'
+  }
+  // preview、development 或本地开发都使用 staging (测试网)
+  return 'staging'
+}
+const APP_ENV = getAppEnv()
+console.log(`[Webpack] Building with APP_ENV=${APP_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV || 'local'}`)
+
 const baseConfig = {
   mode: ifProduction('production', 'development'),
   output: {
@@ -169,10 +187,10 @@ const baseConfig = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production'),
-        APP_ENV: JSON.stringify(process.env.APP_ENV || 'production')
+        APP_ENV: JSON.stringify(APP_ENV)
       }
     }),
-    new webpack.NormalModuleReplacementPlugin(/.\/production/, `./${process.env.APP_ENV}.json`),
+    new webpack.NormalModuleReplacementPlugin(/.\/production/, `./${APP_ENV}.json`),
     new MiniCssExtractPlugin({
       filename: ifProduction('styles/bundle.css?v=[fullhash]', 'styles/bundle.css'),
       chunkFilename: ifProduction('styles/[name].chunk.css?v=[chunkhash]', 'styles/[name].chunk.css')

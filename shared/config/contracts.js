@@ -35,36 +35,26 @@ export const CHAIN_ID_HEX = CURRENT_CHAIN_CONFIG.chainId
 // 当前链的 RPC URL
 export const RPC_URL = CURRENT_CHAIN_CONFIG.rpcUrls[0]
 
-// 合约地址配置
-export const CONTRACTS = {
-  // 测试用（单一合约，用于开发测试）
-  test: {
-    signatureClaim: '0x0c500663300c053affA1f9f49Ba6846D80693A89',
-    signatureClaimETH: '0x97984818f82B39E91f52dE914810F37922aB27F6', // Base Sepolia SignatureClaimETH (退款)
-    crowdfund: '0xf893Db8f7708377120f6B50f78c23Eb17118338f', // Base Sepolia Crowdfund
-  },
-  // 每个交易所独立的合约地址（待部署）
-  Binance: {
-    signatureClaim: null, // TBD - 待合约工程师部署
-    crowdfund: null,      // TBD - Binance Crowdfund 合约
-    token: null,          // 1011 token 地址
-  },
-  OKX: {
-    signatureClaim: null, // TBD
-    crowdfund: null,      // TBD
-    token: null,          // COKX token 地址
-  },
-  Bybit: {
-    signatureClaim: null, // TBD
-    crowdfund: null,      // TBD
-    token: null,          // Anti-Bybit token 地址
-  },
-  Bitget: {
-    signatureClaim: null, // TBD
-    crowdfund: null,      // TBD
-    token: null,          // Anti-Bitget token 地址
-  },
+// ============================================
+// 按网络区分的合约地址配置
+// ============================================
+
+// Base Mainnet (8453) 合约地址
+const MAINNET_CONTRACTS = {
+  signatureClaim: '0x22f198A0d94B3E410c5478f052CdA489f51418f0', // 已部署
+  signatureClaimETH: null, // 未部署
+  crowdfund: null,         // 未部署
 }
+
+// Base Sepolia (84532) 测试合约地址
+const TESTNET_CONTRACTS = {
+  signatureClaim: '0x0c500663300c053affA1f9f49Ba6846D80693A89',
+  signatureClaimETH: '0x97984818f82B39E91f52dE914810F37922aB27F6',
+  crowdfund: '0xf893Db8f7708377120f6B50f78c23Eb17118338f',
+}
+
+// 根据当前网络选择合约配置
+export const CONTRACTS = CHAIN_ID === 8453 ? MAINNET_CONTRACTS : TESTNET_CONTRACTS
 
 // LP Staking 配置
 export const LP_STAKING = {
@@ -72,7 +62,7 @@ export const LP_STAKING = {
     stakingContract: '0x82Fd3C14e01E5b1c647AA14E5Db146070a47d204',
     lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
-  8453: { // Base Mainnet (上线前填入)
+  8453: { // Base Mainnet (未部署)
     stakingContract: null,
     lpToken: null,
   }
@@ -83,32 +73,43 @@ export const getLpStakingConfig = () => {
   return LP_STAKING[CHAIN_ID] || LP_STAKING[84532]
 }
 
-/**
- * 获取交易所对应的 Crowdfund 合约地址
- * @param {string} exchange - 交易所名称
- * @returns {string|null} 合约地址
- */
-export const getCrowdfundAddress = (exchange) => {
-  // 优先使用交易所专用合约，fallback 到测试合约
-  return CONTRACTS[exchange]?.crowdfund || CONTRACTS.test.crowdfund
+// 检查功能是否可用（合约已部署）
+export const isFeatureAvailable = (feature) => {
+  switch (feature) {
+    case 'claim':
+      return !!CONTRACTS.signatureClaim
+    case 'refund':
+      return !!CONTRACTS.signatureClaimETH
+    case 'crowdfund':
+      return !!CONTRACTS.crowdfund
+    case 'lpStaking':
+      const lpConfig = getLpStakingConfig()
+      return !!(lpConfig.stakingContract && lpConfig.lpToken)
+    default:
+      return false
+  }
 }
 
 /**
- * 获取交易所对应的 SignatureClaim 合约地址
- * @param {string} exchange - 交易所名称
- * @returns {string|null} 合约地址
+ * 获取 Crowdfund 合约地址
+ * @returns {string|null} 合约地址，null 表示未部署
  */
-export const getSignatureClaimAddress = (exchange) => {
-  // 优先使用交易所专用合约，fallback 到测试合约
-  return CONTRACTS[exchange]?.signatureClaim || CONTRACTS.test.signatureClaim
+export const getCrowdfundAddress = () => {
+  return CONTRACTS.crowdfund
 }
 
 /**
- * 获取交易所对应的 SignatureClaimETH 合约地址（用于退款）
- * @param {string} exchange - 交易所名称
- * @returns {string|null} 合约地址
+ * 获取 SignatureClaim 合约地址
+ * @returns {string|null} 合约地址，null 表示未部署
  */
-export const getSignatureClaimETHAddress = (exchange) => {
-  // 优先使用交易所专用合约，fallback 到测试合约
-  return CONTRACTS[exchange]?.signatureClaimETH || CONTRACTS.test.signatureClaimETH
+export const getSignatureClaimAddress = () => {
+  return CONTRACTS.signatureClaim
+}
+
+/**
+ * 获取 SignatureClaimETH 合约地址（用于退款）
+ * @returns {string|null} 合约地址，null 表示未部署
+ */
+export const getSignatureClaimETHAddress = () => {
+  return CONTRACTS.signatureClaimETH
 }
