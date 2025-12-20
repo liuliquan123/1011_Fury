@@ -291,30 +291,20 @@ const LpStaking = () => {
             
             {isLoggedIn ? (
               <div className={styles.stakeForm}>
-                <div className={styles.stakeDisplay}>
-                  <div className={styles.stakeDisplayValue}>
-                    {formatNumber(stakeAmount || '0')}
-                  </div>
-                  <div className={styles.stakeDisplayLabel}>Staking Amount</div>
-                </div>
-                
-                <div className={styles.inputGroup}>
-                  <div className={styles.inputLabel}>
-                    <span>Amount</span>
-                    <span className={styles.balance}>
-                      Available: {formatNumber(userStaking.lpBalance)} LP
-                    </span>
-                  </div>
-                  <div className={styles.inputWrapper}>
-                    <input
-                      type="number"
-                      className={styles.input}
-                      placeholder="0.0"
-                      value={stakeAmount}
-                      onChange={(e) => setStakeAmount(e.target.value)}
-                      disabled={txLoading}
-                    />
-                    <button className={styles.maxButton} onClick={setMaxStake}>MAX</button>
+                <div className={styles.stakeInputBox}>
+                  <input
+                    type="number"
+                    className={styles.stakeInputLarge}
+                    placeholder="0"
+                    value={stakeAmount}
+                    onChange={(e) => setStakeAmount(e.target.value)}
+                    disabled={txLoading}
+                  />
+                  <div className={styles.stakeInputMeta}>
+                    <span className={styles.stakeInputLabel}>Staking Amount</span>
+                    <button className={styles.maxButtonInline} onClick={setMaxStake}>
+                      MAX ({formatNumber(userStaking.lpBalance)} LP)
+                    </button>
                   </div>
                 </div>
                 

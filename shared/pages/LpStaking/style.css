@@ -207,28 +207,63 @@
     }
   }
 
-  /* Stake Display */
-  .stakeDisplay {
+  /* Stake Input Box (设计稿样式) */
+  .stakeInputBox {
     background: #141519;
     padding: 16px;
     border-radius: 4px;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
   }
 
-  .stakeDisplayValue {
+  .stakeInputLarge {
+    width: 100%;
+    background: transparent;
+    border: none;
     color: #D90A20;
     font-family: "Jersey10";
-    font-size: 28px;
+    font-size: 36px;
     font-weight: 400;
-    line-height: 32px;
+    line-height: 40px;
+    outline: none;
+
+    &::placeholder {
+      color: #555;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 
-  .stakeDisplayLabel {
+  .stakeInputMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .stakeInputLabel {
     color: #A7ADB9;
     font-family: "Google Sans Code";
     font-size: 14px;
     font-weight: 400;
-    margin-top: 4px;
+  }
+
+  .maxButtonInline {
+    background: transparent;
+    border: none;
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #D90A20;
+    }
   }
 
   /* Dual Button Row */
