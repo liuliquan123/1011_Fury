@@ -475,11 +475,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 </div>
                 {/* 双按钮布局：CLAIM/CONNECT */}
                 <div className={styles.dualButtonRow}>
-                  {/* 隐藏 Crowdfund 入口
-                  <Link className={styles.getMoreButton} to="/crowdfund">
-                    GET MORE TOKEN
+                  <Link className={styles.getMoreButton} to="/lp-staking">
+                    STAKE LP
                   </Link>
-                  */}
 
                   {/* 右侧：根据状态显示不同按钮 */}
                   {rewardStatus === 'locked' && (
@@ -527,13 +525,16 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 <div className={styles.noRewardText}>
                   {hasSubmitted ? 'Your submission is being reviewed.' : 'No tokens yet. Submit your loss to get tokens!'}
                 </div>
-                {!hasSubmitted && (
-                  <div className={styles.dualButtonRow}>
+                <div className={styles.dualButtonRow}>
+                  {!hasSubmitted && (
                     <Link className={styles.claimToButton} to="/submit-loss">
                       SUBMIT LOSS
                     </Link>
-                  </div>
-                )}
+                  )}
+                  <Link className={styles.getMoreButton} to="/lp-staking">
+                    STAKE LP
+                  </Link>
+                </div>
               </div>
             )}
 

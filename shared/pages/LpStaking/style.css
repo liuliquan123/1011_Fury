@@ -1,250 +1,649 @@
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  color: #fff;
-  font-family: monospace;
-}
+.lpStaking {
+  color: white;
+  padding: 60px;
+  min-height: 100vh;
 
-.title {
-  font-size: 24px;
-  margin-bottom: 30px;
-  color: #D90A20;
-  border-bottom: 2px solid #D90A20;
-  padding-bottom: 10px;
-}
-
-.section {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.section h2 {
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: #D90A20;
-}
-
-.section h3 {
-  font-size: 14px;
-  margin-bottom: 10px;
-  color: #aaa;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.infoRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-}
-
-.infoRow span {
-  color: #888;
-}
-
-.infoRow strong {
-  color: #fff;
-}
-
-.infoRow code {
-  font-size: 12px;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 4px 8px;
-  border-radius: 4px;
-  color: #D90A20;
-  word-break: break-all;
-}
-
-.loading {
-  color: #888;
-  text-align: center;
-  padding: 20px;
-}
-
-.error {
-  color: #ff4444;
-  text-align: center;
-  padding: 20px;
-}
-
-.notLoggedIn {
-  color: #888;
-  text-align: center;
-  padding: 20px;
-}
-
-.refreshBtn {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid #D90A20;
-  color: #D90A20;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: monospace;
-  transition: all 0.2s;
-}
-
-.refreshBtn:hover {
-  background: rgba(217, 10, 32, 0.1);
-}
-
-.actionGroup {
-  margin-bottom: 25px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.actionGroup:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.hint {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.inputGroup {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.inputGroup input {
-  flex: 1;
-  padding: 10px 15px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  color: #fff;
-  font-family: monospace;
-  font-size: 14px;
-}
-
-.inputGroup input:focus {
-  outline: none;
-  border-color: #D90A20;
-}
-
-.inputGroup input::placeholder {
-  color: #555;
-}
-
-.maxBtn {
-  padding: 10px 15px;
-  background: transparent;
-  border: 1px solid #666;
-  color: #666;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: monospace;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-
-.maxBtn:hover {
-  border-color: #D90A20;
-  color: #D90A20;
-}
-
-.actionBtn {
-  width: 100%;
-  padding: 12px 20px;
-  background: #D90A20;
-  border: none;
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: monospace;
-  font-size: 14px;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-
-.actionBtn:hover:not(:disabled) {
-  background: #ff1a30;
-}
-
-.actionBtn:disabled {
-  background: #333;
-  color: #666;
-  cursor: not-allowed;
-}
-
-.dangerBtn {
-  background: #8B0000;
-}
-
-.dangerBtn:hover:not(:disabled) {
-  background: #a00;
-}
-
-/* Coming Soon 提示 */
-.comingSoon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 40px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-}
-
-.comingSoonIcon {
-  font-size: 64px;
-  margin-bottom: 24px;
-}
-
-.comingSoonTitle {
-  font-size: 36px;
-  color: #D90A20;
-  margin-bottom: 16px;
-  font-weight: bold;
-}
-
-.comingSoonText {
-  font-size: 14px;
-  color: #888;
-  max-width: 400px;
-}
-
-/* 移动端适配 */
-@media (max-width: 600px) {
-  .container {
-    padding: 20px 15px;
-  }
-  
   .title {
-    font-size: 20px;
+    margin-bottom: 40px;
+    text-align: center;
+
+    .titleText {
+      color: #FFF;
+      font-family: "Jersey10";
+      font-size: 80px;
+      font-weight: 400;
+      line-height: 90px;
+    }
+
+    .titleDesc {
+      color: #A7ADB9;
+      font-family: "Google Sans Code";
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      margin-top: 8px;
+    }
   }
-  
-  .section {
-    padding: 15px;
+
+  .content {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
-  
-  .infoRow {
+
+  .leftColumn {
+    flex: 1;
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
+    gap: 20px;
   }
-  
-  .infoRow code {
+
+  .rightColumn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* 卡片通用样式 */
+  .card {
+    background: #232326;
+    padding: 24px;
+    border-radius: 4px;
+  }
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .cardTitle {
+    color: #FFF;
+    font-family: "Google Sans Code";
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+    margin: 0;
+  }
+
+  .refreshButton {
+    width: 32px;
+    height: 32px;
+    background: #141519;
+    border: 1px solid #39393A;
+    color: #A7ADB9;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: #D90A20;
+      color: #D90A20;
+    }
+  }
+
+  .roundBadge {
+    background: #D90A20;
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* My Assets */
+  .assetsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .assetItem {
+    background: #141519;
+    padding: 16px;
+    border-radius: 4px;
+  }
+
+  .assetLabel {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .assetValue {
+    color: #D90A20;
+    font-family: "Jersey10";
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+  }
+
+  /* Tab Header */
+  .tabHeader {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #39393A;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #FFF;
+    }
+
+    &.tabActive {
+      color: #D90A20;
+      border-bottom-color: #D90A20;
+    }
+  }
+
+  /* Stake Form */
+  .stakeForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .inputLabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .balance {
+    color: #666;
+  }
+
+  .inputWrapper {
+    display: flex;
+    gap: 8px;
+    background: #141519;
+    border: 1px solid #39393A;
+    border-radius: 4px;
+    padding: 4px;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+      border-color: #D90A20;
+    }
+  }
+
+  .input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #FFF;
+    font-family: "Google Sans Code";
+    font-size: 16px;
+    padding: 12px;
+    outline: none;
+
+    &::placeholder {
+      color: #555;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  .maxButton {
+    padding: 8px 16px;
+    background: #39393A;
+    border: none;
+    color: #A7ADB9;
+    border-radius: 4px;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #D90A20;
+      color: #000;
+    }
+  }
+
+  .actionButton {
+    width: 100%;
+    padding: 16px 24px;
+    background: #D90A20;
+    border: none;
+    color: #000;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+
+    &:hover:not(:disabled) {
+      background: #ff1a30;
+    }
+
+    &:disabled {
+      background: #39393A;
+      color: #666;
+      cursor: not-allowed;
+    }
+  }
+
+  /* Rewards */
+  .rewardsInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rewardItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .rewardLabel {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .rewardValue {
+    color: #FFF;
+    font-family: "Jersey10";
+    font-size: 24px;
+    font-weight: 400;
+  }
+
+  .rewardValueHighlight {
+    color: #D90A20;
+    font-family: "Jersey10";
+    font-size: 32px;
+    font-weight: 400;
+  }
+
+  .rewardPercent {
+    color: #666;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .divider {
+    height: 1px;
+    background: #39393A;
+    margin: 8px 0;
+  }
+
+  .claimButton {
+    width: 100%;
+    padding: 16px 24px;
+    background: #141519;
+    border: 1px solid #D90A20;
+    color: #D90A20;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    margin-top: 8px;
+
+    &:hover:not(.disabled) {
+      background: #D90A20;
+      color: #000;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .rewardNote {
+    color: #666;
+    font-family: "Google Sans Code";
     font-size: 11px;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* Pool Stats */
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .statItem {
+    background: #141519;
+    padding: 16px;
+    border-radius: 4px;
+  }
+
+  .statLabel {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .statValue {
+    color: #FFF;
+    font-family: "Jersey10";
+    font-size: 20px;
+    font-weight: 400;
+
+    &.statusActive {
+      color: #37D375;
+    }
+  }
+
+  /* Activity Log */
+  .activitySection {
+    max-width: 1200px;
+    margin: 20px auto 0;
+  }
+
+  .activityList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .activityItem {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #141519;
+    border-radius: 4px;
+  }
+
+  .activityType {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: center;
+
+    &.staked {
+      background: rgba(55, 211, 117, 0.2);
+      color: #37D375;
+    }
+
+    &.unstaked {
+      background: rgba(217, 10, 32, 0.2);
+      color: #D90A20;
+    }
+  }
+
+  .activityAmount {
+    color: #FFF;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .activityTime {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .activityTx {
+    color: #666;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #D90A20;
+    }
+  }
+
+  /* Loading / Empty states */
+  .loadingText,
+  .emptyText {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .loginPrompt {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  /* Coming Soon */
+  .comingSoon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+    text-align: center;
+    background: #232326;
+    border-radius: 4px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .comingSoonIcon {
+    font-size: 64px;
+    margin-bottom: 24px;
+  }
+
+  .comingSoonTitle {
+    font-size: 36px;
+    color: #D90A20;
+    margin-bottom: 16px;
+    font-family: "Jersey10";
+    font-weight: 400;
+  }
+
+  .comingSoonText {
+    font-size: 14px;
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    max-width: 400px;
   }
 }
 
+/* 平板设备响应式 */
+@media (max-width: 1024px) {
+  .lpStaking {
+    padding: 40px;
+
+    .title {
+      margin-bottom: 30px;
+
+      .titleText {
+        font-size: 60px;
+        line-height: 70px;
+      }
+    }
+
+    .content {
+      flex-direction: column;
+    }
+
+    .assetsGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .statsGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .activityItem {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .activityAmount {
+      flex: none;
+      width: 100%;
+      order: 3;
+    }
+  }
+}
+
+/* 移动设备响应式 */
+@media (max-width: 768px) {
+  .lpStaking {
+    padding: 20px;
+
+    .title {
+      margin-bottom: 24px;
+
+      .titleText {
+        font-size: 48px;
+        line-height: 56px;
+      }
+
+      .titleDesc {
+        font-size: 12px;
+      }
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .cardTitle {
+      font-size: 16px;
+    }
+
+    .assetsGrid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .assetItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+    }
+
+    .assetLabel {
+      margin-bottom: 0;
+    }
+
+    .assetValue {
+      font-size: 24px;
+    }
+
+    .statsGrid {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .statItem {
+      padding: 12px;
+    }
+
+    .statValue {
+      font-size: 18px;
+    }
+
+    .rewardValue {
+      font-size: 20px;
+    }
+
+    .rewardValueHighlight {
+      font-size: 28px;
+    }
+
+    .activityItem {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .activityType {
+      min-width: auto;
+    }
+
+    .activityAmount {
+      order: 0;
+    }
+  }
+}
+
+/* 小屏移动设备响应式 */
+@media (max-width: 480px) {
+  .lpStaking {
+    padding: 16px;
+
+    .title {
+      .titleText {
+        font-size: 36px;
+        line-height: 42px;
+      }
+    }
+
+    .tabHeader {
+      .tab {
+        font-size: 12px;
+        padding: 10px 12px;
+      }
+    }
+
+    .actionButton {
+      padding: 14px 20px;
+      font-size: 13px;
+    }
+
+    .claimButton {
+      padding: 14px 20px;
+      font-size: 13px;
+    }
+  }
+}

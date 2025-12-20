@@ -23,6 +23,18 @@ const initialState = {
     lpBalance: '0',      // 钱包 LP 余额
     allowance: '0',      // 授权额度
   },
+  // Activity Log - 用户的质押/取消质押历史
+  activityLog: {
+    loading: false,
+    error: null,
+    events: [],          // { type: 'Deposited'|'Withdrawn', amount, timestamp, txHash, blockNumber }
+  },
+  // 总积分（用于计算空投比例）
+  totalPoints: {
+    loading: false,
+    error: null,
+    value: '0',          // 全网总积分
+  },
   // 交易状态
   txPending: false,
 }
@@ -34,6 +46,14 @@ export default handleActions({
   
   [actions.updateUserStaking] (state, action) {
     Object.assign(state.userStaking, action.payload)
+  },
+  
+  [actions.updateActivityLog] (state, action) {
+    Object.assign(state.activityLog, action.payload)
+  },
+  
+  [actions.updateTotalPoints] (state, action) {
+    Object.assign(state.totalPoints, action.payload)
   },
   
   // 交易状态可以通过 payload 中的 txPending 更新
@@ -50,5 +70,11 @@ export default handleActions({
     state.txPending = true
   },
 }, initialState)
+
+
+
+
+
+
 
 

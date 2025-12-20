@@ -16,4 +16,18 @@ export const depositLp = createAction('lpStaking/DEPOSIT_LP')
 export const withdrawLp = createAction('lpStaking/WITHDRAW_LP')
 export const withdrawAllLp = createAction('lpStaking/WITHDRAW_ALL_LP')
 
+// Activity Log - 获取用户的质押/取消质押事件
+export const fetchActivityLog = createAction('lpStaking/FETCH_ACTIVITY_LOG')
+export const updateActivityLog = createAction('lpStaking/UPDATE_ACTIVITY_LOG')
+
+// 获取总积分（用于计算空投比例）
+export const fetchTotalPoints = createAction('lpStaking/FETCH_TOTAL_POINTS')
+export const updateTotalPoints = createAction('lpStaking/UPDATE_TOTAL_POINTS')
+
+
+
+
+
+
+
 

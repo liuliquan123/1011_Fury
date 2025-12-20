@@ -373,6 +373,127 @@ function* withdrawAllLpSaga({ payload }) {
   }
 }
 
+/**
+ * 获取用户的 Activity Log（Deposited/Withdrawn 事件）
+ */
+function* fetchActivityLogSaga() {
+  try {
+    yield put(actions.updateActivityLog({ loading: true, error: null }))
+    
+    const profile = yield select(state => state.auth.profile)
+    if (!profile?.wallet_address) {
+      yield put(actions.updateActivityLog({ loading: false, events: [] }))
+      return
+    }
+    
+    const config = getLpStakingConfig()
+    if (!config.stakingContract) {
+      throw new Error('LP Staking contract not configured')
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, provider)
+    
+    // 获取 Deposited 和 Withdrawn 事件
+    const depositedFilter = contract.filters.Deposited(profile.wallet_address)
+    const withdrawnFilter = contract.filters.Withdrawn(profile.wallet_address)
+    
+    const [depositedEvents, withdrawnEvents] = yield Promise.all([
+      contract.queryFilter(depositedFilter),
+      contract.queryFilter(withdrawnFilter),
+    ])
+    
+    // 处理事件数据
+    const events = []
+    
+    for (const event of depositedEvents) {
+      const block = yield call([provider, provider.getBlock], event.blockNumber)
+      events.push({
+        type: 'Staked',
+        amount: ethers.formatEther(event.args.amount),
+        timestamp: block.timestamp,
+        txHash: event.transactionHash,
+        blockNumber: event.blockNumber,
+      })
+    }
+    
+    for (const event of withdrawnEvents) {
+      const block = yield call([provider, provider.getBlock], event.blockNumber)
+      events.push({
+        type: 'Unstaked',
+        amount: ethers.formatEther(event.args.amount),
+        timestamp: block.timestamp,
+        txHash: event.transactionHash,
+        blockNumber: event.blockNumber,
+      })
+    }
+    
+    // 按时间倒序排列
+    events.sort((a, b) => b.timestamp - a.timestamp)
+    
+    yield put(actions.updateActivityLog({
+      loading: false,
+      events,
+    }))
+    
+    console.log('[LpStaking] Activity log fetched', { eventCount: events.length })
+  } catch (error) {
+    console.error('[LpStaking] fetchActivityLog error:', error)
+    yield put(actions.updateActivityLog({ loading: false, error: error.message }))
+  }
+}
+
+/**
+ * 获取全网总积分（通过遍历所有参与者计算）
+ */
+function* fetchTotalPointsSaga() {
+  try {
+    yield put(actions.updateTotalPoints({ loading: true, error: null }))
+    
+    const config = getLpStakingConfig()
+    if (!config.stakingContract) {
+      throw new Error('LP Staking contract not configured')
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, provider)
+    
+    // 获取参与者总数
+    const participantCount = yield call([contract, contract.getParticipantCount])
+    const total = Number(participantCount)
+    
+    if (total === 0) {
+      yield put(actions.updateTotalPoints({ loading: false, value: '0' }))
+      return
+    }
+    
+    // 分页获取所有参与者的积分
+    let totalPoints = BigInt(0)
+    const pageSize = 100
+    
+    for (let offset = 0; offset < total; offset += pageSize) {
+      const limit = Math.min(pageSize, total - offset)
+      const [participants] = yield call([contract, contract.getParticipantsPaginated], offset, limit)
+      
+      // 批量获取每个参与者的积分
+      for (const participant of participants) {
+        const userState = yield call([contract, contract.getUserState], participant)
+        totalPoints += BigInt(userState.points)
+      }
+    }
+    
+    yield put(actions.updateTotalPoints({
+      loading: false,
+      value: ethers.formatEther(totalPoints),
+    }))
+    
+    console.log('[LpStaking] Total points fetched', { totalPoints: ethers.formatEther(totalPoints) })
+  } catch (error) {
+    console.error('[LpStaking] fetchTotalPoints error:', error)
+    yield put(actions.updateTotalPoints({ loading: false, error: error.message }))
+  }
+}
+
 export default function* lpStakingSaga() {
   yield takeEvery(String(actions.fetchContractInfo), fetchContractInfoSaga)
   yield takeEvery(String(actions.fetchUserStaking), fetchUserStakingSaga)
@@ -380,5 +501,7 @@ export default function* lpStakingSaga() {
   yield takeEvery(String(actions.depositLp), depositLpSaga)
   yield takeEvery(String(actions.withdrawLp), withdrawLpSaga)
   yield takeEvery(String(actions.withdrawAllLp), withdrawAllLpSaga)
+  yield takeEvery(String(actions.fetchActivityLog), fetchActivityLogSaga)
+  yield takeEvery(String(actions.fetchTotalPoints), fetchTotalPointsSaga)
 }
 

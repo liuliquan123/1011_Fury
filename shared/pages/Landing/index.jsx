@@ -125,13 +125,11 @@ const Landing = ({ cases, submissions, actions }) => {
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </Link>
           )}
-          {/* 隐藏 Crowdfund 入口
-          <Link className={classNames(styles.button, styles.secondaryButton)} to="/crowdfund">
+          <Link className={classNames(styles.button, styles.secondaryButton)} to="/lp-staking">
             <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.buttonText)}>CROWDFUND</div>
+            <div className={classNames(styles.buttonText)}>LP STAKING</div>
             <div className={classNames(styles.rightArrow)}>{"<"}</div>
           </Link>
-          */}
         </div>
       </div>
       <div className={styles.sections}>

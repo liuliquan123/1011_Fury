@@ -8,6 +8,55 @@ import { CHAIN_ID as ENV_CHAIN_ID } from 'constants/env'
 // 从环境配置读取 chainID，fallback 到 Base Sepolia
 export const CHAIN_ID = ENV_CHAIN_ID || 84532
 
+// ============================================
+// 1011 Token 配置
+// ============================================
+export const TOKEN_1011 = {
+  name: '1011',
+  symbol: '1011',
+  decimals: 18,
+  totalSupply: 2_100_000_000, // 21 亿
+  // 合约地址
+  addresses: {
+    84532: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a', // Base Sepolia
+    8453: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a',  // Base Mainnet (同地址)
+  },
+}
+
+// 获取当前链的 1011 Token 地址
+export const get1011TokenAddress = () => {
+  return TOKEN_1011.addresses[CHAIN_ID] || TOKEN_1011.addresses[84532]
+}
+
+// ============================================
+// 轮次奖励配置 (Token Distribution)
+// ============================================
+export const TOKEN_DISTRIBUTION = {
+  // Submit Loss 证据提交奖励
+  submitLoss: {
+    round1: { percentage: 1.5, tokens: 31_500_000 },  // 第一轮 1.5%
+    round2: { percentage: 4, tokens: 84_000_000 },    // 第二轮 4%
+    round3: { percentage: 8, tokens: 168_000_000 },   // 第三轮 8%
+  },
+  // LP Liquidity Rewards 流动性奖励
+  lpRewards: {
+    round1: { percentage: 1, tokens: 21_000_000 },    // 第一轮 1%
+    round2: { percentage: 2, tokens: 42_000_000 },    // 第二轮 2%
+    round3: { percentage: 3, tokens: 63_000_000 },    // 第三轮 3%
+  },
+  // People DAO 认购
+  peopleDao: { percentage: 37.5, tokens: 787_500_000 }, // 37.5%
+}
+
+// 获取当前轮次配置（暂时硬编码为第一轮，后续可从后端获取）
+export const getCurrentRound = () => {
+  return {
+    round: 1,
+    submitLoss: TOKEN_DISTRIBUTION.submitLoss.round1,
+    lpRewards: TOKEN_DISTRIBUTION.lpRewards.round1,
+  }
+}
+
 // 网络配置（用于 Web3Auth connectTo 和 wallet_addEthereumChain）
 export const CHAIN_CONFIG = {
   84532: {

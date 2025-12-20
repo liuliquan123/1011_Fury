@@ -1,91 +1,145 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import * as actions from 'actions/lpStaking'
-import { getLpStakingConfig, isFeatureAvailable } from 'config/contracts'
+import { getLpStakingConfig, isFeatureAvailable, getCurrentRound, TOKEN_1011 } from 'config/contracts'
 import styles from './style.css'
+
+// 格式化数字，保留指定小数位
+const formatNumber = (num, decimals = 4) => {
+  const n = parseFloat(num)
+  if (isNaN(n)) return '0'
+  if (n === 0) return '0'
+  if (n < 0.0001) return '<0.0001'
+  return n.toLocaleString('en-US', { 
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals 
+  })
+}
+
+// 格式化大数字（带 K/M/B 单位）
+const formatLargeNumber = (num) => {
+  const n = parseFloat(num)
+  if (isNaN(n)) return '0'
+  if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B'
+  if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M'
+  if (n >= 1e3) return (n / 1e3).toFixed(2) + 'K'
+  return n.toFixed(2)
+}
+
+// 格式化时间戳
+const formatTime = (timestamp) => {
+  const date = new Date(timestamp * 1000)
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+// 截断地址
+const truncateHash = (hash) => {
+  if (!hash) return ''
+  return `${hash.slice(0, 10)}...${hash.slice(-8)}`
+}
 
 const LpStaking = () => {
   const dispatch = useDispatch()
-  const { contractInfo, userStaking } = useSelector(state => state.lpStaking)
+  const { contractInfo, userStaking, activityLog, totalPoints } = useSelector(state => state.lpStaking)
   const { profile } = useSelector(state => state.auth)
   
-  // 判断登录状态（与 Crowdfund 页面保持一致）
+  // 判断登录状态
   const isLoggedIn = !!profile?.id
   const hasWallet = !!profile?.wallet_address
   
-  const [depositAmount, setDepositAmount] = useState('')
-  const [withdrawAmount, setWithdrawAmount] = useState('')
+  // 表单状态
+  const [stakeAmount, setStakeAmount] = useState('')
+  const [unstakeAmount, setUnstakeAmount] = useState('')
+  const [activeTab, setActiveTab] = useState('stake') // 'stake' | 'unstake'
   const [txLoading, setTxLoading] = useState(false)
   
   const config = getLpStakingConfig()
+  const currentRound = getCurrentRound()
   
   // 初始化加载数据
   useEffect(() => {
     dispatch(actions.fetchContractInfo())
+    dispatch(actions.fetchTotalPoints())
   }, [dispatch])
   
   // 登录后加载用户数据
   useEffect(() => {
     if (isLoggedIn && profile?.wallet_address) {
       dispatch(actions.fetchUserStaking())
+      dispatch(actions.fetchActivityLog())
     }
   }, [dispatch, isLoggedIn, profile?.wallet_address])
   
+  // 计算预估空投
+  const estimatedAirdrop = useMemo(() => {
+    const userPoints = parseFloat(userStaking.points) || 0
+    const total = parseFloat(totalPoints.value) || 0
+    
+    if (total === 0 || userPoints === 0) return 0
+    
+    // 当前轮次的 LP 奖励池
+    const rewardPool = currentRound.lpRewards.tokens
+    
+    // 用户占比
+    const ratio = userPoints / total
+    
+    return Math.floor(ratio * rewardPool)
+  }, [userStaking.points, totalPoints.value, currentRound])
+  
   // 检查是否需要授权
-  const needsApproval = parseFloat(userStaking.allowance) < parseFloat(depositAmount || '0')
+  const needsApproval = parseFloat(userStaking.allowance) < parseFloat(stakeAmount || '0')
   
   // 处理授权
-  const handleApprove = () => {
+  const handleApprove = useCallback(() => {
     setTxLoading(true)
     dispatch(actions.approveLp({
       onSuccess: () => setTxLoading(false),
       onError: () => setTxLoading(false),
     }))
-  }
+  }, [dispatch])
   
   // 处理质押
-  const handleDeposit = () => {
-    if (!depositAmount || parseFloat(depositAmount) <= 0) return
+  const handleStake = useCallback(() => {
+    if (!stakeAmount || parseFloat(stakeAmount) <= 0) return
     
     setTxLoading(true)
     dispatch(actions.depositLp({
-      amount: depositAmount,
+      amount: stakeAmount,
       onSuccess: () => {
         setTxLoading(false)
-        setDepositAmount('')
+        setStakeAmount('')
+        dispatch(actions.fetchActivityLog())
       },
       onError: () => setTxLoading(false),
     }))
-  }
+  }, [dispatch, stakeAmount])
   
   // 处理取消质押
-  const handleWithdraw = () => {
-    if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) return
+  const handleUnstake = useCallback(() => {
+    if (!unstakeAmount || parseFloat(unstakeAmount) <= 0) return
     
     setTxLoading(true)
     dispatch(actions.withdrawLp({
-      amount: withdrawAmount,
+      amount: unstakeAmount,
       onSuccess: () => {
         setTxLoading(false)
-        setWithdrawAmount('')
+        setUnstakeAmount('')
+        dispatch(actions.fetchActivityLog())
       },
       onError: () => setTxLoading(false),
     }))
-  }
-  
-  // 处理全部取消质押
-  const handleWithdrawAll = () => {
-    setTxLoading(true)
-    dispatch(actions.withdrawAllLp({
-      onSuccess: () => setTxLoading(false),
-      onError: () => setTxLoading(false),
-    }))
-  }
+  }, [dispatch, unstakeAmount])
   
   // 设置最大值
-  const setMaxDeposit = () => setDepositAmount(userStaking.lpBalance)
-  const setMaxWithdraw = () => setWithdrawAmount(userStaking.balance)
+  const setMaxStake = () => setStakeAmount(userStaking.lpBalance)
+  const setMaxUnstake = () => setUnstakeAmount(userStaking.balance)
   
   // 检查功能是否可用
   const lpStakingAvailable = isFeatureAvailable('lpStaking')
@@ -93,8 +147,11 @@ const LpStaking = () => {
   // 合约未部署时显示即将上线提示
   if (!lpStakingAvailable) {
     return (
-      <div className={styles.container}>
-        <h1 className={styles.title}>LP Staking</h1>
+      <div className={styles.lpStaking}>
+        <div className={styles.title}>
+          <div className={styles.titleText}>LP Staking</div>
+          <div className={styles.titleDesc}>Stake LP tokens to earn 1011 token rewards</div>
+        </div>
         <div className={styles.comingSoon}>
           <div className={styles.comingSoonIcon}>🚀</div>
           <div className={styles.comingSoonTitle}>Coming Soon</div>
@@ -107,183 +164,285 @@ const LpStaking = () => {
   }
   
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>LP Staking (Test Page)</h1>
+    <div className={styles.lpStaking}>
+      {/* 页面标题 */}
+      <div className={styles.title}>
+        <div className={styles.titleText}>LP Staking</div>
+        <div className={styles.titleDesc}>Stake LP tokens to earn 1011 token rewards</div>
+      </div>
       
-      {/* 合约配置 */}
-      <section className={styles.section}>
-        <h2>Contract Config</h2>
-        <div className={styles.info}>
-          <div className={styles.infoRow}>
-            <span>Staking Contract:</span>
-            <code>{config.stakingContract || 'Not configured'}</code>
+      <div className={styles.content}>
+        {/* 左侧列 */}
+        <div className={styles.leftColumn}>
+          {/* My Assets 卡片 */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>My Assets</h2>
+              {isLoggedIn && (
+                <button 
+                  className={styles.refreshButton}
+                  onClick={() => {
+                    dispatch(actions.fetchUserStaking())
+                    dispatch(actions.fetchContractInfo())
+                  }}
+                >
+                  ↻
+                </button>
+              )}
+            </div>
+            
+            {isLoggedIn ? (
+              <div className={styles.assetsGrid}>
+                <div className={styles.assetItem}>
+                  <div className={styles.assetLabel}>Wallet LP</div>
+                  <div className={styles.assetValue}>
+                    {userStaking.loading ? '...' : formatNumber(userStaking.lpBalance)}
+                  </div>
+                </div>
+                <div className={styles.assetItem}>
+                  <div className={styles.assetLabel}>Staked LP</div>
+                  <div className={styles.assetValue}>
+                    {userStaking.loading ? '...' : formatNumber(userStaking.balance)}
+                  </div>
+                </div>
+                <div className={styles.assetItem}>
+                  <div className={styles.assetLabel}>My Points</div>
+                  <div className={styles.assetValue}>
+                    {userStaking.loading ? '...' : formatLargeNumber(userStaking.points)}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.loginPrompt}>
+                Please login to view your assets
+              </div>
+            )}
           </div>
-          <div className={styles.infoRow}>
-            <span>LP Token:</span>
-            <code>{config.lpToken || 'Not configured'}</code>
+          
+          {/* Stake/Unstake 卡片 */}
+          <div className={styles.card}>
+            <div className={styles.tabHeader}>
+              <button 
+                className={classNames(styles.tab, { [styles.tabActive]: activeTab === 'stake' })}
+                onClick={() => setActiveTab('stake')}
+              >
+                Stake LP
+              </button>
+              <button 
+                className={classNames(styles.tab, { [styles.tabActive]: activeTab === 'unstake' })}
+                onClick={() => setActiveTab('unstake')}
+              >
+                Unstake LP
+              </button>
+            </div>
+            
+            {isLoggedIn ? (
+              <div className={styles.stakeForm}>
+                {activeTab === 'stake' ? (
+                  <>
+                    <div className={styles.inputGroup}>
+                      <div className={styles.inputLabel}>
+                        <span>Amount</span>
+                        <span className={styles.balance}>
+                          Available: {formatNumber(userStaking.lpBalance)} LP
+                        </span>
+                      </div>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="number"
+                          className={styles.input}
+                          placeholder="0.0"
+                          value={stakeAmount}
+                          onChange={(e) => setStakeAmount(e.target.value)}
+                          disabled={txLoading}
+                        />
+                        <button className={styles.maxButton} onClick={setMaxStake}>MAX</button>
+                      </div>
+                    </div>
+                    
+                    <button
+                      className={styles.actionButton}
+                      onClick={needsApproval ? handleApprove : handleStake}
+                      disabled={txLoading || !stakeAmount || parseFloat(stakeAmount) <= 0}
+                    >
+                      {txLoading ? 'Processing...' : needsApproval ? 'Approve LP Token' : 'Stake LP'}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className={styles.inputGroup}>
+                      <div className={styles.inputLabel}>
+                        <span>Amount</span>
+                        <span className={styles.balance}>
+                          Staked: {formatNumber(userStaking.balance)} LP
+                        </span>
+                      </div>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="number"
+                          className={styles.input}
+                          placeholder="0.0"
+                          value={unstakeAmount}
+                          onChange={(e) => setUnstakeAmount(e.target.value)}
+                          disabled={txLoading}
+                        />
+                        <button className={styles.maxButton} onClick={setMaxUnstake}>MAX</button>
+                      </div>
+                    </div>
+                    
+                    <button
+                      className={styles.actionButton}
+                      onClick={handleUnstake}
+                      disabled={txLoading || !unstakeAmount || parseFloat(unstakeAmount) <= 0}
+                    >
+                      {txLoading ? 'Processing...' : 'Unstake LP'}
+                    </button>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className={styles.loginPrompt}>
+                Please login to stake LP tokens
+              </div>
+            )}
           </div>
         </div>
-      </section>
-      
-      {/* 合约信息 */}
-      <section className={styles.section}>
-        <h2>Contract Info</h2>
-        {contractInfo.loading ? (
-          <div className={styles.loading}>Loading...</div>
-        ) : contractInfo.error ? (
-          <div className={styles.error}>{contractInfo.error}</div>
-        ) : (
-          <div className={styles.info}>
-            <div className={styles.infoRow}>
-              <span>Total Deposits:</span>
-              <strong>{contractInfo.totalDeposits} LP</strong>
+        
+        {/* 右侧列 */}
+        <div className={styles.rightColumn}>
+          {/* Rewards 卡片 */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>Rewards</h2>
+              <div className={styles.roundBadge}>Round {currentRound.round}</div>
             </div>
-            <div className={styles.infoRow}>
-              <span>Participants:</span>
-              <strong>{contractInfo.participantCount}</strong>
-            </div>
-            <div className={styles.infoRow}>
-              <span>Campaign Ended:</span>
-              <strong>{contractInfo.isCampaignEnded ? 'Yes' : 'No'}</strong>
-            </div>
-            <div className={styles.infoRow}>
-              <span>Paused:</span>
-              <strong>{contractInfo.isPaused ? 'Yes' : 'No'}</strong>
+            
+            <div className={styles.rewardsInfo}>
+              <div className={styles.rewardItem}>
+                <div className={styles.rewardLabel}>Current LP Reward Pool</div>
+                <div className={styles.rewardValue}>
+                  {formatLargeNumber(currentRound.lpRewards.tokens)} 1011
+                </div>
+                <div className={styles.rewardPercent}>
+                  {currentRound.lpRewards.percentage}% of total supply
+                </div>
+              </div>
+              
+              <div className={styles.divider} />
+              
+              <div className={styles.rewardItem}>
+                <div className={styles.rewardLabel}>My Points</div>
+                <div className={styles.rewardValue}>
+                  {isLoggedIn ? formatLargeNumber(userStaking.points) : '--'}
+                </div>
+              </div>
+              
+              <div className={styles.rewardItem}>
+                <div className={styles.rewardLabel}>Estimated Airdrop</div>
+                <div className={styles.rewardValueHighlight}>
+                  {isLoggedIn ? `~${formatLargeNumber(estimatedAirdrop)} 1011` : '--'}
+                </div>
+                {isLoggedIn && parseFloat(totalPoints.value) > 0 && (
+                  <div className={styles.rewardPercent}>
+                    Your share: {((parseFloat(userStaking.points) / parseFloat(totalPoints.value)) * 100).toFixed(4)}%
+                  </div>
+                )}
+              </div>
+              
+              <button className={classNames(styles.claimButton, styles.disabled)} disabled>
+                Claim (Coming Soon)
+              </button>
+              
+              <div className={styles.rewardNote}>
+                Rewards will be claimable after the airdrop snapshot
+              </div>
             </div>
           </div>
-        )}
-        <button 
-          className={styles.refreshBtn}
-          onClick={() => dispatch(actions.fetchContractInfo())}
-        >
-          Refresh
-        </button>
-      </section>
-      
-      {/* 用户状态 */}
-      {isLoggedIn ? (
-        <section className={styles.section}>
-          <h2>My Staking</h2>
-          {userStaking.loading ? (
-            <div className={styles.loading}>Loading...</div>
-          ) : userStaking.error ? (
-            <div className={styles.error}>{userStaking.error}</div>
-          ) : (
-            <div className={styles.info}>
-              <div className={styles.infoRow}>
-                <span>Wallet:</span>
-                <code>{profile?.wallet_address?.slice(0, 6)}...{profile?.wallet_address?.slice(-4)}</code>
+          
+          {/* Pool Stats 卡片 */}
+          <div className={styles.card}>
+            <h2 className={styles.cardTitle}>Pool Statistics</h2>
+            <div className={styles.statsGrid}>
+              <div className={styles.statItem}>
+                <div className={styles.statLabel}>Total Staked</div>
+                <div className={styles.statValue}>
+                  {contractInfo.loading ? '...' : formatNumber(contractInfo.totalDeposits)} LP
+                </div>
               </div>
-              <div className={styles.infoRow}>
-                <span>LP Balance (Wallet):</span>
-                <strong>{parseFloat(userStaking.lpBalance).toFixed(6)} LP</strong>
+              <div className={styles.statItem}>
+                <div className={styles.statLabel}>Participants</div>
+                <div className={styles.statValue}>
+                  {contractInfo.loading ? '...' : contractInfo.participantCount}
+                </div>
               </div>
-              <div className={styles.infoRow}>
-                <span>Staked Balance:</span>
-                <strong>{parseFloat(userStaking.balance).toFixed(6)} LP</strong>
+              <div className={styles.statItem}>
+                <div className={styles.statLabel}>Total Points</div>
+                <div className={styles.statValue}>
+                  {totalPoints.loading ? '...' : formatLargeNumber(totalPoints.value)}
+                </div>
               </div>
-              <div className={styles.infoRow}>
-                <span>Points:</span>
-                <strong>{parseFloat(userStaking.points).toFixed(6)}</strong>
-              </div>
-              <div className={styles.infoRow}>
-                <span>Allowance:</span>
-                <strong>{parseFloat(userStaking.allowance) > 1e18 ? 'Unlimited' : parseFloat(userStaking.allowance).toFixed(6)}</strong>
+              <div className={styles.statItem}>
+                <div className={styles.statLabel}>Status</div>
+                <div className={classNames(styles.statValue, styles.statusActive)}>
+                  {contractInfo.isCampaignEnded ? 'Ended' : contractInfo.isPaused ? 'Paused' : 'Active'}
+                </div>
               </div>
             </div>
-          )}
-          <button 
-            className={styles.refreshBtn}
-            onClick={() => dispatch(actions.fetchUserStaking())}
-          >
-            Refresh
-          </button>
-        </section>
-      ) : (
-        <section className={styles.section}>
-          <h2>My Staking</h2>
-          <div className={styles.notLoggedIn}>Please login to view your staking info</div>
-        </section>
-      )}
+          </div>
+        </div>
+      </div>
       
-      {/* 操作区域 */}
+      {/* Activity Log */}
       {isLoggedIn && (
-        <section className={styles.section}>
-          <h2>Actions</h2>
-          
-          {/* 授权 */}
-          <div className={styles.actionGroup}>
-            <h3>1. Approve LP Token</h3>
-            <p className={styles.hint}>First time users need to approve LP token spending</p>
-            <button 
-              className={styles.actionBtn}
-              onClick={handleApprove}
-              disabled={txLoading || parseFloat(userStaking.allowance) > 1e18}
-            >
-              {txLoading ? 'Processing...' : parseFloat(userStaking.allowance) > 1e18 ? 'Already Approved' : 'Approve'}
-            </button>
-          </div>
-          
-          {/* 质押 */}
-          <div className={styles.actionGroup}>
-            <h3>2. Deposit LP</h3>
-            <div className={styles.inputGroup}>
-              <input 
-                type="number"
-                placeholder="Amount"
-                value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-                disabled={txLoading}
-              />
-              <button className={styles.maxBtn} onClick={setMaxDeposit}>MAX</button>
+        <div className={styles.activitySection}>
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>Activity Log</h2>
+              <button 
+                className={styles.refreshButton}
+                onClick={() => dispatch(actions.fetchActivityLog())}
+              >
+                ↻
+              </button>
             </div>
-            <button 
-              className={styles.actionBtn}
-              onClick={needsApproval ? handleApprove : handleDeposit}
-              disabled={txLoading || !depositAmount || parseFloat(depositAmount) <= 0}
-            >
-              {txLoading ? 'Processing...' : needsApproval ? 'Approve First' : 'Deposit'}
-            </button>
+            
+            {activityLog.loading ? (
+              <div className={styles.loadingText}>Loading activities...</div>
+            ) : activityLog.events.length === 0 ? (
+              <div className={styles.emptyText}>No activity yet</div>
+            ) : (
+              <div className={styles.activityList}>
+                {activityLog.events.map((event, idx) => (
+                  <div key={idx} className={styles.activityItem}>
+                    <div className={classNames(styles.activityType, {
+                      [styles.staked]: event.type === 'Staked',
+                      [styles.unstaked]: event.type === 'Unstaked',
+                    })}>
+                      {event.type}
+                    </div>
+                    <div className={styles.activityAmount}>
+                      {event.type === 'Staked' ? '+' : '-'}{formatNumber(event.amount)} LP
+                    </div>
+                    <div className={styles.activityTime}>
+                      {formatTime(event.timestamp)}
+                    </div>
+                    <a
+                      className={styles.activityTx}
+                      href={`https://sepolia.basescan.org/tx/${event.txHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {truncateHash(event.txHash)}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          
-          {/* 取消质押 */}
-          <div className={styles.actionGroup}>
-            <h3>3. Withdraw LP</h3>
-            <div className={styles.inputGroup}>
-              <input 
-                type="number"
-                placeholder="Amount"
-                value={withdrawAmount}
-                onChange={(e) => setWithdrawAmount(e.target.value)}
-                disabled={txLoading}
-              />
-              <button className={styles.maxBtn} onClick={setMaxWithdraw}>MAX</button>
-            </div>
-            <button 
-              className={styles.actionBtn}
-              onClick={handleWithdraw}
-              disabled={txLoading || !withdrawAmount || parseFloat(withdrawAmount) <= 0}
-            >
-              {txLoading ? 'Processing...' : 'Withdraw'}
-            </button>
-          </div>
-          
-          {/* 全部取消质押 */}
-          <div className={styles.actionGroup}>
-            <h3>4. Withdraw All</h3>
-            <button 
-              className={classNames(styles.actionBtn, styles.dangerBtn)}
-              onClick={handleWithdrawAll}
-              disabled={txLoading || parseFloat(userStaking.balance) <= 0}
-            >
-              {txLoading ? 'Processing...' : 'Withdraw All'}
-            </button>
-          </div>
-        </section>
+        </div>
       )}
     </div>
   )
 }
 
 export default LpStaking
-
