@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import * as actions from 'actions/lpStaking'
-import { getLpStakingConfig, isFeatureAvailable, getCurrentRound, TOKEN_1011 } from 'config/contracts'
+import { getLpStakingConfig, isFeatureAvailable, getCurrentRound, get1011TokenAddress } from 'config/contracts'
 import styles from './style.css'
 
 // 格式化数字，保留指定小数位
@@ -56,8 +56,8 @@ const LpStaking = () => {
   
   // 表单状态
   const [stakeAmount, setStakeAmount] = useState('')
-  const [unstakeAmount, setUnstakeAmount] = useState('')
-  const [activeTab, setActiveTab] = useState('stake') // 'stake' | 'unstake'
+  const [ethAmount, setEthAmount] = useState('')
+  const [tokenAmount, setTokenAmount] = useState('')
   const [txLoading, setTxLoading] = useState(false)
   
   const config = getLpStakingConfig()
@@ -121,25 +121,25 @@ const LpStaking = () => {
     }))
   }, [dispatch, stakeAmount])
   
-  // 处理取消质押
-  const handleUnstake = useCallback(() => {
-    if (!unstakeAmount || parseFloat(unstakeAmount) <= 0) return
+  // 处理全部取消质押
+  const handleUnstakeAll = useCallback(() => {
+    if (parseFloat(userStaking.balance) <= 0) return
     
     setTxLoading(true)
-    dispatch(actions.withdrawLp({
-      amount: unstakeAmount,
+    dispatch(actions.withdrawAllLp({
       onSuccess: () => {
         setTxLoading(false)
-        setUnstakeAmount('')
         dispatch(actions.fetchActivityLog())
       },
       onError: () => setTxLoading(false),
     }))
-  }, [dispatch, unstakeAmount])
+  }, [dispatch, userStaking.balance])
   
   // 设置最大值
   const setMaxStake = () => setStakeAmount(userStaking.lpBalance)
-  const setMaxUnstake = () => setUnstakeAmount(userStaking.balance)
+  
+  // Uniswap 外链
+  const uniswapBuyLink = `https://app.uniswap.org/swap?chain=base&outputCurrency=${get1011TokenAddress()}`
   
   // 检查功能是否可用
   const lpStakingAvailable = isFeatureAvailable('lpStaking')
@@ -219,86 +219,106 @@ const LpStaking = () => {
             )}
           </div>
           
-          {/* Stake/Unstake 卡片 */}
+          {/* Add Liquidity 卡片 */}
           <div className={styles.card}>
-            <div className={styles.tabHeader}>
-              <button 
-                className={classNames(styles.tab, { [styles.tabActive]: activeTab === 'stake' })}
-                onClick={() => setActiveTab('stake')}
+            <h2 className={styles.cardTitle}>Add Liquidity</h2>
+            
+            <div className={styles.liquidityForm}>
+              <div className={styles.liquidityGrid}>
+                {/* ETH 输入 */}
+                <div className={styles.liquidityItem}>
+                  <div className={styles.liquidityHeader}>
+                    <span className={styles.liquidityValue}>
+                      {ethAmount || '0'}
+                    </span>
+                    <img 
+                      src="https://assets.coingecko.com/coins/images/279/small/ethereum.png" 
+                      alt="ETH" 
+                      className={styles.tokenIcon}
+                    />
+                  </div>
+                  <div className={styles.liquidityLabel}>ETH</div>
+                </div>
+                
+                {/* 1011 Token 输入 */}
+                <div className={styles.liquidityItem}>
+                  <div className={styles.liquidityHeader}>
+                    <span className={styles.liquidityValue}>
+                      {tokenAmount || '0'}
+                    </span>
+                    <div className={styles.tokenIconPlaceholder}>1011</div>
+                  </div>
+                  <div className={styles.liquidityLabel}>1011</div>
+                </div>
+              </div>
+              
+              <a 
+                href={uniswapBuyLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.uniswapLink}
               >
-                Stake LP
-              </button>
-              <button 
-                className={classNames(styles.tab, { [styles.tabActive]: activeTab === 'unstake' })}
-                onClick={() => setActiveTab('unstake')}
+                Don't have 1011? Buy it on Uniswap
+              </a>
+              
+              <button
+                className={classNames(styles.actionButton, styles.disabled)}
+                disabled
               >
-                Unstake LP
+                Add (Coming Soon)
               </button>
             </div>
+          </div>
+          
+          {/* Stake LP 卡片 */}
+          <div className={styles.card}>
+            <h2 className={styles.cardTitle}>Stake LP</h2>
             
             {isLoggedIn ? (
               <div className={styles.stakeForm}>
-                {activeTab === 'stake' ? (
-                  <>
-                    <div className={styles.inputGroup}>
-                      <div className={styles.inputLabel}>
-                        <span>Amount</span>
-                        <span className={styles.balance}>
-                          Available: {formatNumber(userStaking.lpBalance)} LP
-                        </span>
-                      </div>
-                      <div className={styles.inputWrapper}>
-                        <input
-                          type="number"
-                          className={styles.input}
-                          placeholder="0.0"
-                          value={stakeAmount}
-                          onChange={(e) => setStakeAmount(e.target.value)}
-                          disabled={txLoading}
-                        />
-                        <button className={styles.maxButton} onClick={setMaxStake}>MAX</button>
-                      </div>
-                    </div>
-                    
-                    <button
-                      className={styles.actionButton}
-                      onClick={needsApproval ? handleApprove : handleStake}
-                      disabled={txLoading || !stakeAmount || parseFloat(stakeAmount) <= 0}
-                    >
-                      {txLoading ? 'Processing...' : needsApproval ? 'Approve LP Token' : 'Stake LP'}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className={styles.inputGroup}>
-                      <div className={styles.inputLabel}>
-                        <span>Amount</span>
-                        <span className={styles.balance}>
-                          Staked: {formatNumber(userStaking.balance)} LP
-                        </span>
-                      </div>
-                      <div className={styles.inputWrapper}>
-                        <input
-                          type="number"
-                          className={styles.input}
-                          placeholder="0.0"
-                          value={unstakeAmount}
-                          onChange={(e) => setUnstakeAmount(e.target.value)}
-                          disabled={txLoading}
-                        />
-                        <button className={styles.maxButton} onClick={setMaxUnstake}>MAX</button>
-                      </div>
-                    </div>
-                    
-                    <button
-                      className={styles.actionButton}
-                      onClick={handleUnstake}
-                      disabled={txLoading || !unstakeAmount || parseFloat(unstakeAmount) <= 0}
-                    >
-                      {txLoading ? 'Processing...' : 'Unstake LP'}
-                    </button>
-                  </>
-                )}
+                <div className={styles.stakeDisplay}>
+                  <div className={styles.stakeDisplayValue}>
+                    {formatNumber(stakeAmount || '0')}
+                  </div>
+                  <div className={styles.stakeDisplayLabel}>Staking Amount</div>
+                </div>
+                
+                <div className={styles.inputGroup}>
+                  <div className={styles.inputLabel}>
+                    <span>Amount</span>
+                    <span className={styles.balance}>
+                      Available: {formatNumber(userStaking.lpBalance)} LP
+                    </span>
+                  </div>
+                  <div className={styles.inputWrapper}>
+                    <input
+                      type="number"
+                      className={styles.input}
+                      placeholder="0.0"
+                      value={stakeAmount}
+                      onChange={(e) => setStakeAmount(e.target.value)}
+                      disabled={txLoading}
+                    />
+                    <button className={styles.maxButton} onClick={setMaxStake}>MAX</button>
+                  </div>
+                </div>
+                
+                <div className={styles.dualButtonRow}>
+                  <button
+                    className={styles.actionButton}
+                    onClick={needsApproval ? handleApprove : handleStake}
+                    disabled={txLoading || !stakeAmount || parseFloat(stakeAmount) <= 0}
+                  >
+                    {txLoading ? 'Processing...' : needsApproval ? 'Approve' : 'Stake'}
+                  </button>
+                  <button
+                    className={styles.secondaryButton}
+                    onClick={handleUnstakeAll}
+                    disabled={txLoading || parseFloat(userStaking.balance) <= 0}
+                  >
+                    {txLoading ? 'Processing...' : 'Unstake All'}
+                  </button>
+                </div>
               </div>
             ) : (
               <div className={styles.loginPrompt}>
@@ -359,88 +379,44 @@ const LpStaking = () => {
             </div>
           </div>
           
-          {/* Pool Stats 卡片 */}
-          <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Pool Statistics</h2>
-            <div className={styles.statsGrid}>
-              <div className={styles.statItem}>
-                <div className={styles.statLabel}>Total Staked</div>
-                <div className={styles.statValue}>
-                  {contractInfo.loading ? '...' : formatNumber(contractInfo.totalDeposits)} LP
-                </div>
+          {/* Activity Log 移到右侧 */}
+          {isLoggedIn && (
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <h2 className={styles.cardTitle}>Activity Log</h2>
+                <a 
+                  href={uniswapBuyLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.viewOnUniswap}
+                >
+                  View on Uniswap
+                </a>
               </div>
-              <div className={styles.statItem}>
-                <div className={styles.statLabel}>Participants</div>
-                <div className={styles.statValue}>
-                  {contractInfo.loading ? '...' : contractInfo.participantCount}
+              
+              {activityLog.loading ? (
+                <div className={styles.loadingText}>Loading activities...</div>
+              ) : activityLog.events.length === 0 ? (
+                <div className={styles.emptyText}>No activity yet</div>
+              ) : (
+                <div className={styles.activityList}>
+                  {activityLog.events.slice(0, 6).map((event, idx) => (
+                    <div key={idx} className={styles.activityRow}>
+                      <span className={styles.activityDate}>
+                        {new Date(event.timestamp * 1000).toLocaleDateString('en-CA')}
+                      </span>
+                      <span className={styles.activityDesc}>
+                        {event.type === 'Staked' ? 'Staked' : 'Unstaked'} {formatNumber(event.amount)} LP
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              </div>
-              <div className={styles.statItem}>
-                <div className={styles.statLabel}>Total Points</div>
-                <div className={styles.statValue}>
-                  {totalPoints.loading ? '...' : formatLargeNumber(totalPoints.value)}
-                </div>
-              </div>
-              <div className={styles.statItem}>
-                <div className={styles.statLabel}>Status</div>
-                <div className={classNames(styles.statValue, styles.statusActive)}>
-                  {contractInfo.isCampaignEnded ? 'Ended' : contractInfo.isPaused ? 'Paused' : 'Active'}
-                </div>
-              </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
       
-      {/* Activity Log */}
-      {isLoggedIn && (
-        <div className={styles.activitySection}>
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>Activity Log</h2>
-              <button 
-                className={styles.refreshButton}
-                onClick={() => dispatch(actions.fetchActivityLog())}
-              >
-                ↻
-              </button>
-            </div>
-            
-            {activityLog.loading ? (
-              <div className={styles.loadingText}>Loading activities...</div>
-            ) : activityLog.events.length === 0 ? (
-              <div className={styles.emptyText}>No activity yet</div>
-            ) : (
-              <div className={styles.activityList}>
-                {activityLog.events.map((event, idx) => (
-                  <div key={idx} className={styles.activityItem}>
-                    <div className={classNames(styles.activityType, {
-                      [styles.staked]: event.type === 'Staked',
-                      [styles.unstaked]: event.type === 'Unstaked',
-                    })}>
-                      {event.type}
-                    </div>
-                    <div className={styles.activityAmount}>
-                      {event.type === 'Staked' ? '+' : '-'}{formatNumber(event.amount)} LP
-                    </div>
-                    <div className={styles.activityTime}>
-                      {formatTime(event.timestamp)}
-                    </div>
-                    <a
-                      className={styles.activityTx}
-                      href={`https://sepolia.basescan.org/tx/${event.txHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {truncateHash(event.txHash)}
-                    </a>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

@@ -125,35 +125,177 @@
     line-height: 32px;
   }
 
-  /* Tab Header */
-  .tabHeader {
+  /* Add Liquidity */
+  .liquidityForm {
     display: flex;
-    gap: 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #39393A;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
   }
 
-  .tab {
-    flex: 1;
-    padding: 12px 16px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
+  .liquidityGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .liquidityItem {
+    background: #141519;
+    padding: 16px;
+    border-radius: 4px;
+  }
+
+  .liquidityHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .liquidityValue {
+    color: #D90A20;
+    font-family: "Jersey10";
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+  }
+
+  .liquidityLabel {
     color: #A7ADB9;
     font-family: "Google Sans Code";
     font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
+    font-weight: 400;
+  }
+
+  .tokenIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  .tokenIconPlaceholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #D90A20;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .uniswapLink {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: underline;
+    transition: color 0.2s;
 
     &:hover {
-      color: #FFF;
+      color: #D90A20;
+    }
+  }
+
+  /* Stake Display */
+  .stakeDisplay {
+    background: #141519;
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .stakeDisplayValue {
+    color: #D90A20;
+    font-family: "Jersey10";
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+  }
+
+  .stakeDisplayLabel {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* Dual Button Row */
+  .dualButtonRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .secondaryButton {
+    width: 100%;
+    padding: 16px 24px;
+    background: transparent;
+    border: 1px solid #D90A20;
+    color: #D90A20;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+
+    &:hover:not(:disabled) {
+      background: #D90A20;
+      color: #000;
     }
 
-    &.tabActive {
-      color: #D90A20;
-      border-bottom-color: #D90A20;
+    &:disabled {
+      border-color: #39393A;
+      color: #666;
+      cursor: not-allowed;
     }
+  }
+
+  /* View on Uniswap link */
+  .viewOnUniswap {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #D90A20;
+    }
+  }
+
+  /* Activity Row (simplified) */
+  .activityRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #39393A;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .activityDate {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .activityDesc {
+    color: #FFF;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 400;
+    text-align: right;
   }
 
   /* Stake Form */
