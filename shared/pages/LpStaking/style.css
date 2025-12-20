@@ -139,64 +139,71 @@
     gap: 16px;
   }
 
-  .liquidityItem {
+  .liquidityInputItem {
     background: #141519;
     padding: 16px;
     border-radius: 4px;
-  }
-
-  .liquidityHeader {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .liquidityValue {
+  .liquidityInputHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .tokenIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .tokenName {
+    color: #FFF;
+    font-family: "Google Sans Code";
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .liquidityInput {
+    background: transparent;
+    border: none;
     color: #D90A20;
     font-family: "Jersey10";
     font-size: 28px;
     font-weight: 400;
     line-height: 32px;
+    outline: none;
+    width: 100%;
+
+    &::placeholder {
+      color: #555;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 
-  .liquidityLabel {
+  .uniswapHint {
     color: #A7ADB9;
     font-family: "Google Sans Code";
     font-size: 14px;
     font-weight: 400;
-  }
-
-  .tokenIcon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-  }
-
-  .tokenIconPlaceholder {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #D90A20;
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Google Sans Code";
-    font-size: 12px;
-    font-weight: 700;
   }
 
   .uniswapLink {
-    color: #A7ADB9;
-    font-family: "Google Sans Code";
-    font-size: 14px;
-    font-weight: 400;
+    color: #D90A20;
     text-decoration: underline;
     transition: color 0.2s;
 
     &:hover {
-      color: #D90A20;
+      color: #ff1a30;
     }
   }
 

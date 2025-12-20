@@ -226,40 +226,55 @@ const LpStaking = () => {
             <div className={styles.liquidityForm}>
               <div className={styles.liquidityGrid}>
                 {/* ETH 输入 */}
-                <div className={styles.liquidityItem}>
-                  <div className={styles.liquidityHeader}>
-                    <span className={styles.liquidityValue}>
-                      {ethAmount || '0'}
-                    </span>
+                <div className={styles.liquidityInputItem}>
+                  <div className={styles.liquidityInputHeader}>
                     <img 
                       src="https://assets.coingecko.com/coins/images/279/small/ethereum.png" 
                       alt="ETH" 
                       className={styles.tokenIcon}
                     />
+                    <span className={styles.tokenName}>ETH</span>
                   </div>
-                  <div className={styles.liquidityLabel}>ETH</div>
+                  <input
+                    type="number"
+                    className={styles.liquidityInput}
+                    placeholder="0.0"
+                    value={ethAmount}
+                    onChange={(e) => setEthAmount(e.target.value)}
+                  />
                 </div>
                 
                 {/* 1011 Token 输入 */}
-                <div className={styles.liquidityItem}>
-                  <div className={styles.liquidityHeader}>
-                    <span className={styles.liquidityValue}>
-                      {tokenAmount || '0'}
-                    </span>
-                    <div className={styles.tokenIconPlaceholder}>1011</div>
+                <div className={styles.liquidityInputItem}>
+                  <div className={styles.liquidityInputHeader}>
+                    <img 
+                      src="/images/1011-logo.png" 
+                      alt="1011" 
+                      className={styles.tokenIcon}
+                    />
+                    <span className={styles.tokenName}>1011</span>
                   </div>
-                  <div className={styles.liquidityLabel}>1011</div>
+                  <input
+                    type="number"
+                    className={styles.liquidityInput}
+                    placeholder="0.0"
+                    value={tokenAmount}
+                    onChange={(e) => setTokenAmount(e.target.value)}
+                  />
                 </div>
               </div>
               
-              <a 
-                href={uniswapBuyLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.uniswapLink}
-              >
-                Don't have 1011? Buy it on Uniswap
-              </a>
+              <div className={styles.uniswapHint}>
+                Don't have 1011? Buy it on{' '}
+                <a 
+                  href={uniswapBuyLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.uniswapLink}
+                >
+                  Uniswap
+                </a>
+              </div>
               
               <button
                 className={classNames(styles.actionButton, styles.disabled)}
