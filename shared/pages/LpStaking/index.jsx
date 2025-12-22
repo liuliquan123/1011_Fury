@@ -101,14 +101,27 @@ const LpStaking = () => {
   // 检查是否需要授权
   const needsApproval = parseFloat(userStaking.allowance) < parseFloat(stakeAmount || '0')
   
-  // 处理授权
+  // 处理授权（approve 成功后自动执行 stake）
   const handleApprove = useCallback(() => {
+    if (!stakeAmount || parseFloat(stakeAmount) <= 0) return
+    
     setTxLoading(true)
     dispatch(actions.approveLp({
-      onSuccess: () => setTxLoading(false),
+      onSuccess: () => {
+        // Approve 成功后自动执行 stake
+        dispatch(actions.depositLp({
+          amount: stakeAmount,
+          onSuccess: () => {
+            setTxLoading(false)
+            setStakeAmount('')
+            dispatch(actions.fetchActivityLog())
+          },
+          onError: () => setTxLoading(false),
+        }))
+      },
       onError: () => setTxLoading(false),
     }))
-  }, [dispatch])
+  }, [dispatch, stakeAmount])
   
   // 处理质押
   const handleStake = useCallback(() => {
@@ -307,7 +320,7 @@ const LpStaking = () => {
                 <div className={styles.assetItem}>
                   <div className={styles.assetLabel}>My Points</div>
                   <div className={styles.assetValue}>
-                    {userStaking.loading ? '...' : formatLargeNumber(userStaking.points)}
+                    {userStaking.loading ? '...' : formatNumber(userStaking.points)}
                   </div>
                 </div>
               </div>
@@ -494,7 +507,7 @@ const LpStaking = () => {
               <div className={styles.rewardItem}>
                 <div className={styles.rewardLabel}>My Points</div>
                 <div className={styles.rewardValue}>
-                  {isLoggedIn ? formatLargeNumber(userStaking.points) : '--'}
+                  {isLoggedIn ? formatNumber(userStaking.points) : '--'}
                 </div>
               </div>
               
