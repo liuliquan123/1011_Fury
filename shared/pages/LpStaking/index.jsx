@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import * as actions from 'actions/lpStaking'
-import { getLpStakingConfig, isFeatureAvailable, getCurrentRound, get1011TokenAddress } from 'config/contracts'
+import { getLpStakingConfig, getUniswapV2Config, isFeatureAvailable, getCurrentRound, get1011TokenAddress } from 'config/contracts'
 import styles from './style.css'
 
 // 格式化数字，保留指定小数位
@@ -47,7 +47,7 @@ const truncateHash = (hash) => {
 
 const LpStaking = () => {
   const dispatch = useDispatch()
-  const { contractInfo, userStaking, activityLog, totalPoints } = useSelector(state => state.lpStaking)
+  const { contractInfo, userStaking, activityLog, totalPoints, pairReserves, pairedTokenBalance } = useSelector(state => state.lpStaking)
   const { profile } = useSelector(state => state.auth)
   
   // 判断登录状态
@@ -59,14 +59,18 @@ const LpStaking = () => {
   const [ethAmount, setEthAmount] = useState('')
   const [tokenAmount, setTokenAmount] = useState('')
   const [txLoading, setTxLoading] = useState(false)
+  const [liquidityLoading, setLiquidityLoading] = useState(false)
+  const [lastEditedField, setLastEditedField] = useState(null) // 'eth' or 'token'
   
   const config = getLpStakingConfig()
+  const uniswapConfig = getUniswapV2Config()
   const currentRound = getCurrentRound()
   
   // 初始化加载数据
   useEffect(() => {
     dispatch(actions.fetchContractInfo())
     dispatch(actions.fetchTotalPoints())
+    dispatch(actions.fetchPairReserves())
   }, [dispatch])
   
   // 登录后加载用户数据
@@ -74,6 +78,7 @@ const LpStaking = () => {
     if (isLoggedIn && profile?.wallet_address) {
       dispatch(actions.fetchUserStaking())
       dispatch(actions.fetchActivityLog())
+      dispatch(actions.fetchPairedTokenBalance())
     }
   }, [dispatch, isLoggedIn, profile?.wallet_address])
   
@@ -140,6 +145,87 @@ const LpStaking = () => {
   
   // Uniswap 外链
   const uniswapBuyLink = `https://app.uniswap.org/swap?chain=base&outputCurrency=${get1011TokenAddress()}`
+  const uniswapPoolLink = uniswapConfig?.pair 
+    ? `https://app.uniswap.org/explore/pools/base/${uniswapConfig.pair}` 
+    : uniswapBuyLink
+  
+  // 价格计算：根据储备量计算另一个 token 的数量
+  const calculateTokenFromETH = useCallback((ethValue) => {
+    const eth = parseFloat(ethValue) || 0
+    const reserveETH = parseFloat(pairReserves.reserveETH) || 0
+    const reserveToken = parseFloat(pairReserves.reservePairedToken) || 0
+    
+    if (reserveETH === 0 || eth === 0) return ''
+    
+    // tokenAmount = ethAmount * reserveToken / reserveETH
+    const token = (eth * reserveToken / reserveETH).toFixed(6)
+    return token
+  }, [pairReserves.reserveETH, pairReserves.reservePairedToken])
+  
+  const calculateETHFromToken = useCallback((tokenValue) => {
+    const token = parseFloat(tokenValue) || 0
+    const reserveETH = parseFloat(pairReserves.reserveETH) || 0
+    const reserveToken = parseFloat(pairReserves.reservePairedToken) || 0
+    
+    if (reserveToken === 0 || token === 0) return ''
+    
+    // ethAmount = tokenAmount * reserveETH / reserveToken
+    const eth = (token * reserveETH / reserveToken).toFixed(8)
+    return eth
+  }, [pairReserves.reserveETH, pairReserves.reservePairedToken])
+  
+  // 处理 ETH 输入变化
+  const handleEthAmountChange = (value) => {
+    setEthAmount(value)
+    setLastEditedField('eth')
+    const calculatedToken = calculateTokenFromETH(value)
+    setTokenAmount(calculatedToken)
+  }
+  
+  // 处理 Token 输入变化
+  const handleTokenAmountChange = (value) => {
+    setTokenAmount(value)
+    setLastEditedField('token')
+    const calculatedEth = calculateETHFromToken(value)
+    setEthAmount(calculatedEth)
+  }
+  
+  // 检查是否需要授权配对代币
+  const needsTokenApproval = parseFloat(pairedTokenBalance.allowance) < parseFloat(tokenAmount || '0')
+  
+  // 处理授权配对代币
+  const handleApprovePairedToken = useCallback(() => {
+    setLiquidityLoading(true)
+    dispatch(actions.approvePairedToken({
+      onSuccess: () => setLiquidityLoading(false),
+      onError: () => setLiquidityLoading(false),
+    }))
+  }, [dispatch])
+  
+  // 处理添加流动性
+  const handleAddLiquidity = useCallback(() => {
+    if (!ethAmount || !tokenAmount || parseFloat(ethAmount) <= 0 || parseFloat(tokenAmount) <= 0) return
+    
+    setLiquidityLoading(true)
+    dispatch(actions.addLiquidity({
+      ethAmount,
+      tokenAmount,
+      onSuccess: () => {
+        setLiquidityLoading(false)
+        setEthAmount('')
+        setTokenAmount('')
+      },
+      onError: () => setLiquidityLoading(false),
+    }))
+  }, [dispatch, ethAmount, tokenAmount])
+  
+  // 当前价格
+  const currentPrice = useMemo(() => {
+    const reserveETH = parseFloat(pairReserves.reserveETH) || 0
+    const reserveToken = parseFloat(pairReserves.reservePairedToken) || 0
+    if (reserveETH === 0) return null
+    return reserveToken / reserveETH
+  }, [pairReserves.reserveETH, pairReserves.reservePairedToken])
   
   // 检查功能是否可用
   const lpStakingAvailable = isFeatureAvailable('lpStaking')
@@ -224,6 +310,13 @@ const LpStaking = () => {
             <h2 className={styles.cardTitle}>Add Liquidity</h2>
             
             <div className={styles.liquidityForm}>
+              {/* 当前价格显示 */}
+              {currentPrice && (
+                <div className={styles.priceInfo}>
+                  1 ETH = {formatNumber(currentPrice, 2)} {uniswapConfig?.pairedTokenSymbol || 'Token'}
+                </div>
+              )}
+              
               <div className={styles.liquidityGrid}>
                 {/* ETH 输入 */}
                 <div className={styles.liquidityInputItem}>
@@ -240,32 +333,44 @@ const LpStaking = () => {
                     className={styles.liquidityInput}
                     placeholder="0.0"
                     value={ethAmount}
-                    onChange={(e) => setEthAmount(e.target.value)}
+                    onChange={(e) => handleEthAmountChange(e.target.value)}
+                    disabled={liquidityLoading || pairReserves.loading}
                   />
                 </div>
                 
-                {/* 1011 Token 输入 */}
+                {/* 配对 Token 输入 (USDC 测试 / 1011 正式) */}
                 <div className={styles.liquidityInputItem}>
                   <div className={styles.liquidityInputHeader}>
                     <img 
-                      src="/images/1011-logo.png" 
-                      alt="1011" 
+                      src={uniswapConfig?.pairedTokenSymbol === 'USDC' 
+                        ? 'https://assets.coingecko.com/coins/images/6319/small/usdc.png'
+                        : '/images/1011-logo.png'
+                      } 
+                      alt={uniswapConfig?.pairedTokenSymbol || '1011'} 
                       className={styles.tokenIcon}
                     />
-                    <span className={styles.tokenName}>1011</span>
+                    <span className={styles.tokenName}>{uniswapConfig?.pairedTokenSymbol || '1011'}</span>
                   </div>
                   <input
                     type="number"
                     className={styles.liquidityInput}
                     placeholder="0.0"
                     value={tokenAmount}
-                    onChange={(e) => setTokenAmount(e.target.value)}
+                    onChange={(e) => handleTokenAmountChange(e.target.value)}
+                    disabled={liquidityLoading || pairReserves.loading}
                   />
                 </div>
               </div>
               
+              {/* 余额显示 */}
+              {isLoggedIn && (
+                <div className={styles.balanceRow}>
+                  <span>Balance: {formatNumber(pairedTokenBalance.balance, 2)} {uniswapConfig?.pairedTokenSymbol || 'Token'}</span>
+                </div>
+              )}
+              
               <div className={styles.uniswapHint}>
-                Don't have 1011? Buy it on{' '}
+                Don't have {uniswapConfig?.pairedTokenSymbol || '1011'}? Buy it on{' '}
                 <a 
                   href={uniswapBuyLink}
                   target="_blank"
@@ -276,12 +381,24 @@ const LpStaking = () => {
                 </a>
               </div>
               
-              <button
-                className={classNames(styles.actionButton, styles.disabled)}
-                disabled
-              >
-                Add (Coming Soon)
-              </button>
+              {isLoggedIn ? (
+                <button
+                  className={styles.actionButton}
+                  onClick={needsTokenApproval ? handleApprovePairedToken : handleAddLiquidity}
+                  disabled={liquidityLoading || !ethAmount || !tokenAmount || parseFloat(ethAmount) <= 0 || parseFloat(tokenAmount) <= 0}
+                >
+                  {liquidityLoading 
+                    ? 'Processing...' 
+                    : needsTokenApproval 
+                      ? `Approve ${uniswapConfig?.pairedTokenSymbol || 'Token'}` 
+                      : 'Add Liquidity'
+                  }
+                </button>
+              ) : (
+                <button className={classNames(styles.actionButton, styles.disabled)} disabled>
+                  Login to Add Liquidity
+                </button>
+              )}
             </div>
           </div>
           
@@ -390,7 +507,7 @@ const LpStaking = () => {
               <div className={styles.cardHeader}>
                 <h2 className={styles.cardTitle}>Activity Log</h2>
                 <a 
-                  href={uniswapBuyLink}
+                  href={uniswapPoolLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.viewOnUniswap}

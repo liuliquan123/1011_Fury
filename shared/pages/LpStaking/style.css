@@ -195,6 +195,7 @@
     font-family: "Google Sans Code";
     font-size: 14px;
     font-weight: 400;
+    margin-bottom: 16px;
   }
 
   .uniswapLink {
@@ -205,6 +206,27 @@
     &:hover {
       color: #ff1a30;
     }
+  }
+
+  .priceInfo {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 13px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: #141519;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .balanceRow {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    text-align: right;
   }
 
   /* Stake Input Box (设计稿样式) */

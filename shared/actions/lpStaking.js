@@ -24,6 +24,14 @@ export const updateActivityLog = createAction('lpStaking/UPDATE_ACTIVITY_LOG')
 export const fetchTotalPoints = createAction('lpStaking/FETCH_TOTAL_POINTS')
 export const updateTotalPoints = createAction('lpStaking/UPDATE_TOTAL_POINTS')
 
+// Uniswap V2 - Add Liquidity
+export const fetchPairReserves = createAction('lpStaking/FETCH_PAIR_RESERVES')
+export const updatePairReserves = createAction('lpStaking/UPDATE_PAIR_RESERVES')
+export const addLiquidity = createAction('lpStaking/ADD_LIQUIDITY')
+export const approvePairedToken = createAction('lpStaking/APPROVE_PAIRED_TOKEN')
+export const fetchPairedTokenBalance = createAction('lpStaking/FETCH_PAIRED_TOKEN_BALANCE')
+export const updatePairedTokenBalance = createAction('lpStaking/UPDATE_PAIRED_TOKEN_BALANCE')
+
 
 
 

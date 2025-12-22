@@ -102,16 +102,16 @@
 
         &.secondaryButton {
           background: transparent;
-          border: 1px solid #D90A20;
-          color: #D90A20;
+          border: 1px solid white;
+          color: white;
           margin-top: 16px;
 
           .buttonText {
-            color: #D90A20;
+            color: white;
           }
 
           &:hover {
-            background: rgba(217, 10, 32, 0.1);
+            background: rgba(255, 255, 255, 0.1);
           }
         }
       }

@@ -117,6 +117,31 @@ export const LP_STAKING = {
   }
 }
 
+// ============================================
+// Uniswap V2 配置（用于 Add Liquidity）
+// ============================================
+export const UNISWAP_V2 = {
+  84532: { // Base Sepolia (暂无)
+    router: null,
+    weth: null,
+    pairedToken: null, // 1011 token
+    pair: null,
+  },
+  8453: { // Base Mainnet
+    router: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
+    weth: '0x4200000000000000000000000000000000000006',
+    pairedToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC (测试用，正式用 1011)
+    pairedTokenDecimals: 6, // USDC 是 6 位小数
+    pairedTokenSymbol: 'USDC',
+    pair: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C', // ETH-USDC LP
+  }
+}
+
+// 获取当前链的 Uniswap V2 配置
+export const getUniswapV2Config = () => {
+  return UNISWAP_V2[CHAIN_ID] || UNISWAP_V2[8453]
+}
+
 // 获取当前链的 LP Staking 配置
 export const getLpStakingConfig = () => {
   return LP_STAKING[CHAIN_ID] || LP_STAKING[84532]

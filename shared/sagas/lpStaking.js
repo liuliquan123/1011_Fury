@@ -3,8 +3,10 @@ import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import { WALLET_CONNECTORS, CHAIN_NAMESPACES } from '@web3auth/modal'
 import * as actions from 'actions/lpStaking'
-import { RPC_URL, getLpStakingConfig, CHAIN_CONFIG, CHAIN_ID, CHAIN_ID_HEX } from 'config/contracts'
+import { RPC_URL, getLpStakingConfig, getUniswapV2Config, CHAIN_CONFIG, CHAIN_ID, CHAIN_ID_HEX } from 'config/contracts'
 import LP_STAKING_ABI from 'config/abi/lp-staking.json'
+import UNISWAP_V2_ROUTER_ABI from 'config/abi/uniswap-v2-router.json'
+import UNISWAP_V2_PAIR_ABI from 'config/abi/uniswap-v2-pair.json'
 import { web3auth, waitWeb3AuthReady, isTransientConnectError } from './auth'
 
 // ERC20 ABI (只需要 balanceOf, allowance, approve)
@@ -494,6 +496,227 @@ function* fetchTotalPointsSaga() {
   }
 }
 
+// ============================================
+// Uniswap V2 Add Liquidity 相关 Saga
+// ============================================
+
+/**
+ * 获取 Uniswap V2 Pair 储备量（用于价格计算）
+ */
+function* fetchPairReservesSaga() {
+  try {
+    yield put(actions.updatePairReserves({ loading: true, error: null }))
+    
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.pair || !uniswapConfig.weth) {
+      throw new Error('Uniswap V2 not configured for this network')
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const pairContract = new ethers.Contract(uniswapConfig.pair, UNISWAP_V2_PAIR_ABI, provider)
+    
+    // 获取 token0, token1 和储备量
+    const [token0, token1, reserves] = yield Promise.all([
+      pairContract.token0(),
+      pairContract.token1(),
+      pairContract.getReserves(),
+    ])
+    
+    // 判断 WETH 是 token0 还是 token1
+    const isToken0WETH = token0.toLowerCase() === uniswapConfig.weth.toLowerCase()
+    
+    // 根据 token 顺序确定储备量
+    // USDC 是 6 位小数，WETH 是 18 位小数
+    const pairedTokenDecimals = uniswapConfig.pairedTokenDecimals || 18
+    
+    let reserveETH, reservePairedToken
+    if (isToken0WETH) {
+      reserveETH = ethers.formatEther(reserves._reserve0)
+      reservePairedToken = ethers.formatUnits(reserves._reserve1, pairedTokenDecimals)
+    } else {
+      reserveETH = ethers.formatEther(reserves._reserve1)
+      reservePairedToken = ethers.formatUnits(reserves._reserve0, pairedTokenDecimals)
+    }
+    
+    yield put(actions.updatePairReserves({
+      loading: false,
+      reserveETH,
+      reservePairedToken,
+      token0,
+      token1,
+      isToken0WETH,
+    }))
+    
+    console.log('[LpStaking] Pair reserves fetched', { reserveETH, reservePairedToken, isToken0WETH })
+  } catch (error) {
+    console.error('[LpStaking] fetchPairReserves error:', error)
+    yield put(actions.updatePairReserves({ loading: false, error: error.message }))
+  }
+}
+
+/**
+ * 获取配对代币余额和授权额度（USDC 或 1011）
+ */
+function* fetchPairedTokenBalanceSaga() {
+  try {
+    yield put(actions.updatePairedTokenBalance({ loading: true }))
+    
+    const profile = yield select(state => state.auth.profile)
+    if (!profile?.wallet_address) {
+      yield put(actions.updatePairedTokenBalance({ loading: false, balance: '0', allowance: '0' }))
+      return
+    }
+    
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.pairedToken || !uniswapConfig.router) {
+      yield put(actions.updatePairedTokenBalance({ loading: false, balance: '0', allowance: '0' }))
+      return
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const tokenContract = new ethers.Contract(uniswapConfig.pairedToken, ERC20_ABI, provider)
+    
+    const pairedTokenDecimals = uniswapConfig.pairedTokenDecimals || 18
+    
+    const [balance, allowance] = yield Promise.all([
+      tokenContract.balanceOf(profile.wallet_address),
+      tokenContract.allowance(profile.wallet_address, uniswapConfig.router),
+    ])
+    
+    yield put(actions.updatePairedTokenBalance({
+      loading: false,
+      balance: ethers.formatUnits(balance, pairedTokenDecimals),
+      allowance: ethers.formatUnits(allowance, pairedTokenDecimals),
+    }))
+    
+    console.log('[LpStaking] Paired token balance fetched', {
+      balance: ethers.formatUnits(balance, pairedTokenDecimals),
+      allowance: ethers.formatUnits(allowance, pairedTokenDecimals),
+    })
+  } catch (error) {
+    console.error('[LpStaking] fetchPairedTokenBalance error:', error)
+    yield put(actions.updatePairedTokenBalance({ loading: false, balance: '0', allowance: '0' }))
+  }
+}
+
+/**
+ * 授权配对代币给 Router（USDC 或 1011）
+ */
+function* approvePairedTokenSaga({ payload }) {
+  const { onSuccess, onError } = payload || {}
+  
+  try {
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.pairedToken || !uniswapConfig.router) {
+      throw new Error('Uniswap V2 not configured')
+    }
+    
+    // 获取钱包 provider
+    const provider = yield call(getWalletProvider)
+    yield call(switchToTargetChain, provider)
+    
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    
+    const tokenContract = new ethers.Contract(uniswapConfig.pairedToken, ERC20_ABI, signer)
+    
+    // 授权最大值
+    const maxApproval = ethers.MaxUint256
+    console.log('[LpStaking] Approving paired token for Router...')
+    
+    const tx = yield call([tokenContract, tokenContract.approve], uniswapConfig.router, maxApproval)
+    console.log('[LpStaking] Approve tx sent:', tx.hash)
+    
+    yield call([tx, tx.wait])
+    console.log('[LpStaking] Approve confirmed')
+    
+    toast.success(`${uniswapConfig.pairedTokenSymbol || 'Token'} approved!`)
+    
+    // 刷新余额
+    yield put(actions.fetchPairedTokenBalance())
+    
+    onSuccess && onSuccess({ txHash: tx.hash })
+  } catch (error) {
+    console.error('[LpStaking] approvePairedToken error:', error)
+    const message = error.reason || error.message || 'Approve failed'
+    toast.error(message)
+    onError && onError(message)
+  }
+}
+
+/**
+ * 添加流动性（ETH + USDC/1011）
+ */
+function* addLiquiditySaga({ payload }) {
+  const { ethAmount, tokenAmount, onSuccess, onError } = payload
+  
+  try {
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.router || !uniswapConfig.pairedToken) {
+      throw new Error('Uniswap V2 not configured')
+    }
+    
+    // 获取钱包 provider
+    const provider = yield call(getWalletProvider)
+    yield call(switchToTargetChain, provider)
+    
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    const signerAddress = yield apply(signer, signer.getAddress)
+    
+    const routerContract = new ethers.Contract(uniswapConfig.router, UNISWAP_V2_ROUTER_ABI, signer)
+    
+    // 转换金额
+    const pairedTokenDecimals = uniswapConfig.pairedTokenDecimals || 18
+    const ethAmountWei = ethers.parseEther(ethAmount)
+    const tokenAmountWei = ethers.parseUnits(tokenAmount, pairedTokenDecimals)
+    
+    // 设置 1% 滑点保护
+    const minTokenAmount = tokenAmountWei * BigInt(99) / BigInt(100)
+    const minEthAmount = ethAmountWei * BigInt(99) / BigInt(100)
+    
+    // deadline: 当前时间 + 20 分钟
+    const deadline = Math.floor(Date.now() / 1000) + 20 * 60
+    
+    console.log('[LpStaking] Adding liquidity...', {
+      ethAmount,
+      tokenAmount,
+      minTokenAmount: ethers.formatUnits(minTokenAmount, pairedTokenDecimals),
+      minEthAmount: ethers.formatEther(minEthAmount),
+    })
+    
+    const tx = yield call(
+      [routerContract, routerContract.addLiquidityETH],
+      uniswapConfig.pairedToken,
+      tokenAmountWei,
+      minTokenAmount,
+      minEthAmount,
+      signerAddress,
+      deadline,
+      { value: ethAmountWei }
+    )
+    
+    console.log('[LpStaking] AddLiquidity tx sent:', tx.hash)
+    
+    const receipt = yield call([tx, tx.wait])
+    console.log('[LpStaking] AddLiquidity confirmed')
+    
+    toast.success('Liquidity added successfully!')
+    
+    // 刷新数据
+    yield put(actions.fetchUserStaking())
+    yield put(actions.fetchPairedTokenBalance())
+    yield put(actions.fetchPairReserves())
+    
+    onSuccess && onSuccess({ txHash: tx.hash })
+  } catch (error) {
+    console.error('[LpStaking] addLiquidity error:', error)
+    const message = error.reason || error.message || 'Add liquidity failed'
+    toast.error(message)
+    onError && onError(message)
+  }
+}
+
 export default function* lpStakingSaga() {
   yield takeEvery(String(actions.fetchContractInfo), fetchContractInfoSaga)
   yield takeEvery(String(actions.fetchUserStaking), fetchUserStakingSaga)
@@ -503,5 +726,10 @@ export default function* lpStakingSaga() {
   yield takeEvery(String(actions.withdrawAllLp), withdrawAllLpSaga)
   yield takeEvery(String(actions.fetchActivityLog), fetchActivityLogSaga)
   yield takeEvery(String(actions.fetchTotalPoints), fetchTotalPointsSaga)
+  // Uniswap V2 Add Liquidity
+  yield takeEvery(String(actions.fetchPairReserves), fetchPairReservesSaga)
+  yield takeEvery(String(actions.fetchPairedTokenBalance), fetchPairedTokenBalanceSaga)
+  yield takeEvery(String(actions.approvePairedToken), approvePairedTokenSaga)
+  yield takeEvery(String(actions.addLiquidity), addLiquiditySaga)
 }
 

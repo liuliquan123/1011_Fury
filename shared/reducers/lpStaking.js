@@ -35,6 +35,22 @@ const initialState = {
     error: null,
     value: '0',          // 全网总积分
   },
+  // Uniswap V2 Pair 储备量（用于价格计算）
+  pairReserves: {
+    loading: false,
+    error: null,
+    reserveETH: '0',
+    reservePairedToken: '0', // USDC or 1011
+    token0: null,        // token0 地址
+    token1: null,        // token1 地址
+    isToken0WETH: true,  // token0 是否是 WETH
+  },
+  // 配对代币余额（USDC or 1011）
+  pairedTokenBalance: {
+    loading: false,
+    balance: '0',
+    allowance: '0',      // 对 Router 的授权额度
+  },
   // 交易状态
   txPending: false,
 }
@@ -56,6 +72,14 @@ export default handleActions({
     Object.assign(state.totalPoints, action.payload)
   },
   
+  [actions.updatePairReserves] (state, action) {
+    Object.assign(state.pairReserves, action.payload)
+  },
+  
+  [actions.updatePairedTokenBalance] (state, action) {
+    Object.assign(state.pairedTokenBalance, action.payload)
+  },
+  
   // 交易状态可以通过 payload 中的 txPending 更新
   [actions.approveLp] (state) {
     state.txPending = true
@@ -67,6 +91,12 @@ export default handleActions({
     state.txPending = true
   },
   [actions.withdrawAllLp] (state) {
+    state.txPending = true
+  },
+  [actions.addLiquidity] (state) {
+    state.txPending = true
+  },
+  [actions.approvePairedToken] (state) {
     state.txPending = true
   },
 }, initialState)
