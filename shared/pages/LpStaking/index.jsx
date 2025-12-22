@@ -219,14 +219,28 @@ const LpStaking = () => {
   // 检查是否需要授权配对代币
   const needsTokenApproval = parseFloat(pairedTokenBalance.allowance) < parseFloat(tokenAmount || '0')
   
-  // 处理授权配对代币
+  // 处理授权配对代币（approve 成功后自动执行 addLiquidity）
   const handleApprovePairedToken = useCallback(() => {
+    if (!ethAmount || !tokenAmount || parseFloat(ethAmount) <= 0 || parseFloat(tokenAmount) <= 0) return
+    
     setLiquidityLoading(true)
     dispatch(actions.approvePairedToken({
-      onSuccess: () => setLiquidityLoading(false),
+      onSuccess: () => {
+        // Approve 成功后自动执行 addLiquidity
+        dispatch(actions.addLiquidity({
+          ethAmount,
+          tokenAmount,
+          onSuccess: () => {
+            setLiquidityLoading(false)
+            setEthAmount('')
+            setTokenAmount('')
+          },
+          onError: () => setLiquidityLoading(false),
+        }))
+      },
       onError: () => setLiquidityLoading(false),
     }))
-  }, [dispatch])
+  }, [dispatch, ethAmount, tokenAmount])
   
   // 处理添加流动性
   const handleAddLiquidity = useCallback(() => {
