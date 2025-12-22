@@ -1,13 +1,13 @@
 import { takeEvery, call, put, select, apply, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
-import { WALLET_CONNECTORS, CHAIN_NAMESPACES } from '@web3auth/modal'
+import { WALLET_CONNECTORS } from '@web3auth/modal'
 import * as actions from 'actions/lpStaking'
-import { RPC_URL, getLpStakingConfig, getUniswapV2Config, CHAIN_CONFIG, CHAIN_ID, CHAIN_ID_HEX } from 'config/contracts'
+import { RPC_URL, getLpStakingConfig, getUniswapV2Config, CHAIN_CONFIG, CHAIN_ID } from 'config/contracts'
 import LP_STAKING_ABI from 'config/abi/lp-staking.json'
 import UNISWAP_V2_ROUTER_ABI from 'config/abi/uniswap-v2-router.json'
 import UNISWAP_V2_PAIR_ABI from 'config/abi/uniswap-v2-pair.json'
-import { web3auth, waitWeb3AuthReady, isTransientConnectError } from './auth'
+import { web3auth, waitWeb3AuthReady, isTransientConnectError, connectInFlight, setConnectInFlight } from './auth'
 
 // ERC20 ABI (只需要 balanceOf, allowance, approve)
 const ERC20_ABI = [
@@ -121,52 +121,60 @@ function* getWalletProvider() {
     provider = web3auth.provider
     console.log('[LpStaking] Using existing provider')
   } else {
-    // 3. 没有连接 → 调用 connectTo（带重试逻辑）
-    console.log('[LpStaking] Connecting to MetaMask...')
-    
-    // 额外等待确保 MetaMask connector 完全初始化
-    // initWeb3Auth 中的 logout 会重置 connectors，需要更多时间
-    yield delay(1000)
-    
-    let retryCount = 0
-    const maxRetries = 5  // 增加重试次数
-    
-    while (retryCount < maxRetries) {
-      try {
-        // 使用 call 包装 Promise，确保能正确捕获 rejection
-        const connectPromise = () => web3auth.connectTo(
-          WALLET_CONNECTORS.METAMASK, {
-            chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: CHAIN_ID_HEX,
-            rpcTarget: RPC_URL,
-          }
-        )
-        provider = yield call(connectPromise)
-        break
-      } catch (connectError) {
-        const code = connectError?.code
-        
-        // 用户拒绝：不重试
-        if (code === 4001) {
-          throw new Error('User rejected wallet connection.')
-        }
-        
-        // 不属于临时错误：不重试
-        if (!isTransientConnectError(connectError)) {
-          throw connectError
-        }
-        
-        retryCount++
-        console.log(`[LpStaking] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
-        
-        if (retryCount >= maxRetries) {
-          throw connectError
-        }
-        
-        // 增加等待时间：第一次 2 秒，之后递增
-        yield delay(2000 + retryCount * 500)
-        console.log(`[LpStaking] Retrying...`)
+    // 3. 并发锁：避免多个 saga 同时 connectTo
+    if (connectInFlight) {
+      console.log('[LpStaking] connect already in flight, waiting...')
+      while (connectInFlight) {
+        yield delay(200)
       }
+      // 连接完成后检查结果
+      if (web3auth.status === 'connected' && web3auth.provider) {
+        return web3auth.provider
+      }
+    }
+
+    // 4. 连接钱包
+    console.log('[LpStaking] Connecting to MetaMask...')
+    setConnectInFlight(true)
+    
+    try {
+      let retryCount = 0
+      const maxRetries = 3
+      
+      while (retryCount < maxRetries) {
+        try {
+          // v10: MetaMask connector 不传 chainId/rpcTarget 参数
+          provider = yield call(
+            [web3auth, web3auth.connectTo],
+            WALLET_CONNECTORS.METAMASK
+          )
+          break
+        } catch (connectError) {
+          const code = connectError?.code
+          
+          // 用户拒绝：不重试
+          if (code === 4001) {
+            throw new Error('User rejected wallet connection.')
+          }
+          
+          // 不属于临时错误：不重试
+          if (!isTransientConnectError(connectError)) {
+            throw connectError
+          }
+          
+          retryCount++
+          console.log(`[LpStaking] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
+          
+          if (retryCount >= maxRetries) {
+            throw connectError
+          }
+          
+          yield delay(1000)
+          console.log(`[LpStaking] Retrying...`)
+        }
+      }
+    } finally {
+      setConnectInFlight(false)
     }
   }
 

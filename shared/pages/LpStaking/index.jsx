@@ -174,21 +174,34 @@ const LpStaking = () => {
     return eth
   }, [pairReserves.reserveETH, pairReserves.reservePairedToken])
   
-  // 处理 ETH 输入变化
+  // 处理 ETH 输入变化（过滤负数）
   const handleEthAmountChange = (value) => {
+    // 过滤负数
+    if (value && parseFloat(value) < 0) return
     setEthAmount(value)
     setLastEditedField('eth')
     const calculatedToken = calculateTokenFromETH(value)
     setTokenAmount(calculatedToken)
   }
   
-  // 处理 Token 输入变化
+  // 处理 Token 输入变化（过滤负数）
   const handleTokenAmountChange = (value) => {
+    // 过滤负数
+    if (value && parseFloat(value) < 0) return
     setTokenAmount(value)
     setLastEditedField('token')
     const calculatedEth = calculateETHFromToken(value)
     setEthAmount(calculatedEth)
   }
+  
+  // 处理 Stake 输入变化（过滤负数）
+  const handleStakeAmountChange = (value) => {
+    if (value && parseFloat(value) < 0) return
+    setStakeAmount(value)
+  }
+  
+  // 禁用滚轮事件（防止滚轮改变数字输入框的值）
+  const disableWheel = (e) => e.target.blur()
   
   // 检查是否需要授权配对代币
   const needsTokenApproval = parseFloat(pairedTokenBalance.allowance) < parseFloat(tokenAmount || '0')
@@ -332,8 +345,10 @@ const LpStaking = () => {
                     type="number"
                     className={styles.liquidityInput}
                     placeholder="0.0"
+                    min="0"
                     value={ethAmount}
                     onChange={(e) => handleEthAmountChange(e.target.value)}
+                    onWheel={disableWheel}
                     disabled={liquidityLoading || pairReserves.loading}
                   />
                 </div>
@@ -355,8 +370,10 @@ const LpStaking = () => {
                     type="number"
                     className={styles.liquidityInput}
                     placeholder="0.0"
+                    min="0"
                     value={tokenAmount}
                     onChange={(e) => handleTokenAmountChange(e.target.value)}
+                    onWheel={disableWheel}
                     disabled={liquidityLoading || pairReserves.loading}
                   />
                 </div>
@@ -413,8 +430,10 @@ const LpStaking = () => {
                     type="number"
                     className={styles.stakeInputLarge}
                     placeholder="0"
+                    min="0"
                     value={stakeAmount}
-                    onChange={(e) => setStakeAmount(e.target.value)}
+                    onChange={(e) => handleStakeAmountChange(e.target.value)}
+                    onWheel={disableWheel}
                     disabled={txLoading}
                   />
                   <div className={styles.stakeInputMeta}>
