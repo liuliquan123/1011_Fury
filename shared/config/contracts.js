@@ -111,9 +111,9 @@ export const LP_STAKING = {
     stakingContract: '0x82Fd3C14e01E5b1c647AA14E5Db146070a47d204',
     lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
-  8453: { // Base Mainnet (未部署)
-    stakingContract: null,
-    lpToken: null,
+  8453: { // Base Mainnet (ETH-USDC LP 测试)
+    stakingContract: '0xFE5E79F3cB291CC24E6c4F1c316c3443F59b7760',
+    lpToken: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',
   }
 }
 
