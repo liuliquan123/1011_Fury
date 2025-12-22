@@ -466,8 +466,12 @@ const LpStaking = () => {
                   <div className={styles.stakeInputMeta}>
                     <span className={styles.stakeInputLabel}>Staking Amount</span>
                     <button className={styles.maxButtonInline} onClick={setMaxStake}>
-                      MAX ({formatNumber(userStaking.lpBalance)} LP)
+                      MAX
                     </button>
+                  </div>
+                  <div className={styles.lpBalanceRow}>
+                    <span>Wallet: {formatNumber(userStaking.lpBalance)} LP</span>
+                    <span>Staked: {formatNumber(userStaking.balance)} LP</span>
                   </div>
                 </div>
                 
