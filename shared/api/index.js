@@ -1,4 +1,4 @@
-import { SERVER_URL, HOST_URL } from 'constants/env'
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from 'constants/env'
 
 export const apiCreator = (baseUrl, baseOptions = {}) => async (method = 'GET', endPoint = '/hello', params = {}, moreOptions = {}) => {
   const options = { ...baseOptions, ...moreOptions }
@@ -73,18 +73,6 @@ export const apiCreator = (baseUrl, baseOptions = {}) => async (method = 'GET', 
 
 const responseTransformer = res => res.data
 const errorTransformer = res => Promise.reject({ message: res.message })
-
-export const satoshiApi = apiCreator(`${SERVER_URL}/api`, { responseTransformer, errorTransformer })
-
-export const codeApi = apiCreator(`${HOST_URL}`, {
-  headers: {
-    Accept: 'application/javascript',
-    'Content-Type': 'application/javascript'
-  }
-})
-
-const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
-const SUPABASE_ANON_KEY = "sb_publishable_wl9QBcaEFGJWauO77gIDiQ_VEmbEnxv"
 
 export const supabaseRestApi = apiCreator(`${SUPABASE_URL}/rest/v1`, {
   headers: {

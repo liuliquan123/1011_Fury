@@ -24,13 +24,7 @@ import * as api from 'api/supabase'
 import { ethers } from 'ethers'
 import { CHAIN_ID, CHAIN_ID_HEX, RPC_URL, CHAIN_CONFIG, getSignatureClaimAddress } from 'config/contracts'
 import SIGNATURE_CLAIM_ABI from 'config/abi/signatureClaim.json'
-
-const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k"
-const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
-const SUPABASE_ANON_KEY = "sb_publishable_wl9QBcaEFGJWauO77gIDiQ_VEmbEnxv"
-const API_BASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co/functions/v1"
-const TELEGRAM_BOT_USERNAME = "SatoshiFuryBot"
-const APP_URL = "https://satoshis-fury-nextjs.vercel.app"
+import { WEB3AUTH_CLIENT_ID, SUPABASE_URL, SUPABASE_ANON_KEY, TELEGRAM_BOT_USERNAME } from 'constants/env'
 
 // console.log('WALLET_CONNECTORS', WALLET_CONNECTORS)
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {

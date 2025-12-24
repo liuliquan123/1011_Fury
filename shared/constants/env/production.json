@@ -1,7 +1,8 @@
 {
   "ENV": "production",
-  "SERVER_URL": "https://www.satoshi.so",
-  "HOST_URL": "https://www.satoshi.so",
-  "API_URL": "https://www.satoshi.so",
+  "WEB3AUTH_CLIENT_ID": "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k",
+  "SUPABASE_URL": "https://npsdvkqmdkzadkzbxhbq.supabase.co",
+  "SUPABASE_ANON_KEY": "sb_publishable_wl9QBcaEFGJWauO77gIDiQ_VEmbEnxv",
+  "TELEGRAM_BOT_USERNAME": "SatoshiFuryBot",
   "CHAIN_ID": 8453
 }
