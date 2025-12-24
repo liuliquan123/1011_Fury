@@ -48,14 +48,9 @@ export const TOKEN_DISTRIBUTION = {
   peopleDao: { percentage: 37.5, tokens: 787_500_000 }, // 37.5%
 }
 
-// 获取当前轮次配置（暂时硬编码为第一轮，后续可从后端获取）
-export const getCurrentRound = () => {
-  return {
-    round: 1,
-    submitLoss: TOKEN_DISTRIBUTION.submitLoss.round1,
-    lpRewards: TOKEN_DISTRIBUTION.lpRewards.round1,
-  }
-}
+// 注意：getCurrentRound() 已移除
+// LP Staking 的轮次信息现在从 PointsVaultRounds 合约直接获取
+// Submit Loss 的轮次信息保留在 TOKEN_DISTRIBUTION 中供后端使用
 
 // 网络配置（用于 Web3Auth connectTo 和 wallet_addEthereumChain）
 export const CHAIN_CONFIG = {
@@ -105,13 +100,16 @@ const TESTNET_CONTRACTS = {
 // 根据当前网络选择合约配置
 export const CONTRACTS = CHAIN_ID === 8453 ? MAINNET_CONTRACTS : TESTNET_CONTRACTS
 
-// LP Staking 配置
+// ============================================
+// LP Staking 配置 (PointsVaultRounds 合约)
+// 三轮奖励机制：Round 1 (7天) + Round 2 (30天) + Round 3 (90天) = 127天
+// ============================================
 export const LP_STAKING = {
-  84532: { // Base Sepolia (测试)
+  84532: { // Base Sepolia (测试) - 旧合约，需要部署新的 PointsVaultRounds
     stakingContract: '0x82Fd3C14e01E5b1c647AA14E5Db146070a47d204',
     lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
-  8453: { // Base Mainnet (ETH-USDC LP 测试)
+  8453: { // Base Mainnet (ETH-USDC LP 测试) - 需要更新为 PointsVaultRounds 合约地址
     stakingContract: '0xFE5E79F3cB291CC24E6c4F1c316c3443F59b7760',
     lpToken: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',
   }
