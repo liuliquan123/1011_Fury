@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
+import { toast } from 'react-toastify'
 import * as actions from 'actions/lpStaking'
+import * as authActions from 'actions/auth'
 import { getLpStakingConfig, getUniswapV2Config, isFeatureAvailable, get1011TokenAddress } from 'config/contracts'
 import styles from './style.css'
 
@@ -68,6 +70,22 @@ const LpStaking = () => {
   const [claimLoading, setClaimLoading] = useState({})
   const [lastEditedField, setLastEditedField] = useState(null)
   const [expandedRounds, setExpandedRounds] = useState({}) // 轮次折叠状态
+  const [connecting, setConnecting] = useState(false) // 钱包连接中
+  
+  // 连接钱包处理（社交登录用户需要先连接钱包才能进行链上操作）
+  const handleConnectWallet = useCallback(() => {
+    setConnecting(true)
+    dispatch(authActions.linkWallet({
+      onSuccess: () => {
+        setConnecting(false)
+        toast.success('Wallet connected!')
+      },
+      onError: (msg) => {
+        setConnecting(false)
+        toast.error(msg || 'Failed to connect wallet')
+      }
+    }))
+  }, [dispatch])
   
   // 切换轮次折叠状态
   const toggleRound = useCallback((roundId) => {
@@ -135,6 +153,11 @@ const LpStaking = () => {
   
   // 处理领取奖励
   const handleClaim = useCallback((roundId) => {
+    if (!hasWallet) {
+      handleConnectWallet()
+      return
+    }
+    
     setClaimLoading(prev => ({ ...prev, [roundId]: true }))
     dispatch(actions.claimReward({
       roundId,
@@ -145,7 +168,7 @@ const LpStaking = () => {
         setClaimLoading(prev => ({ ...prev, [roundId]: false }))
       },
     }))
-  }, [dispatch])
+  }, [dispatch, hasWallet, handleConnectWallet])
   
   // 检查是否需要授权
   const needsApproval = parseFloat(userStaking.allowance) < parseFloat(stakeAmount || '0')
@@ -153,6 +176,10 @@ const LpStaking = () => {
   // 处理授权（approve 成功后自动执行 stake）
   const handleApprove = useCallback(() => {
     if (!stakeAmount || parseFloat(stakeAmount) <= 0) return
+    if (!hasWallet) {
+      handleConnectWallet()
+      return
+    }
     
     setTxLoading(true)
     dispatch(actions.approveLp({
@@ -172,11 +199,15 @@ const LpStaking = () => {
       },
       onError: () => setTxLoading(false),
     }))
-  }, [dispatch, stakeAmount])
+  }, [dispatch, stakeAmount, hasWallet, handleConnectWallet])
   
   // 处理质押
   const handleStake = useCallback(() => {
     if (!stakeAmount || parseFloat(stakeAmount) <= 0) return
+    if (!hasWallet) {
+      handleConnectWallet()
+      return
+    }
     
     setTxLoading(true)
     dispatch(actions.depositLp({
@@ -188,11 +219,15 @@ const LpStaking = () => {
       },
       onError: () => setTxLoading(false),
     }))
-  }, [dispatch, stakeAmount])
+  }, [dispatch, stakeAmount, hasWallet, handleConnectWallet])
   
   // 处理全部取消质押
   const handleUnstakeAll = useCallback(() => {
     if (parseFloat(userStaking.balance) <= 0) return
+    if (!hasWallet) {
+      handleConnectWallet()
+      return
+    }
     
     setTxLoading(true)
     dispatch(actions.withdrawAllLp({
@@ -202,7 +237,7 @@ const LpStaking = () => {
       },
       onError: () => setTxLoading(false),
     }))
-  }, [dispatch, userStaking.balance])
+  }, [dispatch, userStaking.balance, hasWallet, handleConnectWallet])
   
   // 设置最大值
   const setMaxStake = () => setStakeAmount(userStaking.lpBalance)
@@ -269,6 +304,10 @@ const LpStaking = () => {
   // 处理授权配对代币（approve 成功后自动执行 addLiquidity）
   const handleApprovePairedToken = useCallback(() => {
     if (!ethAmount || !tokenAmount || parseFloat(ethAmount) <= 0 || parseFloat(tokenAmount) <= 0) return
+    if (!hasWallet) {
+      handleConnectWallet()
+      return
+    }
     
     setLiquidityLoading(true)
     dispatch(actions.approvePairedToken({
@@ -289,11 +328,15 @@ const LpStaking = () => {
       },
       onError: () => setLiquidityLoading(false),
     }))
-  }, [dispatch, ethAmount, tokenAmount])
+  }, [dispatch, ethAmount, tokenAmount, hasWallet, handleConnectWallet])
   
   // 处理添加流动性
   const handleAddLiquidity = useCallback(() => {
     if (!ethAmount || !tokenAmount || parseFloat(ethAmount) <= 0 || parseFloat(tokenAmount) <= 0) return
+    if (!hasWallet) {
+      handleConnectWallet()
+      return
+    }
     
     setLiquidityLoading(true)
     dispatch(actions.addLiquidity({
@@ -306,7 +349,7 @@ const LpStaking = () => {
       },
       onError: () => setLiquidityLoading(false),
     }))
-  }, [dispatch, ethAmount, tokenAmount])
+  }, [dispatch, ethAmount, tokenAmount, hasWallet, handleConnectWallet])
   
   // 当前价格
   const currentPrice = useMemo(() => {
@@ -476,18 +519,28 @@ const LpStaking = () => {
               </div>
               
               {isLoggedIn ? (
-                <button
-                  className={styles.actionButton}
-                  onClick={needsTokenApproval ? handleApprovePairedToken : handleAddLiquidity}
-                  disabled={liquidityLoading || !ethAmount || !tokenAmount || parseFloat(ethAmount) <= 0 || parseFloat(tokenAmount) <= 0}
-                >
-                  {liquidityLoading 
-                    ? 'Processing...' 
-                    : needsTokenApproval 
-                      ? `Approve ${uniswapConfig?.pairedTokenSymbol || 'Token'}` 
-                      : 'Add Liquidity'
-                  }
-                </button>
+                !hasWallet ? (
+                  <button
+                    className={styles.actionButton}
+                    onClick={handleConnectWallet}
+                    disabled={connecting}
+                  >
+                    {connecting ? 'Connecting...' : 'Connect Wallet'}
+                  </button>
+                ) : (
+                  <button
+                    className={styles.actionButton}
+                    onClick={needsTokenApproval ? handleApprovePairedToken : handleAddLiquidity}
+                    disabled={liquidityLoading || !ethAmount || !tokenAmount || parseFloat(ethAmount) <= 0 || parseFloat(tokenAmount) <= 0}
+                  >
+                    {liquidityLoading 
+                      ? 'Processing...' 
+                      : needsTokenApproval 
+                        ? `Approve ${uniswapConfig?.pairedTokenSymbol || 'Token'}` 
+                        : 'Add Liquidity'
+                    }
+                  </button>
+                )
               ) : (
                 <button className={classNames(styles.actionButton, styles.disabled)} disabled>
                   Login to Add Liquidity
@@ -533,20 +586,32 @@ const LpStaking = () => {
                 </div>
                 
                 <div className={styles.dualButtonRow}>
-                  <button
-                    className={styles.actionButton}
-                    onClick={needsApproval ? handleApprove : handleStake}
-                    disabled={txLoading || !stakeAmount || parseFloat(stakeAmount) <= 0}
-                  >
-                    {txLoading ? 'Processing...' : needsApproval ? 'Approve' : 'Stake'}
-                  </button>
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={handleUnstakeAll}
-                    disabled={txLoading || parseFloat(userStaking.balance) <= 0}
-                  >
-                    {txLoading ? 'Processing...' : 'Unstake All'}
-                  </button>
+                  {!hasWallet ? (
+                    <button
+                      className={styles.actionButton}
+                      onClick={handleConnectWallet}
+                      disabled={connecting}
+                    >
+                      {connecting ? 'Connecting...' : 'Connect Wallet'}
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        className={styles.actionButton}
+                        onClick={needsApproval ? handleApprove : handleStake}
+                        disabled={txLoading || !stakeAmount || parseFloat(stakeAmount) <= 0}
+                      >
+                        {txLoading ? 'Processing...' : needsApproval ? 'Approve' : 'Stake'}
+                      </button>
+                      <button
+                        className={styles.secondaryButton}
+                        onClick={handleUnstakeAll}
+                        disabled={txLoading || parseFloat(userStaking.balance) <= 0}
+                      >
+                        {txLoading ? 'Processing...' : 'Unstake All'}
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (
