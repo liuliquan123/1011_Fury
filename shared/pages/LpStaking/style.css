@@ -711,6 +711,162 @@
     font-family: "Google Sans Code";
     max-width: 400px;
   }
+
+  /* Campaign Info */
+  .campaignInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .infoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .infoLabel {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .infoValue {
+    color: #FFF;
+    font-family: "Google Sans Code";
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* Rounds List */
+  .roundsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .roundCard {
+    background: #141519;
+    border-radius: 4px;
+    padding: 16px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+
+    &.roundActive {
+      border-color: #D90A20;
+    }
+
+    &.roundEnded {
+      opacity: 0.8;
+    }
+  }
+
+  .roundHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .roundName {
+    color: #FFF;
+    font-family: "Google Sans Code";
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .roundStatus {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: "Google Sans Code";
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &.statusActive {
+      background: rgba(55, 211, 117, 0.2);
+      color: #37D375;
+    }
+
+    &.statusEnded {
+      background: rgba(167, 173, 185, 0.2);
+      color: #A7ADB9;
+    }
+
+    &.statusUpcoming {
+      background: rgba(217, 10, 32, 0.2);
+      color: #D90A20;
+    }
+  }
+
+  .roundDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .roundRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+
+    span:first-child {
+      color: #A7ADB9;
+    }
+
+    span:last-child {
+      color: #FFF;
+    }
+  }
+
+  .rewardHighlight {
+    color: #D90A20 !important;
+    font-weight: 600;
+  }
+
+  .claimedBadge {
+    text-align: center;
+    padding: 8px 16px;
+    background: rgba(55, 211, 117, 0.2);
+    color: #37D375;
+    border-radius: 4px;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 12px;
+  }
+
+  .claimDisabled {
+    background: #141519 !important;
+    border-color: #39393A !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+
+    &:hover {
+      background: #141519 !important;
+      color: #666 !important;
+    }
+  }
+
+  .minDepositHint {
+    color: #A7ADB9;
+    font-family: "Google Sans Code";
+    font-size: 12px;
+    font-weight: 400;
+    padding: 8px 12px;
+    background: #141519;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
 }
 
 /* 平板设备响应式 */

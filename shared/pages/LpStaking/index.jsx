@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import * as actions from 'actions/lpStaking'
-import { getLpStakingConfig, getUniswapV2Config, isFeatureAvailable, getCurrentRound, get1011TokenAddress } from 'config/contracts'
+import { getLpStakingConfig, getUniswapV2Config, isFeatureAvailable, get1011TokenAddress } from 'config/contracts'
 import styles from './style.css'
 
 // 格式化数字，保留指定小数位
@@ -27,27 +27,32 @@ const formatLargeNumber = (num) => {
   return n.toFixed(2)
 }
 
-// 格式化时间戳
-const formatTime = (timestamp) => {
+// 格式化时间戳为日期
+const formatDate = (timestamp) => {
+  if (!timestamp) return '--'
   const date = new Date(timestamp * 1000)
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
   })
 }
 
-// 截断地址
-const truncateHash = (hash) => {
-  if (!hash) return ''
-  return `${hash.slice(0, 10)}...${hash.slice(-8)}`
-}
+// 轮次名称
+const ROUND_NAMES = ['Round 1 (7 days)', 'Round 2 (30 days)', 'Round 3 (90 days)']
+const ROUND_SHORT_NAMES = ['Round 1', 'Round 2', 'Round 3']
 
 const LpStaking = () => {
   const dispatch = useDispatch()
-  const { contractInfo, userStaking, activityLog, totalPoints, pairReserves, pairedTokenBalance } = useSelector(state => state.lpStaking)
+  const { 
+    contractInfo, 
+    userStaking, 
+    roundsInfo, 
+    userRoundsState, 
+    activityLog, 
+    pairReserves, 
+    pairedTokenBalance 
+  } = useSelector(state => state.lpStaking)
   const { profile } = useSelector(state => state.auth)
   
   // 判断登录状态
@@ -60,16 +65,16 @@ const LpStaking = () => {
   const [tokenAmount, setTokenAmount] = useState('')
   const [txLoading, setTxLoading] = useState(false)
   const [liquidityLoading, setLiquidityLoading] = useState(false)
-  const [lastEditedField, setLastEditedField] = useState(null) // 'eth' or 'token'
+  const [claimLoading, setClaimLoading] = useState({})
+  const [lastEditedField, setLastEditedField] = useState(null)
   
   const config = getLpStakingConfig()
   const uniswapConfig = getUniswapV2Config()
-  const currentRound = getCurrentRound()
   
   // 初始化加载数据
   useEffect(() => {
     dispatch(actions.fetchContractInfo())
-    dispatch(actions.fetchTotalPoints())
+    dispatch(actions.fetchRoundsInfo())
     dispatch(actions.fetchPairReserves())
   }, [dispatch])
   
@@ -77,26 +82,61 @@ const LpStaking = () => {
   useEffect(() => {
     if (isLoggedIn && profile?.wallet_address) {
       dispatch(actions.fetchUserStaking())
+      dispatch(actions.fetchUserRoundsState())
       dispatch(actions.fetchActivityLog())
       dispatch(actions.fetchPairedTokenBalance())
     }
   }, [dispatch, isLoggedIn, profile?.wallet_address])
   
-  // 计算预估空投
-  const estimatedAirdrop = useMemo(() => {
-    const userPoints = parseFloat(userStaking.points) || 0
-    const total = parseFloat(totalPoints.value) || 0
-    
-    if (total === 0 || userPoints === 0) return 0
-    
-    // 当前轮次的 LP 奖励池
-    const rewardPool = currentRound.lpRewards.tokens
-    
-    // 用户占比
-    const ratio = userPoints / total
-    
-    return Math.floor(ratio * rewardPool)
-  }, [userStaking.points, totalPoints.value, currentRound])
+  // 当前轮次
+  const currentRoundId = contractInfo.currentRound || 0
+  
+  // 计算用户总积分（三轮累计）
+  const totalUserPoints = useMemo(() => {
+    if (!userRoundsState.rounds) return '0'
+    return userRoundsState.rounds.reduce((sum, round) => {
+      return sum + parseFloat(round.pendingPoints || round.points || 0)
+    }, 0).toString()
+  }, [userRoundsState.rounds])
+  
+  // 检查轮次是否结束
+  const isRoundEnded = (roundId) => {
+    const round = roundsInfo.rounds?.[roundId]
+    if (!round) return false
+    const now = Math.floor(Date.now() / 1000)
+    return now >= round.endTime
+  }
+  
+  // 检查轮次是否资金充足
+  const isRoundFunded = (roundId) => {
+    const round = roundsInfo.rounds?.[roundId]
+    if (!round) return false
+    return parseFloat(round.fundedAmount) >= parseFloat(round.rewardAmount)
+  }
+  
+  // 检查用户是否可以领取
+  const canClaim = (roundId) => {
+    const userRound = userRoundsState.rounds?.[roundId]
+    if (!userRound) return false
+    return isRoundEnded(roundId) && 
+           isRoundFunded(roundId) && 
+           !userRound.claimed && 
+           parseFloat(userRound.pendingReward) > 0
+  }
+  
+  // 处理领取奖励
+  const handleClaim = useCallback((roundId) => {
+    setClaimLoading(prev => ({ ...prev, [roundId]: true }))
+    dispatch(actions.claimReward({
+      roundId,
+      onSuccess: () => {
+        setClaimLoading(prev => ({ ...prev, [roundId]: false }))
+      },
+      onError: () => {
+        setClaimLoading(prev => ({ ...prev, [roundId]: false }))
+      },
+    }))
+  }, [dispatch])
   
   // 检查是否需要授权
   const needsApproval = parseFloat(userStaking.allowance) < parseFloat(stakeAmount || '0')
@@ -170,7 +210,6 @@ const LpStaking = () => {
     
     if (reserveETH === 0 || eth === 0) return ''
     
-    // tokenAmount = ethAmount * reserveToken / reserveETH
     const token = (eth * reserveToken / reserveETH).toFixed(6)
     return token
   }, [pairReserves.reserveETH, pairReserves.reservePairedToken])
@@ -182,14 +221,12 @@ const LpStaking = () => {
     
     if (reserveToken === 0 || token === 0) return ''
     
-    // ethAmount = tokenAmount * reserveETH / reserveToken
     const eth = (token * reserveETH / reserveToken).toFixed(8)
     return eth
   }, [pairReserves.reserveETH, pairReserves.reservePairedToken])
   
   // 处理 ETH 输入变化（过滤负数）
   const handleEthAmountChange = (value) => {
-    // 过滤负数
     if (value && parseFloat(value) < 0) return
     setEthAmount(value)
     setLastEditedField('eth')
@@ -199,7 +236,6 @@ const LpStaking = () => {
   
   // 处理 Token 输入变化（过滤负数）
   const handleTokenAmountChange = (value) => {
-    // 过滤负数
     if (value && parseFloat(value) < 0) return
     setTokenAmount(value)
     setLastEditedField('token')
@@ -213,7 +249,7 @@ const LpStaking = () => {
     setStakeAmount(value)
   }
   
-  // 禁用滚轮事件（防止滚轮改变数字输入框的值）
+  // 禁用滚轮事件
   const disableWheel = (e) => e.target.blur()
   
   // 检查是否需要授权配对代币
@@ -226,7 +262,6 @@ const LpStaking = () => {
     setLiquidityLoading(true)
     dispatch(actions.approvePairedToken({
       onSuccess: () => {
-        // Approve 成功后自动执行 addLiquidity
         dispatch(actions.addLiquidity({
           ethAmount,
           tokenAmount,
@@ -309,6 +344,7 @@ const LpStaking = () => {
                   className={styles.refreshButton}
                   onClick={() => {
                     dispatch(actions.fetchUserStaking())
+                    dispatch(actions.fetchUserRoundsState())
                     dispatch(actions.fetchContractInfo())
                   }}
                 >
@@ -332,9 +368,9 @@ const LpStaking = () => {
                   </div>
                 </div>
                 <div className={styles.assetItem}>
-                  <div className={styles.assetLabel}>My Points</div>
+                  <div className={styles.assetLabel}>Total Points</div>
                   <div className={styles.assetValue}>
-                    {userStaking.loading ? '...' : formatNumber(userStaking.points)}
+                    {userRoundsState.loading ? '...' : formatNumber(totalUserPoints)}
                   </div>
                 </div>
               </div>
@@ -380,7 +416,7 @@ const LpStaking = () => {
                   />
                 </div>
                 
-                {/* 配对 Token 输入 (USDC 测试 / 1011 正式) */}
+                {/* 配对 Token 输入 */}
                 <div className={styles.liquidityInputItem}>
                   <div className={styles.liquidityInputHeader}>
                     <img 
@@ -452,6 +488,13 @@ const LpStaking = () => {
             
             {isLoggedIn ? (
               <div className={styles.stakeForm}>
+                {/* 最小存款提示 */}
+                {parseFloat(contractInfo.minDeposit) > 0 && (
+                  <div className={styles.minDepositHint}>
+                    Minimum deposit: {formatNumber(contractInfo.minDeposit)} LP
+                  </div>
+                )}
+                
                 <div className={styles.stakeInputBox}>
                   <input
                     type="number"
@@ -502,56 +545,126 @@ const LpStaking = () => {
         
         {/* 右侧列 */}
         <div className={styles.rightColumn}>
-          {/* Rewards 卡片 */}
+          {/* Campaign Info 卡片 */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>Rewards</h2>
-              <div className={styles.roundBadge}>Round {currentRound.round}</div>
+              <h2 className={styles.cardTitle}>Campaign Info</h2>
+              <div className={styles.roundBadge}>
+                {currentRoundId < 3 ? ROUND_SHORT_NAMES[currentRoundId] : 'Ended'}
+              </div>
             </div>
             
-            <div className={styles.rewardsInfo}>
-              <div className={styles.rewardItem}>
-                <div className={styles.rewardLabel}>Current LP Reward Pool</div>
-                <div className={styles.rewardValue}>
-                  {formatLargeNumber(currentRound.lpRewards.tokens)} 1011
-                </div>
-                <div className={styles.rewardPercent}>
-                  {currentRound.lpRewards.percentage}% of total supply
-                </div>
+            <div className={styles.campaignInfo}>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Start</span>
+                <span className={styles.infoValue}>{formatDate(contractInfo.startTime)}</span>
               </div>
-              
-              <div className={styles.divider} />
-              
-              <div className={styles.rewardItem}>
-                <div className={styles.rewardLabel}>My Points</div>
-                <div className={styles.rewardValue}>
-                  {isLoggedIn ? formatNumber(userStaking.points) : '--'}
-                </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>End</span>
+                <span className={styles.infoValue}>{formatDate(contractInfo.endTime)}</span>
               </div>
-              
-              <div className={styles.rewardItem}>
-                <div className={styles.rewardLabel}>Estimated Airdrop</div>
-                <div className={styles.rewardValueHighlight}>
-                  {isLoggedIn ? `~${formatLargeNumber(estimatedAirdrop)} 1011` : '--'}
-                </div>
-                {isLoggedIn && parseFloat(totalPoints.value) > 0 && (
-                  <div className={styles.rewardPercent}>
-                    Your share: {((parseFloat(userStaking.points) / parseFloat(totalPoints.value)) * 100).toFixed(4)}%
-                  </div>
-                )}
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Total Staked</span>
+                <span className={styles.infoValue}>{formatNumber(contractInfo.totalStaked)} LP</span>
               </div>
-              
-              <button className={classNames(styles.claimButton, styles.disabled)} disabled>
-                Claim (Coming Soon)
-              </button>
-              
-              <div className={styles.rewardNote}>
-                Rewards will be claimable after the airdrop snapshot
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Participants</span>
+                <span className={styles.infoValue}>{contractInfo.participantCount}</span>
               </div>
             </div>
           </div>
           
-          {/* Activity Log 移到右侧 */}
+          {/* Rewards 卡片（三轮展示） */}
+          <div className={styles.card}>
+            <h2 className={styles.cardTitle}>Rewards by Round</h2>
+            
+            <div className={styles.roundsList}>
+              {[0, 1, 2].map((roundId) => {
+                const roundInfo = roundsInfo.rounds?.[roundId] || {}
+                const userRound = userRoundsState.rounds?.[roundId] || {}
+                const ended = isRoundEnded(roundId)
+                const funded = isRoundFunded(roundId)
+                const claimable = canClaim(roundId)
+                
+                return (
+                  <div 
+                    key={roundId} 
+                    className={classNames(styles.roundCard, {
+                      [styles.roundActive]: currentRoundId === roundId && !ended,
+                      [styles.roundEnded]: ended,
+                    })}
+                  >
+                    <div className={styles.roundHeader}>
+                      <span className={styles.roundName}>{ROUND_NAMES[roundId]}</span>
+                      <span className={classNames(styles.roundStatus, {
+                        [styles.statusActive]: currentRoundId === roundId && !ended,
+                        [styles.statusEnded]: ended,
+                        [styles.statusUpcoming]: currentRoundId < roundId,
+                      })}>
+                        {ended ? 'Ended' : currentRoundId === roundId ? 'Active' : 'Upcoming'}
+                      </span>
+                    </div>
+                    
+                    <div className={styles.roundDetails}>
+                      <div className={styles.roundRow}>
+                        <span>Period</span>
+                        <span>{formatDate(roundInfo.startTime)} - {formatDate(roundInfo.endTime)}</span>
+                      </div>
+                      <div className={styles.roundRow}>
+                        <span>Reward Pool</span>
+                        <span>{formatLargeNumber(roundInfo.rewardAmount)} 1011</span>
+                      </div>
+                      <div className={styles.roundRow}>
+                        <span>Total Points</span>
+                        <span>{formatNumber(roundInfo.totalPoints)}</span>
+                      </div>
+                      
+                      {isLoggedIn && (
+                        <>
+                          <div className={styles.divider} />
+                          <div className={styles.roundRow}>
+                            <span>My Points</span>
+                            <span>{formatNumber(userRound.pendingPoints || userRound.points)}</span>
+                          </div>
+                          <div className={styles.roundRow}>
+                            <span>Est. Reward</span>
+                            <span className={styles.rewardHighlight}>
+                              {formatNumber(userRound.pendingReward)} 1011
+                            </span>
+                          </div>
+                          
+                          {userRound.claimed ? (
+                            <div className={styles.claimedBadge}>✓ Claimed</div>
+                          ) : (
+                            <button
+                              className={classNames(styles.claimButton, {
+                                [styles.claimDisabled]: !claimable,
+                              })}
+                              onClick={() => handleClaim(roundId)}
+                              disabled={!claimable || claimLoading[roundId]}
+                            >
+                              {claimLoading[roundId] 
+                                ? 'Claiming...' 
+                                : !ended 
+                                  ? 'Round Not Ended' 
+                                  : !funded 
+                                    ? 'Not Funded' 
+                                    : parseFloat(userRound.pendingReward) <= 0 
+                                      ? 'No Reward' 
+                                      : 'Claim Reward'
+                              }
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          
+          {/* Activity Log */}
           {isLoggedIn && (
             <div className={styles.card}>
               <div className={styles.cardHeader}>
