@@ -105,8 +105,8 @@ export const CONTRACTS = CHAIN_ID === 8453 ? MAINNET_CONTRACTS : TESTNET_CONTRAC
 // 三轮奖励机制：Round 1 (7天) + Round 2 (30天) + Round 3 (90天) = 127天
 // ============================================
 export const LP_STAKING = {
-  84532: { // Base Sepolia (测试) - 旧合约，需要部署新的 PointsVaultRounds
-    stakingContract: '0x82Fd3C14e01E5b1c647AA14E5Db146070a47d204',
+  84532: { // Base Sepolia (测试) - PointsVaultRounds 新合约
+    stakingContract: '0x80CD68682fB8ecE2A8e4256115a046AEE27387f5',
     lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
   8453: { // Base Mainnet (ETH-USDC LP 测试) - 需要更新为 PointsVaultRounds 合约地址

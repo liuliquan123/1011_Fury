@@ -67,6 +67,15 @@ const LpStaking = () => {
   const [liquidityLoading, setLiquidityLoading] = useState(false)
   const [claimLoading, setClaimLoading] = useState({})
   const [lastEditedField, setLastEditedField] = useState(null)
+  const [expandedRounds, setExpandedRounds] = useState({}) // 轮次折叠状态
+  
+  // 切换轮次折叠状态
+  const toggleRound = useCallback((roundId) => {
+    setExpandedRounds(prev => ({
+      ...prev,
+      [roundId]: !prev[roundId]
+    }))
+  }, [])
   
   const config = getLpStakingConfig()
   const uniswapConfig = getUniswapV2Config()
@@ -585,79 +594,111 @@ const LpStaking = () => {
                 const ended = isRoundEnded(roundId)
                 const funded = isRoundFunded(roundId)
                 const claimable = canClaim(roundId)
+                const isActive = currentRoundId === roundId && !ended
+                const isUpcoming = currentRoundId < roundId && !ended
+                const isExpanded = isActive || expandedRounds[roundId]
                 
+                // Upcoming 轮次：简化展示
+                if (isUpcoming) {
+                  return (
+                    <div 
+                      key={roundId} 
+                      className={classNames(styles.roundCard, styles.roundLocked)}
+                    >
+                      <div className={styles.roundHeader}>
+                        <span className={styles.roundName}>{ROUND_SHORT_NAMES[roundId]}</span>
+                        <span className={styles.comingSoon}>Coming Soon</span>
+                      </div>
+                    </div>
+                  )
+                }
+                
+                // Active/Ended 轮次：完整展示（可折叠）
                 return (
                   <div 
                     key={roundId} 
                     className={classNames(styles.roundCard, {
-                      [styles.roundActive]: currentRoundId === roundId && !ended,
+                      [styles.roundActive]: isActive,
                       [styles.roundEnded]: ended,
                     })}
                   >
-                    <div className={styles.roundHeader}>
+                    <div 
+                      className={classNames(styles.roundHeader, {
+                        [styles.roundHeaderClickable]: ended,
+                      })}
+                      onClick={() => ended && toggleRound(roundId)}
+                    >
                       <span className={styles.roundName}>{ROUND_NAMES[roundId]}</span>
-                      <span className={classNames(styles.roundStatus, {
-                        [styles.statusActive]: currentRoundId === roundId && !ended,
-                        [styles.statusEnded]: ended,
-                        [styles.statusUpcoming]: currentRoundId < roundId,
-                      })}>
-                        {ended ? 'Ended' : currentRoundId === roundId ? 'Active' : 'Upcoming'}
-                      </span>
+                      <div className={styles.roundHeaderRight}>
+                        <span className={classNames(styles.roundStatus, {
+                          [styles.statusActive]: isActive,
+                          [styles.statusEnded]: ended,
+                        })}>
+                          {ended ? 'Ended' : 'Active'}
+                        </span>
+                        {ended && (
+                          <span className={styles.expandIcon}>
+                            {isExpanded ? '▼' : '▶'}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     
-                    <div className={styles.roundDetails}>
-                      <div className={styles.roundRow}>
-                        <span>Period</span>
-                        <span>{formatDate(roundInfo.startTime)} - {formatDate(roundInfo.endTime)}</span>
+                    {isExpanded && (
+                      <div className={styles.roundDetails}>
+                        <div className={styles.roundRow}>
+                          <span>Period</span>
+                          <span>{formatDate(roundInfo.startTime)} - {formatDate(roundInfo.endTime)}</span>
+                        </div>
+                        <div className={styles.roundRow}>
+                          <span>Reward Pool</span>
+                          <span>{formatLargeNumber(roundInfo.rewardAmount)} 1011</span>
+                        </div>
+                        <div className={styles.roundRow}>
+                          <span>Total Points</span>
+                          <span>{formatNumber(roundInfo.totalPoints)}</span>
+                        </div>
+                        
+                        {isLoggedIn && (
+                          <>
+                            <div className={styles.divider} />
+                            <div className={styles.roundRow}>
+                              <span>My Points</span>
+                              <span>{formatNumber(userRound.pendingPoints || userRound.points)}</span>
+                            </div>
+                            <div className={styles.roundRow}>
+                              <span>Est. Reward</span>
+                              <span className={styles.rewardHighlight}>
+                                {formatNumber(userRound.pendingReward)} 1011
+                              </span>
+                            </div>
+                            
+                            {userRound.claimed ? (
+                              <div className={styles.claimedBadge}>✓ Claimed</div>
+                            ) : (
+                              <button
+                                className={classNames(styles.claimButton, {
+                                  [styles.claimDisabled]: !claimable,
+                                })}
+                                onClick={() => handleClaim(roundId)}
+                                disabled={!claimable || claimLoading[roundId]}
+                              >
+                                {claimLoading[roundId] 
+                                  ? 'Claiming...' 
+                                  : !ended 
+                                    ? 'Round Not Ended' 
+                                    : !funded 
+                                      ? 'Not Funded' 
+                                      : parseFloat(userRound.pendingReward) <= 0 
+                                        ? 'No Reward' 
+                                        : 'Claim Reward'
+                                }
+                              </button>
+                            )}
+                          </>
+                        )}
                       </div>
-                      <div className={styles.roundRow}>
-                        <span>Reward Pool</span>
-                        <span>{formatLargeNumber(roundInfo.rewardAmount)} 1011</span>
-                      </div>
-                      <div className={styles.roundRow}>
-                        <span>Total Points</span>
-                        <span>{formatNumber(roundInfo.totalPoints)}</span>
-                      </div>
-                      
-                      {isLoggedIn && (
-                        <>
-                          <div className={styles.divider} />
-                          <div className={styles.roundRow}>
-                            <span>My Points</span>
-                            <span>{formatNumber(userRound.pendingPoints || userRound.points)}</span>
-                          </div>
-                          <div className={styles.roundRow}>
-                            <span>Est. Reward</span>
-                            <span className={styles.rewardHighlight}>
-                              {formatNumber(userRound.pendingReward)} 1011
-                            </span>
-                          </div>
-                          
-                          {userRound.claimed ? (
-                            <div className={styles.claimedBadge}>✓ Claimed</div>
-                          ) : (
-                            <button
-                              className={classNames(styles.claimButton, {
-                                [styles.claimDisabled]: !claimable,
-                              })}
-                              onClick={() => handleClaim(roundId)}
-                              disabled={!claimable || claimLoading[roundId]}
-                            >
-                              {claimLoading[roundId] 
-                                ? 'Claiming...' 
-                                : !ended 
-                                  ? 'Round Not Ended' 
-                                  : !funded 
-                                    ? 'Not Funded' 
-                                    : parseFloat(userRound.pendingReward) <= 0 
-                                      ? 'No Reward' 
-                                      : 'Claim Reward'
-                              }
-                            </button>
-                          )}
-                        </>
-                      )}
-                    </div>
+                    )}
                   </div>
                 )
               })}
