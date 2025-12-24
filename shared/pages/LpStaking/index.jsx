@@ -384,7 +384,7 @@ const LpStaking = () => {
                 <div className={styles.assetItem}>
                   <div className={styles.assetLabel}>Total Points</div>
                   <div className={styles.assetValue}>
-                    {userRoundsState.loading ? '...' : formatNumber(totalUserPoints)}
+                    {userRoundsState.loading ? '...' : formatLargeNumber(totalUserPoints)}
                   </div>
                 </div>
               </div>
@@ -657,11 +657,11 @@ const LpStaking = () => {
                         </div>
                         <div className={styles.roundRow}>
                           <span>Reward Pool</span>
-                          <span>{formatLargeNumber(roundInfo.rewardAmount)} 1011</span>
+                          <span>{formatLargeNumber(roundInfo.rewardAmount)} $1011</span>
                         </div>
                         <div className={styles.roundRow}>
                           <span>Total Points</span>
-                          <span>{formatNumber(roundInfo.totalPoints)}</span>
+                          <span>{formatLargeNumber(roundInfo.totalPoints)}</span>
                         </div>
                         
                         {isLoggedIn && (
@@ -669,12 +669,12 @@ const LpStaking = () => {
                             <div className={styles.divider} />
                             <div className={styles.roundRow}>
                               <span>My Points</span>
-                              <span>{formatNumber(userRound.pendingPoints || userRound.points)}</span>
+                              <span>{formatLargeNumber(userRound.pendingPoints || userRound.points)}</span>
                             </div>
                             <div className={styles.roundRow}>
                               <span>Est. Reward</span>
                               <span className={styles.rewardHighlight}>
-                                {formatNumber(userRound.pendingReward)} 1011
+                                {formatNumber(userRound.pendingReward)} $1011
                               </span>
                             </div>
                             

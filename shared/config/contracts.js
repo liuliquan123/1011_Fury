@@ -106,7 +106,7 @@ export const CONTRACTS = CHAIN_ID === 8453 ? MAINNET_CONTRACTS : TESTNET_CONTRAC
 // ============================================
 export const LP_STAKING = {
   84532: { // Base Sepolia (测试) - PointsVaultRounds 新合约
-    stakingContract: '0x80CD68682fB8ecE2A8e4256115a046AEE27387f5',
+    stakingContract: '0xdF5bF5f4c4DCc27161B028B0a80C62Ae26b828C4',
     lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
   8453: { // Base Mainnet (ETH-USDC LP 测试) - 需要更新为 PointsVaultRounds 合约地址
