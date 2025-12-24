@@ -25,6 +25,7 @@ import { ethers } from 'ethers'
 import { CHAIN_ID, CHAIN_ID_HEX, RPC_URL, CHAIN_CONFIG, getSignatureClaimAddress } from 'config/contracts'
 import SIGNATURE_CLAIM_ABI from 'config/abi/signatureClaim.json'
 import { WEB3AUTH_CLIENT_ID, SUPABASE_URL, SUPABASE_ANON_KEY, TELEGRAM_BOT_USERNAME } from 'constants/env'
+import { trackSignUp, trackLogin, trackSubmitEvidence } from 'utils/analytics'
 
 // console.log('WALLET_CONNECTORS', WALLET_CONNECTORS)
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -256,6 +257,14 @@ function* web3AuthLogin(web3auth, data) {
     localStorage.setItem('refresh_token', refreshToken)
     localStorage.setItem('user_id', userId)
 
+    // GA4 追踪：根据 is_new_user 区分注册和登录
+    const method = data.method || 'unknown'
+    if (authResponse.data.is_new_user) {
+      trackSignUp(method, data.referralCode)
+    } else {
+      trackLogin(method)
+    }
+
     const profileResponse = yield call(api.getProfile, {
       userId
     }, {
@@ -292,7 +301,7 @@ function* authByWallet(action) {
 
     // yield apply(web3auth, web3auth.connect)
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode, method: 'metamask' })
 
     console.log('authByWallet end', web3auth, web3auth.status)
     onSuccess()
@@ -319,7 +328,7 @@ function* authByEmail(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode, method: 'email' })
 
     console.log('authByEmail end', web3auth, web3auth.status)
     onSuccess()
@@ -344,7 +353,7 @@ function* authByTwitter(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode, method: 'twitter' })
 
     console.log('authByTwitter end', web3auth, web3auth.status)
     onSuccess()
@@ -467,6 +476,9 @@ function* authByTelegram(action) {
     localStorage.setItem('refresh_token', refreshToken)
     localStorage.setItem('user_id', userId)
 
+    // GA4 追踪：Telegram 登录（目前统一记录为 login，后端添加 is_new_user 后可区分）
+    trackLogin('telegram')
+
     const profileResponse = yield call(api.getProfile, {
       userId
     }, {
@@ -541,6 +553,12 @@ function* submitLoss(action) {
     if (!submitLossResponse.success) {
       throw new Error(submitLossResponse.error)
     }
+
+    // GA4 追踪：提交证据成功
+    trackSubmitEvidence({
+      isRegistered: !!authToken,
+      exchange: ocrForm.exchange || 'unknown',
+    })
 
     console.log('submitLossResponse', submitLossResponse)
     onSuccess()

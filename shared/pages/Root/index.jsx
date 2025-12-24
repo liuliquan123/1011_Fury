@@ -13,6 +13,7 @@ import darkThemeStyle from 'resources/themes/dark'
 import lightThemeStyle from 'resources/themes/light'
 import { ToastContainer } from 'react-toastify'
 import * as actions from 'actions/auth'
+import { trackPageView } from 'utils/analytics'
 import styles from './style.css'
 
 const getAppTheme = (mode) => {
@@ -32,6 +33,13 @@ const Root = ({ location, history, theme, actions }) => {
     setTitle('Fury')
     actions.getProfile()
   }, [])
+
+  // GA4 页面浏览追踪
+  useEffect(() => {
+    if (location?.pathname) {
+      trackPageView(location.pathname, document.title || 'Fury')
+    }
+  }, [location?.pathname])
 
   useEffect(() => {
     const themeStyle = getAppTheme(theme)

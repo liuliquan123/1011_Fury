@@ -141,5 +141,45 @@ pnpm run build
 | `TELEGRAM_BOT_USERNAME` | telegram bot 名称 |
 | `CHAIN_ID` | 目前支持的链ID |
 
+## 📊 数据埋点 (Google Analytics 4)
+
+项目已集成 GA4 数据追踪，Measurement ID: `G-KZHWPQ8P4B`
+
+### 追踪事件
+
+| 事件 | 触发时机 | 参数 |
+|------|----------|------|
+| `page_view` | 页面切换 | `page_path`, `page_title` |
+| `sign_up` | 新用户注册 | `method`, `referral_code` |
+| `login` | 老用户登录 | `method` |
+| `submit_evidence` | 提交证据成功 | `is_registered`, `exchange` |
+
+### 登录方式 (method)
+
+- `metamask` - MetaMask 钱包
+- `email` - 邮箱登录
+- `twitter` - Twitter 登录
+- `telegram` - Telegram 登录
+
+### 后端配合
+
+为区分新用户和老用户，后端 `web3AuthLogin` API 需返回 `is_new_user` 字段：
+
+```json
+{
+  "token": "...",
+  "refresh_token": "...",
+  "user": { ... },
+  "is_new_user": true  // 新增字段
+}
+```
+
+### 相关文件
+
+- `browser/index.html` - GA4 脚本
+- `shared/utils/analytics.js` - 追踪工具模块
+- `shared/pages/Root/index.jsx` - 页面浏览追踪
+- `shared/sagas/auth.js` - 登录/注册/提交证据追踪
+
 ## 🔐 其他
 - **注意**: 由于web3auth的白名单限制(不支持localhost的URL)，本地登录会报错，若要测试登录功能可以发布到线上。
