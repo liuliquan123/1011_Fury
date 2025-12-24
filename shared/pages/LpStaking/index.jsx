@@ -157,16 +157,18 @@ const LpStaking = () => {
     setTxLoading(true)
     dispatch(actions.approveLp({
       onSuccess: () => {
-        // Approve 成功后自动执行 stake
-        dispatch(actions.depositLp({
-          amount: stakeAmount,
-          onSuccess: () => {
-            setTxLoading(false)
-            setStakeAmount('')
-            dispatch(actions.fetchActivityLog())
-          },
-          onError: () => setTxLoading(false),
-        }))
+        // Approve 成功后等待 1.5 秒让 RPC 同步状态，再执行 stake
+        setTimeout(() => {
+          dispatch(actions.depositLp({
+            amount: stakeAmount,
+            onSuccess: () => {
+              setTxLoading(false)
+              setStakeAmount('')
+              dispatch(actions.fetchActivityLog())
+            },
+            onError: () => setTxLoading(false),
+          }))
+        }, 1500)
       },
       onError: () => setTxLoading(false),
     }))
@@ -271,16 +273,19 @@ const LpStaking = () => {
     setLiquidityLoading(true)
     dispatch(actions.approvePairedToken({
       onSuccess: () => {
-        dispatch(actions.addLiquidity({
-          ethAmount,
-          tokenAmount,
-          onSuccess: () => {
-            setLiquidityLoading(false)
-            setEthAmount('')
-            setTokenAmount('')
-          },
-          onError: () => setLiquidityLoading(false),
-        }))
+        // Approve 成功后等待 1.5 秒让 RPC 同步状态，再执行 addLiquidity
+        setTimeout(() => {
+          dispatch(actions.addLiquidity({
+            ethAmount,
+            tokenAmount,
+            onSuccess: () => {
+              setLiquidityLoading(false)
+              setEthAmount('')
+              setTokenAmount('')
+            },
+            onError: () => setLiquidityLoading(false),
+          }))
+        }, 1500)
       },
       onError: () => setLiquidityLoading(false),
     }))
