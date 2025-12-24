@@ -598,7 +598,7 @@ const LpStaking = () => {
                 const isUpcoming = currentRoundId < roundId && !ended
                 const isExpanded = isActive || expandedRounds[roundId]
                 
-                // Upcoming 轮次：简化展示
+                // Upcoming 轮次：极简展示（只显示名称 + 锁图标）
                 if (isUpcoming) {
                   return (
                     <div 
@@ -607,7 +607,7 @@ const LpStaking = () => {
                     >
                       <div className={styles.roundHeader}>
                         <span className={styles.roundName}>{ROUND_SHORT_NAMES[roundId]}</span>
-                        <span className={styles.comingSoon}>Coming Soon</span>
+                        <span className={styles.lockIcon}>🔒</span>
                       </div>
                     </div>
                   )

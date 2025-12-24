@@ -768,11 +768,15 @@
     }
 
     &.roundLocked {
-      background: rgba(20, 21, 25, 0.6);
-      opacity: 0.5;
+      background: rgba(20, 21, 25, 0.5);
+      padding: 12px 16px;
       
       .roundHeader {
         margin-bottom: 0;
+      }
+
+      .roundName {
+        color: #666;
       }
     }
   }
@@ -805,13 +809,9 @@
     transition: transform 0.2s;
   }
 
-  .comingSoon {
-    color: #666;
-    font-family: "Google Sans Code";
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  .lockIcon {
+    font-size: 14px;
+    opacity: 0.5;
   }
 
   .roundName {
