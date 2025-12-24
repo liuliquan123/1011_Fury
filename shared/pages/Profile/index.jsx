@@ -3,7 +3,7 @@ import { withRouter } from 'utils/withRouter'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { formatDate } from 'utils'
@@ -142,6 +142,7 @@ const getPercentage = (reward) => {
 }
 
 const Profile = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
+  const navigate = useNavigate()
   const hasSubmitted = submissions?.statistics?.total_submissions > 0
   const allRewards = Array.isArray(userTokens?.rewards) ? userTokens.rewards : []
   // 过滤只显示可见交易所的 rewards
@@ -202,6 +203,31 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
       },
     })
   }, [])
+
+  // 处理 LP Staking 入口点击（需要先连接钱包）
+  const handleLpStakingClick = useCallback((e) => {
+    e.preventDefault()
+    
+    // 已有钱包，直接跳转
+    if (hasWallet) {
+      navigate('/lp-staking')
+      return
+    }
+    
+    // 无钱包，先连接钱包再跳转
+    setConnectingWallet(true)
+    actions.linkWallet({
+      onSuccess: () => {
+        toast('Connect Wallet Success!')
+        setConnectingWallet(false)
+        navigate('/lp-staking')
+      },
+      onError: (message) => {
+        toast(message)
+        setConnectingWallet(false)
+      },
+    })
+  }, [hasWallet, navigate, actions])
 
   const prev = useCallback(() => {
     if (activeIdx > 0) {
@@ -475,9 +501,13 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 </div>
                 {/* 双按钮布局：CLAIM/CONNECT */}
                 <div className={styles.dualButtonRow}>
-                  <Link className={styles.getMoreButton} to="/lp-staking">
-                    STAKE LP
-                  </Link>
+                  <button 
+                    className={styles.getMoreButton} 
+                    onClick={handleLpStakingClick}
+                    disabled={connectingWallet}
+                  >
+                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                  </button>
 
                   {/* 右侧：根据状态显示不同按钮 */}
                   {rewardStatus === 'locked' && (
@@ -531,9 +561,13 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                       SUBMIT LOSS
                     </Link>
                   )}
-                  <Link className={styles.getMoreButton} to="/lp-staking">
-                    STAKE LP
-                  </Link>
+                  <button 
+                    className={styles.getMoreButton} 
+                    onClick={handleLpStakingClick}
+                    disabled={connectingWallet}
+                  >
+                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                  </button>
                 </div>
               </div>
             )}
