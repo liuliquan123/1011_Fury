@@ -659,10 +659,7 @@ const LpStaking = () => {
                           <span>Reward Pool</span>
                           <span>{formatLargeNumber(roundInfo.rewardAmount)} $1011</span>
                         </div>
-                        <div className={styles.roundRow}>
-                          <span>Total Points</span>
-                          <span>{formatLargeNumber(roundInfo.totalPoints)}</span>
-                        </div>
+{/* Total Points 隐藏：数据滞后，容易造成困惑 */}
                         
                         {isLoggedIn && (
                           <>
