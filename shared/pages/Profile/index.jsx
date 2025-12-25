@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react'
+import React, { useEffect, useState, useCallback, Fragment, useMemo } from 'react'
 import { withRouter } from 'utils/withRouter'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -10,6 +10,34 @@ import { formatDate } from 'utils'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import tokenLogo from 'resources/images/token-logo_v3.png'
 import styles from './style.css'
+
+// 基于字符串生成头像颜色（类似 Jazzicon 效果）
+const generateAvatarColors = (seed) => {
+  if (!seed) return { bg: '#6366f1', color: '#ffffff' }
+  
+  // 简单哈希函数
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  
+  // 生成 HSL 颜色（饱和度和亮度固定，只变色相）
+  const hue = Math.abs(hash % 360)
+  const bg = `hsl(${hue}, 65%, 55%)`
+  
+  return { bg, color: '#ffffff' }
+}
+
+// 获取用户头像显示的首字母
+const getAvatarInitial = (profile) => {
+  if (profile?.username && profile.username !== `user_${profile.id?.slice(0, 8)}`) {
+    return profile.username.charAt(0).toUpperCase()
+  }
+  if (profile?.wallet_address) {
+    return profile.wallet_address.slice(2, 4).toUpperCase()
+  }
+  return 'U'
+}
 
 // 基础数字格式化（内部使用）
 const formatNumberWithUnit = (num) => {
@@ -165,6 +193,14 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   // 派生变量：空值防御
   const rewardStatus = reward?.status
   const hasWallet = !!profile?.wallet_address
+
+  // 生成头像颜色和首字母
+  const avatarColors = useMemo(() => {
+    const seed = profile?.wallet_address || profile?.id || ''
+    return generateAvatarColors(seed)
+  }, [profile?.wallet_address, profile?.id])
+  
+  const avatarInitial = useMemo(() => getAvatarInitial(profile), [profile])
 
   useEffect(() => {
     const iv = setInterval(() => {
@@ -349,7 +385,21 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
         <div className={styles.account}>
           <div className={styles.user}>
             <div className={styles.top}>
-              <div className={styles.logo}></div>
+              <div 
+                className={styles.logo}
+                style={{ 
+                  backgroundColor: avatarColors.bg,
+                  color: avatarColors.color,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '32px',
+                  fontFamily: 'Jersey10',
+                  fontWeight: 'bold'
+                }}
+              >
+                {avatarInitial}
+              </div>
               {isEditingUsername ? (
                 <div className={styles.editNameRow}>
                   <input
@@ -390,7 +440,6 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                   </button>
                 </div>
               )}
-              <div className={styles.description}>{profile.id}</div>
             </div>
             <div className={styles.bottom}>
               <div className={styles.list}>
