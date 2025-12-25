@@ -455,12 +455,14 @@ function* authByTelegram(action) {
 
       if (tgAuthResponse && tgAuthResponse[0]) {
         const status = tgAuthResponse[0].status
-        authToken = tgAuthResponse[0].access_token
-        refreshToken = tgAuthResponse[0].refreshToken
-        userId = tgAuthResponse[0].user_id
-        isNewUser = tgAuthResponse[0].is_new_user
-
+        
         if (status !== 'pending') {
+          // 只在 complete 时读取所有数据
+          authToken = tgAuthResponse[0].access_token
+          refreshToken = tgAuthResponse[0].refresh_token
+          userId = tgAuthResponse[0].user_id
+          isNewUser = tgAuthResponse[0].is_new_user === true  // 确保是布尔值
+          console.log('[GA4] Telegram auth complete:', { isNewUser, status })
           finished = true
           break
         }
