@@ -30,11 +30,24 @@ const generateAvatarColors = (seed) => {
 
 // 获取用户头像显示的首字母
 const getAvatarInitial = (profile) => {
-  if (profile?.username && profile.username !== `user_${profile.id?.slice(0, 8)}`) {
+  // 1. 有自定义用户名（非自动生成的 user_xxx 格式）
+  if (profile?.username && !profile.username.startsWith('user_')) {
     return profile.username.charAt(0).toUpperCase()
   }
+  // 2. 有钱包地址
   if (profile?.wallet_address) {
     return profile.wallet_address.slice(2, 4).toUpperCase()
+  }
+  // 3. 根据登录方式显示
+  if (profile?.login_type) {
+    const typeInitials = {
+      telegram: 'TG',
+      email: 'EM',
+      twitter: 'TW',
+      metamask: 'MM',
+      wallet: 'W'
+    }
+    return typeInitials[profile.login_type.toLowerCase()] || profile.login_type.charAt(0).toUpperCase()
   }
   return 'U'
 }
@@ -196,9 +209,10 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
 
   // 生成头像颜色和首字母
   const avatarColors = useMemo(() => {
-    const seed = profile?.wallet_address || profile?.id || ''
+    // 优先使用钱包地址，其次用户ID，最后用登录类型
+    const seed = profile?.wallet_address || profile?.id || profile?.login_type || ''
     return generateAvatarColors(seed)
-  }, [profile?.wallet_address, profile?.id])
+  }, [profile?.wallet_address, profile?.id, profile?.login_type])
   
   const avatarInitial = useMemo(() => getAvatarInitial(profile), [profile])
 
