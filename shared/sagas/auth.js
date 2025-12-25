@@ -438,6 +438,7 @@ function* authByTelegram(action) {
     let authToken
     let refreshToken
     let userId
+    let isNewUser = false
 
     while (!finished) {
       if (count === MAX_ATTEMPTS) {
@@ -447,7 +448,7 @@ function* authByTelegram(action) {
 
       const tgAuthResponse = yield call(api.getAuthToken, {
         token: `eq.${token}`,
-        select: 'status,access_token,refresh_token,user_id'
+        select: 'status,access_token,refresh_token,user_id,is_new_user'
       })
 
       console.log('tgAuthResponse', tgAuthResponse)
@@ -457,6 +458,7 @@ function* authByTelegram(action) {
         authToken = tgAuthResponse[0].access_token
         refreshToken = tgAuthResponse[0].refreshToken
         userId = tgAuthResponse[0].user_id
+        isNewUser = tgAuthResponse[0].is_new_user
 
         if (status !== 'pending') {
           finished = true
@@ -472,8 +474,12 @@ function* authByTelegram(action) {
     localStorage.setItem('refresh_token', refreshToken)
     localStorage.setItem('user_id', userId)
 
-    // GA4 追踪：Telegram 登录（Supabase auth_tokens 表暂不支持 is_new_user）
-    trackLogin('telegram')
+    // GA4 追踪：根据 is_new_user 区分注册和登录
+    if (isNewUser) {
+      trackSignUp('telegram', referralCode)
+    } else {
+      trackLogin('telegram')
+    }
 
     const profileResponse = yield call(api.getProfile, {
       userId
