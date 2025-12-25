@@ -11,45 +11,11 @@ import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import tokenLogo from 'resources/images/token-logo_v3.png'
 import styles from './style.css'
 
-// 基于字符串生成头像颜色（类似 Jazzicon 效果）
-const generateAvatarColors = (seed) => {
-  if (!seed) return { bg: '#6366f1', color: '#ffffff' }
-  
-  // 简单哈希函数
-  let hash = 0
-  for (let i = 0; i < seed.length; i++) {
-    hash = seed.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  
-  // 生成 HSL 颜色（饱和度和亮度固定，只变色相）
-  const hue = Math.abs(hash % 360)
-  const bg = `hsl(${hue}, 65%, 55%)`
-  
-  return { bg, color: '#ffffff' }
-}
-
-// 获取用户头像显示的首字母
-const getAvatarInitial = (profile) => {
-  // 1. 有自定义用户名（非自动生成的 user_xxx 格式）
-  if (profile?.username && !profile.username.startsWith('user_')) {
-    return profile.username.charAt(0).toUpperCase()
-  }
-  // 2. 有钱包地址
-  if (profile?.wallet_address) {
-    return profile.wallet_address.slice(2, 4).toUpperCase()
-  }
-  // 3. 根据登录方式显示
-  if (profile?.login_type) {
-    const typeInitials = {
-      telegram: 'TG',
-      email: 'EM',
-      twitter: 'TW',
-      metamask: 'MM',
-      wallet: 'W'
-    }
-    return typeInitials[profile.login_type.toLowerCase()] || profile.login_type.charAt(0).toUpperCase()
-  }
-  return 'U'
+// 生成 DiceBear Identicon 头像 URL
+const getAvatarUrl = (profile) => {
+  // 使用用户 ID 作为 seed，确保每个用户头像唯一且稳定
+  const seed = profile?.id || 'default'
+  return `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(seed)}&backgroundColor=transparent`
 }
 
 // 基础数字格式化（内部使用）
@@ -207,14 +173,8 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   const rewardStatus = reward?.status
   const hasWallet = !!profile?.wallet_address
 
-  // 生成头像颜色和首字母
-  const avatarColors = useMemo(() => {
-    // 优先使用钱包地址，其次用户ID，最后用登录类型
-    const seed = profile?.wallet_address || profile?.id || profile?.login_type || ''
-    return generateAvatarColors(seed)
-  }, [profile?.wallet_address, profile?.id, profile?.login_type])
-  
-  const avatarInitial = useMemo(() => getAvatarInitial(profile), [profile])
+  // 生成头像 URL
+  const avatarUrl = useMemo(() => getAvatarUrl(profile), [profile?.id])
 
   useEffect(() => {
     const iv = setInterval(() => {
@@ -399,20 +359,16 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
         <div className={styles.account}>
           <div className={styles.user}>
             <div className={styles.top}>
-              <div 
-                className={styles.logo}
-                style={{ 
-                  backgroundColor: avatarColors.bg,
-                  color: avatarColors.color,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '32px',
-                  fontFamily: 'Jersey10',
-                  fontWeight: 'bold'
-                }}
-              >
-                {avatarInitial}
+              <div className={styles.logo}>
+                <img 
+                  src={avatarUrl} 
+                  alt="avatar" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    borderRadius: '50%'
+                  }} 
+                />
               </div>
               {isEditingUsername ? (
                 <div className={styles.editNameRow}>
