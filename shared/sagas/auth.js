@@ -24,6 +24,7 @@ import * as api from 'api/supabase'
 import { ethers } from 'ethers'
 import { CHAIN_ID, CHAIN_ID_HEX, RPC_URL, CHAIN_CONFIG, getSignatureClaimAddress } from 'config/contracts'
 import SIGNATURE_CLAIM_ABI from 'config/abi/signatureClaim.json'
+import { trackSignUp, trackLogin, trackSubmitEvidence } from 'utils/analytics'
 
 const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k"
 const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
@@ -238,6 +239,14 @@ function* web3AuthLogin(web3auth, data) {
     localStorage.setItem('refresh_token', refreshToken)
     localStorage.setItem('user_id', userId)
 
+    // GA4 追踪：根据 is_new_user 区分注册和登录
+    const method = data.method || 'unknown'
+    if (authResponse.data.is_new_user) {
+      trackSignUp(method, data.referralCode)
+    } else {
+      trackLogin(method)
+    }
+
     const profileResponse = yield call(api.getProfile, {
       userId
     }, {
@@ -274,7 +283,7 @@ function* authByWallet(action) {
 
     // yield apply(web3auth, web3auth.connect)
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode, method: 'metamask' })
 
     console.log('authByWallet end', web3auth, web3auth.status)
     onSuccess()
@@ -301,7 +310,7 @@ function* authByEmail(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode, method: 'email' })
 
     console.log('authByEmail end', web3auth, web3auth.status)
     onSuccess()
@@ -326,7 +335,7 @@ function* authByTwitter(action) {
       }
     ])
 
-    yield call(web3AuthLogin, web3auth, { referralCode })
+    yield call(web3AuthLogin, web3auth, { referralCode, method: 'twitter' })
 
     console.log('authByTwitter end', web3auth, web3auth.status)
     onSuccess()
@@ -415,6 +424,7 @@ function* authByTelegram(action) {
     let authToken
     let refreshToken
     let userId
+    let isNewUser = false
 
     while (!finished) {
       if (count === MAX_ATTEMPTS) {
@@ -424,18 +434,21 @@ function* authByTelegram(action) {
 
       const tgAuthResponse = yield call(api.getAuthToken, {
         token: `eq.${token}`,
-        select: 'status,access_token,refresh_token,user_id'
+        select: 'status,access_token,refresh_token,user_id,is_new_user'
       })
 
       console.log('tgAuthResponse', tgAuthResponse)
 
       if (tgAuthResponse && tgAuthResponse[0]) {
         const status = tgAuthResponse[0].status
-        authToken = tgAuthResponse[0].access_token
-        refreshToken = tgAuthResponse[0].refreshToken
-        userId = tgAuthResponse[0].user_id
-
+        
         if (status !== 'pending') {
+          // 只在 complete 时读取所有数据
+          authToken = tgAuthResponse[0].access_token
+          refreshToken = tgAuthResponse[0].refresh_token
+          userId = tgAuthResponse[0].user_id
+          isNewUser = tgAuthResponse[0].is_new_user === true  // 确保是布尔值
+          console.log('[GA4] Telegram auth complete:', { isNewUser, status })
           finished = true
           break
         }
@@ -448,6 +461,13 @@ function* authByTelegram(action) {
     localStorage.setItem('auth_token', authToken)
     localStorage.setItem('refresh_token', refreshToken)
     localStorage.setItem('user_id', userId)
+
+    // GA4 追踪：根据 is_new_user 区分注册和登录
+    if (isNewUser) {
+      trackSignUp('telegram', referralCode)
+    } else {
+      trackLogin('telegram')
+    }
 
     const profileResponse = yield call(api.getProfile, {
       userId
@@ -523,6 +543,12 @@ function* submitLoss(action) {
     if (!submitLossResponse.success) {
       throw new Error(submitLossResponse.error)
     }
+
+    // GA4 追踪：提交证据成功
+    trackSubmitEvidence({
+      isRegistered: !!authToken,
+      exchange: ocrForm.exchange || 'unknown',
+    })
 
     console.log('submitLossResponse', submitLossResponse)
     onSuccess()
