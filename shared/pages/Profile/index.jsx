@@ -1,15 +1,22 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react'
+import React, { useEffect, useState, useCallback, Fragment, useMemo } from 'react'
 import { withRouter } from 'utils/withRouter'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { formatDate } from 'utils'
 import { isExchangeVisible, getTokenName } from 'config/exchanges'
 import tokenLogo from 'resources/images/token-logo_v3.png'
 import styles from './style.css'
+
+// 生成 DiceBear Identicon 头像 URL
+const getAvatarUrl = (profile) => {
+  // 使用用户 ID 作为 seed，确保每个用户头像唯一且稳定
+  const seed = profile?.id || 'default'
+  return `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(seed)}&backgroundColor=transparent`
+}
 
 // 基础数字格式化（内部使用）
 const formatNumberWithUnit = (num) => {
@@ -142,6 +149,7 @@ const getPercentage = (reward) => {
 }
 
 const Profile = ({ profile, userTokens, referralStats, actions, submissions, history }) => {
+  const navigate = useNavigate()
   const hasSubmitted = submissions?.statistics?.total_submissions > 0
   const allRewards = Array.isArray(userTokens?.rewards) ? userTokens.rewards : []
   // 过滤只显示可见交易所的 rewards
@@ -164,6 +172,9 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
   // 派生变量：空值防御
   const rewardStatus = reward?.status
   const hasWallet = !!profile?.wallet_address
+
+  // 生成头像 URL
+  const avatarUrl = useMemo(() => getAvatarUrl(profile), [profile?.id])
 
   useEffect(() => {
     const iv = setInterval(() => {
@@ -202,6 +213,31 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
       },
     })
   }, [])
+
+  // 处理 LP Staking 入口点击（需要先连接钱包）
+  const handleLpStakingClick = useCallback((e) => {
+    e.preventDefault()
+    
+    // 已有钱包，直接跳转
+    if (hasWallet) {
+      navigate('/lp-staking')
+      return
+    }
+    
+    // 无钱包，先连接钱包再跳转
+    setConnectingWallet(true)
+    actions.linkWallet({
+      onSuccess: () => {
+        toast('Connect Wallet Success!')
+        setConnectingWallet(false)
+        navigate('/lp-staking')
+      },
+      onError: (message) => {
+        toast(message)
+        setConnectingWallet(false)
+      },
+    })
+  }, [hasWallet, navigate, actions])
 
   const prev = useCallback(() => {
     if (activeIdx > 0) {
@@ -323,7 +359,17 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
         <div className={styles.account}>
           <div className={styles.user}>
             <div className={styles.top}>
-              <div className={styles.logo}></div>
+              <div className={styles.logo}>
+                <img 
+                  src={avatarUrl} 
+                  alt="avatar" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    borderRadius: '50%'
+                  }} 
+                />
+              </div>
               {isEditingUsername ? (
                 <div className={styles.editNameRow}>
                   <input
@@ -364,7 +410,6 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                   </button>
                 </div>
               )}
-              <div className={styles.description}>{profile.id}</div>
             </div>
             <div className={styles.bottom}>
               <div className={styles.list}>
@@ -475,11 +520,16 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 </div>
                 {/* 双按钮布局：CLAIM/CONNECT */}
                 <div className={styles.dualButtonRow}>
-                  {/* 隐藏 Crowdfund 入口
-                  <Link className={styles.getMoreButton} to="/crowdfund">
-                    GET MORE TOKEN
-                  </Link>
-                  */}
+                  {/* 隐藏 STAKE LP 入口 - 可通过 /lp-staking 直接访问 */}
+                  {false && (
+                  <button 
+                    className={styles.getMoreButton} 
+                    onClick={handleLpStakingClick}
+                    disabled={connectingWallet}
+                  >
+                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                  </button>
+                  )}
 
                   {/* 右侧：根据状态显示不同按钮 */}
                   {rewardStatus === 'locked' && (
@@ -527,13 +577,23 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                 <div className={styles.noRewardText}>
                   {hasSubmitted ? 'Your submission is being reviewed.' : 'No tokens yet. Submit your loss to get tokens!'}
                 </div>
-                {!hasSubmitted && (
-                  <div className={styles.dualButtonRow}>
+                <div className={styles.dualButtonRow}>
+                  {!hasSubmitted && (
                     <Link className={styles.claimToButton} to="/submit-loss">
                       SUBMIT LOSS
                     </Link>
-                  </div>
-                )}
+                  )}
+                  {/* 隐藏 STAKE LP 入口 - 可通过 /lp-staking 直接访问 */}
+                  {false && (
+                  <button 
+                    className={styles.getMoreButton} 
+                    onClick={handleLpStakingClick}
+                    disabled={connectingWallet}
+                  >
+                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                  </button>
+                  )}
+                </div>
               </div>
             )}
 

@@ -24,14 +24,8 @@ import * as api from 'api/supabase'
 import { ethers } from 'ethers'
 import { CHAIN_ID, CHAIN_ID_HEX, RPC_URL, CHAIN_CONFIG, getSignatureClaimAddress } from 'config/contracts'
 import SIGNATURE_CLAIM_ABI from 'config/abi/signatureClaim.json'
+import { WEB3AUTH_CLIENT_ID, SUPABASE_URL, SUPABASE_ANON_KEY, TELEGRAM_BOT_USERNAME } from 'constants/env'
 import { trackSignUp, trackLogin, trackSubmitEvidence } from 'utils/analytics'
-
-const WEB3AUTH_CLIENT_ID = "BCkAjl_q8vF43zMg45PzrroZ7oE6Bq-thcCBseBXjSzzlV8XLMZEKQhh_dYCkdPRc6gdcLFdI4cSAMe0OVd4k6k"
-const SUPABASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co"
-const SUPABASE_ANON_KEY = "sb_publishable_wl9QBcaEFGJWauO77gIDiQ_VEmbEnxv"
-const API_BASE_URL = "https://npsdvkqmdkzadkzbxhbq.supabase.co/functions/v1"
-const TELEGRAM_BOT_USERNAME = "SatoshiFuryBot"
-const APP_URL = "https://satoshis-fury-nextjs.vercel.app"
 
 // console.log('WALLET_CONNECTORS', WALLET_CONNECTORS)
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -44,6 +38,11 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 
 // 导出 web3auth 供其他 saga 使用
 export let web3auth
+
+// 全局锁：避免并发 init 和 connect
+let initInFlight = false
+export let connectInFlight = false
+export const setConnectInFlight = (value) => { connectInFlight = value }
 
 function* waitUntil(web3auth, status) {
   return new Promise((resolve, reject) => {
@@ -74,45 +73,50 @@ function waitUntilNot(web3auth, status) {
 function* initWeb3Auth(action) {
   const { onSuccess, onError } = action.payload
 
+  // 并发锁：避免多个 saga 同时 init
+  if (initInFlight) {
+    console.log('[Web3Auth] init already in flight, waiting...')
+    while (initInFlight) {
+      yield delay(200)
+    }
+    // init 完成后检查状态
+    if (web3auth && (web3auth.status === 'ready' || web3auth.status === 'connected')) {
+      onSuccess()
+      return
+    }
+  }
+
   try {
-    // if (!web3auth) {
-    // localStorage.removeItem('auth_store')
+    initInFlight = true
 
-    web3auth = new Web3Auth({
-      clientId: WEB3AUTH_CLIENT_ID,
-      web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-      sessionTime: 86400 * 7,
-      storageType: 'local'
-    })
+    // 单例：仅在实例不存在时创建
+    if (!web3auth) {
+      web3auth = new Web3Auth({
+        clientId: WEB3AUTH_CLIENT_ID,
+        web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+        sessionTime: 86400 * 7,
+        storageType: 'local'
+      })
+    }
 
-    // }
+    console.log('[Web3Auth] initWeb3Auth load, status:', web3auth.status)
 
-    console.log('initWeb3Auth load', web3auth, web3auth.status, web3auth.configureAdapter)
-
-    if (
-      web3auth.status !== 'connected'
-      && web3auth.status !== 'errored'
-      && web3auth.status !== 'ready'
-      && web3auth.status !== 'connecting'
-    ) {
+    // 仅在 not_ready 状态时 init
+    if (web3auth.status === 'not_ready') {
       yield apply(web3auth, web3auth.init)
       yield call(waitUntilNot, web3auth, 'not_ready')
-      console.log('initWeb3Auth init', web3auth, web3auth.status)
+      console.log('[Web3Auth] initWeb3Auth init done, status:', web3auth.status)
     }
 
-    if (web3auth.status === 'connected') {
-      yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
-      console.log('initWeb3Auth logout', web3auth, web3auth.status)
-    } else if (web3auth.status === 'connecting') {
-      // yield call(waitUntilNot, web3auth, 'connecting')
-      console.log('initWeb3Auth abort', web3auth, web3auth.status)
-    }
+    // 不再强制 logout - 如果已 connected，保持连接状态
+    // 如果需要断开，由调用方显式调用 disconnectWallet
 
     onSuccess()
   } catch (error) {
-    console.log('initWeb3Auth error')
-    console.log('error', error)
+    console.log('[Web3Auth] initWeb3Auth error:', error)
     onError(error.message)
+  } finally {
+    initInFlight = false
   }
 }
 
@@ -122,19 +126,19 @@ function* initWeb3Auth(action) {
  * 导出供其他 saga 使用
  */
 export function* waitWeb3AuthReady() {
-  // 1. 仅在未初始化时才 init
+  // 1. 确保实例已初始化
   if (!web3auth || web3auth.status === 'not_ready' || web3auth.status === 'errored') {
     yield call(initWeb3Auth, {
       payload: {
         onSuccess: () => {},
-        onError: () => {},
+        onError: (e) => { throw new Error(e) },
       },
     })
   }
 
-  // 2. 等待 Web3Auth 变成 ready / connected
+  // 2. 等待 Web3Auth 变成 ready / connected（v10 标准枚举）
   let waitCount = 0
-  const maxWait = 10 // 最多等 5 秒 (10 * 500ms)
+  const maxWait = 20 // 最多等 10 秒
 
   while (
     web3auth &&
@@ -154,10 +158,24 @@ export function* waitWeb3AuthReady() {
 
   console.log('[Web3Auth] ready, status:', web3auth.status)
 
-  // 4. 额外等待让 connectors 初始化完成
-  // 如果之前执行了 logout，需要等待更长时间
-  yield delay(3000)
-  console.log('[Web3Auth] connectors should be ready now')
+  // 4. 给一个小延迟让 SDK 内部稳定（不再轮询内部字段）
+  yield delay(500)
+}
+
+/**
+ * 显式断开钱包连接
+ * 仅在需要时才调用（如用户点击 Disconnect / Switch Account）
+ */
+export function* disconnectWallet() {
+  if (web3auth && web3auth.status === 'connected') {
+    try {
+      // cleanup: false 更安全，不会破坏 connector 状态
+      yield apply(web3auth, web3auth.logout, [{ cleanup: false }])
+      console.log('[Web3Auth] disconnected')
+    } catch (error) {
+      console.log('[Web3Auth] disconnect error:', error)
+    }
+  }
 }
 
 /**
@@ -408,10 +426,6 @@ function* authByTelegram(action) {
       }
     } else {
       const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
-
-      webWindow.onbeforeunload = function () {
-        console.log('telegram window closed')
-      }
 
       if (!webWindow) {
         throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
@@ -692,26 +706,24 @@ function* linkWallet(action) {
   const { onSuccess, onError } = action.payload
 
   try {
-    if (web3auth) {
+    // 如果已连接，先断开（linkWallet 需要新连接）
+    if (web3auth && web3auth.status === 'connected') {
       try {
-        yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
+        yield apply(web3auth, web3auth.logout, [{ cleanup: false }])
+        console.log('[linkWallet] disconnected existing connection')
       } catch (error) {
-        console.log('error', error)
+        console.log('[linkWallet] disconnect error:', error)
       }
     }
 
-    yield call(initWeb3Auth, { payload: {
-      onSuccess: () => {},
-      onError: () => {},
-    }})
+    // 等待 Web3Auth 初始化完成
+    yield call(waitWeb3AuthReady)
 
-    yield delay(2000)
-    console.log('linkWallet start', web3auth, web3auth.status)
+    console.log('[linkWallet] start, status:', web3auth.status)
 
+    // v10: MetaMask connector 不传额外参数
     const provider = yield apply(web3auth, web3auth.connectTo, [
-      WALLET_CONNECTORS.METAMASK, {
-        chainNamespace: CHAIN_NAMESPACES.EIP155
-      }
+      WALLET_CONNECTORS.METAMASK
     ])
     console.log('linkWallet 1', provider)
     const web3AuthResponse = yield apply(web3auth, web3auth.getIdentityToken)
@@ -820,44 +832,61 @@ function* claimToken(action) {
       provider = web3auth.provider
       console.log('claimToken: Using existing provider')
     } else {
-      // 没有连接 → 走 connectTo（带重试逻辑）
-      console.log('claimToken: Connecting to MetaMask with chainId:', CHAIN_ID_HEX)
+      // 没有连接 → 走 connectTo（带重试逻辑 + 并发锁）
+      console.log('claimToken: Connecting to MetaMask...')
       
-      let retryCount = 0
-      const maxRetries = 3
+      // 并发锁：避免多个 saga 同时 connectTo
+      if (connectInFlight) {
+        console.log('claimToken: connect already in flight, waiting...')
+        while (connectInFlight) {
+          yield delay(200)
+        }
+        // 连接完成后检查结果
+        if (web3auth.status === 'connected' && web3auth.provider) {
+          provider = web3auth.provider
+        }
+      }
       
-      while (retryCount < maxRetries) {
+      if (!provider) {
+        connectInFlight = true
+        
         try {
-          provider = yield apply(web3auth, web3auth.connectTo, [
-            WALLET_CONNECTORS.METAMASK, {
-              chainNamespace: CHAIN_NAMESPACES.EIP155,
-              chainId: CHAIN_ID_HEX,
-              rpcTarget: RPC_URL,
+          let retryCount = 0
+          const maxRetries = 3
+          
+          while (retryCount < maxRetries) {
+            try {
+              // v10: MetaMask connector 不传 chainId/rpcTarget 参数
+              provider = yield apply(web3auth, web3auth.connectTo, [
+                WALLET_CONNECTORS.METAMASK
+              ])
+              break // 成功则跳出循环
+            } catch (connectError) {
+              const code = connectError?.code
+              
+              // 用户拒绝：不重试，直接抛出
+              if (code === 4001) {
+                throw new Error('User rejected wallet connection.')
+              }
+              
+              // 不属于"临时错误"：也不重试
+              if (!isTransientConnectError(connectError)) {
+                throw connectError
+              }
+              
+              retryCount++
+              console.log(`[Wallet] Connection attempt ${retryCount} failed:`, connectError.message)
+              
+              if (retryCount >= maxRetries) {
+                throw connectError
+              }
+              
+              yield delay(1000)
+              console.log(`[Wallet] Retrying connection (${retryCount}/${maxRetries})...`)
             }
-          ])
-          break // 成功则跳出循环
-        } catch (connectError) {
-          const code = connectError?.code
-          
-          // 用户拒绝：不重试，直接抛出
-          if (code === 4001) {
-            throw new Error('User rejected wallet connection.')
           }
-          
-          // 不属于"临时错误"：也不重试
-          if (!isTransientConnectError(connectError)) {
-            throw connectError
-          }
-          
-          retryCount++
-          console.log(`[Wallet] Connection attempt ${retryCount} failed:`, connectError.message)
-          
-          if (retryCount >= maxRetries) {
-            throw connectError
-          }
-          
-          yield delay(1000)
-          console.log(`[Wallet] Retrying connection (${retryCount}/${maxRetries})...`)
+        } finally {
+          connectInFlight = false
         }
       }
     }

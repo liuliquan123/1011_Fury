@@ -13,7 +13,7 @@ import darkThemeStyle from 'resources/themes/dark'
 import lightThemeStyle from 'resources/themes/light'
 import { ToastContainer } from 'react-toastify'
 import * as actions from 'actions/auth'
-import { trackPageView } from 'utils/analytics'
+import { trackPageView, GA_MEASUREMENT_ID } from 'utils/analytics'
 import styles from './style.css'
 
 const getAppTheme = (mode) => {
@@ -32,6 +32,21 @@ const Root = ({ location, history, theme, actions }) => {
   useEffect(() => {
     setTitle('Fury')
     actions.getProfile()
+  }, [])
+
+  // 动态加载 GA4 脚本
+  useEffect(() => {
+    if (!window.gtag && GA_MEASUREMENT_ID) {
+      const script = document.createElement('script')
+      script.async = true
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
+      document.head.appendChild(script)
+
+      window.dataLayer = window.dataLayer || []
+      window.gtag = function () { window.dataLayer.push(arguments) }
+      window.gtag('js', new Date())
+      window.gtag('config', GA_MEASUREMENT_ID)
+    }
   }, [])
 
   // GA4 页面浏览追踪

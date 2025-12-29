@@ -1,11 +1,13 @@
 import { takeEvery, call, put, select, apply, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
-import { WALLET_CONNECTORS, CHAIN_NAMESPACES } from '@web3auth/modal'
+import { WALLET_CONNECTORS } from '@web3auth/modal'
 import * as actions from 'actions/lpStaking'
-import { RPC_URL, getLpStakingConfig, CHAIN_CONFIG, CHAIN_ID, CHAIN_ID_HEX } from 'config/contracts'
+import { RPC_URL, getLpStakingConfig, getUniswapV2Config, CHAIN_CONFIG, CHAIN_ID } from 'config/contracts'
 import LP_STAKING_ABI from 'config/abi/lp-staking.json'
-import { web3auth, waitWeb3AuthReady, isTransientConnectError } from './auth'
+import UNISWAP_V2_ROUTER_ABI from 'config/abi/uniswap-v2-router.json'
+import UNISWAP_V2_PAIR_ABI from 'config/abi/uniswap-v2-pair.json'
+import { web3auth, waitWeb3AuthReady, isTransientConnectError, connectInFlight, setConnectInFlight } from './auth'
 
 // ERC20 ABI (只需要 balanceOf, allowance, approve)
 const ERC20_ABI = [
@@ -16,8 +18,12 @@ const ERC20_ABI = [
   'function symbol() view returns (string)',
 ]
 
+// 轮次数量
+const NUM_ROUNDS = 3
+
 /**
  * 获取合约信息（只读）
+ * 适配 PointsVaultRounds 合约
  */
 function* fetchContractInfoSaga() {
   try {
@@ -31,23 +37,27 @@ function* fetchContractInfoSaga() {
     const provider = new ethers.JsonRpcProvider(RPC_URL)
     const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, provider)
     
-    // 获取合约信息
+    // 获取合约信息 (新 ABI 返回值)
     const info = yield call([contract, contract.getContractInfo])
-    const isCampaignEnded = yield call([contract, contract.isCampaignEnded])
+    const currentRoundId = yield call([contract, contract.currentRound])
     
     yield put(actions.updateContractInfo({
       loading: false,
       lpToken: info._lpToken,
-      endTimestamp: Number(info._endTimestamp),
-      totalDeposits: ethers.formatEther(info._totalDeposits),
+      rewardToken: info._rewardToken,
+      startTime: Number(info._startTime),
+      endTime: Number(info._endTime),
+      minDeposit: ethers.formatEther(info._minDeposit),
+      totalStaked: ethers.formatEther(info._totalStaked),
       participantCount: Number(info._participantCount),
       isPaused: info._isPaused,
-      isCampaignEnded,
+      currentRound: Number(currentRoundId),
     }))
     
     console.log('[LpStaking] Contract info fetched', {
-      totalDeposits: ethers.formatEther(info._totalDeposits),
+      totalStaked: ethers.formatEther(info._totalStaked),
       participantCount: Number(info._participantCount),
+      currentRound: Number(currentRoundId),
     })
   } catch (error) {
     console.error('[LpStaking] fetchContractInfo error:', error)
@@ -57,6 +67,7 @@ function* fetchContractInfoSaga() {
 
 /**
  * 获取用户质押状态（只读）
+ * 适配 PointsVaultRounds：使用 balanceOf 获取余额
  */
 function* fetchUserStakingSaga() {
   try {
@@ -77,8 +88,8 @@ function* fetchUserStakingSaga() {
     const stakingContract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, provider)
     const lpTokenContract = new ethers.Contract(config.lpToken, ERC20_ABI, provider)
     
-    // 获取用户质押状态
-    const userState = yield call([stakingContract, stakingContract.getUserState], profile.wallet_address)
+    // 获取用户质押余额 (使用 balanceOf 替代 getUserState)
+    const balance = yield call([stakingContract, stakingContract.balanceOf], profile.wallet_address)
     
     // 获取用户 LP Token 余额和授权额度
     const lpBalance = yield call([lpTokenContract, lpTokenContract.balanceOf], profile.wallet_address)
@@ -86,20 +97,147 @@ function* fetchUserStakingSaga() {
     
     yield put(actions.updateUserStaking({
       loading: false,
-      balance: ethers.formatEther(userState.balance),
-      points: ethers.formatEther(userState.points),
-      lastUpdate: Number(userState.lastUpdate),
+      balance: ethers.formatEther(balance),
       lpBalance: ethers.formatEther(lpBalance),
       allowance: ethers.formatEther(allowance),
     }))
     
     console.log('[LpStaking] User staking fetched', {
-      balance: ethers.formatEther(userState.balance),
-      points: ethers.formatEther(userState.points),
+      balance: ethers.formatEther(balance),
+      lpBalance: ethers.formatEther(lpBalance),
     })
   } catch (error) {
     console.error('[LpStaking] fetchUserStaking error:', error)
     yield put(actions.updateUserStaking({ loading: false, error: error.message }))
+  }
+}
+
+/**
+ * 获取三轮信息（新增）
+ */
+function* fetchRoundsInfoSaga() {
+  try {
+    yield put(actions.updateRoundsInfo({ loading: true, error: null }))
+    
+    const config = getLpStakingConfig()
+    if (!config.stakingContract) {
+      throw new Error('LP Staking contract not configured')
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, provider)
+    
+    const rounds = []
+    for (let i = 0; i < NUM_ROUNDS; i++) {
+      const round = yield call([contract, contract.getRoundInfo], i)
+      rounds.push({
+        startTime: Number(round._startTime),
+        endTime: Number(round._endTime),
+        rewardAmount: ethers.formatEther(round._rewardAmount),
+        fundedAmount: ethers.formatEther(round._fundedAmount),
+        totalPoints: ethers.formatEther(round._totalPoints),
+      })
+    }
+    
+    yield put(actions.updateRoundsInfo({
+      loading: false,
+      rounds,
+    }))
+    
+    console.log('[LpStaking] Rounds info fetched', rounds)
+  } catch (error) {
+    console.error('[LpStaking] fetchRoundsInfo error:', error)
+    yield put(actions.updateRoundsInfo({ loading: false, error: error.message }))
+  }
+}
+
+/**
+ * 获取用户在各轮的状态（新增）
+ */
+function* fetchUserRoundsStateSaga() {
+  try {
+    yield put(actions.updateUserRoundsState({ loading: true, error: null }))
+    
+    const profile = yield select(state => state.auth.profile)
+    if (!profile?.wallet_address) {
+      yield put(actions.updateUserRoundsState({ loading: false }))
+      return
+    }
+    
+    const config = getLpStakingConfig()
+    if (!config.stakingContract) {
+      throw new Error('LP Staking contract not configured')
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, provider)
+    
+    const rounds = []
+    for (let i = 0; i < NUM_ROUNDS; i++) {
+      // 获取用户在该轮的状态
+      const [points, claimed] = yield call([contract, contract.getUserRoundState], profile.wallet_address, i)
+      // 获取实时积分
+      const pendingPoints = yield call([contract, contract.pendingPoints], profile.wallet_address, i)
+      // 获取预估奖励
+      const pendingReward = yield call([contract, contract.calculateReward], profile.wallet_address, i)
+      
+      rounds.push({
+        points: ethers.formatEther(points),
+        pendingPoints: ethers.formatEther(pendingPoints),
+        claimed,
+        pendingReward: ethers.formatEther(pendingReward),
+      })
+    }
+    
+    yield put(actions.updateUserRoundsState({
+      loading: false,
+      rounds,
+    }))
+    
+    console.log('[LpStaking] User rounds state fetched', rounds)
+  } catch (error) {
+    console.error('[LpStaking] fetchUserRoundsState error:', error)
+    yield put(actions.updateUserRoundsState({ loading: false, error: error.message }))
+  }
+}
+
+/**
+ * 链上领取奖励（新增）
+ */
+function* claimRewardSaga({ payload }) {
+  const { roundId, onSuccess, onError } = payload
+  
+  try {
+    // 获取钱包 provider
+    const provider = yield call(getWalletProvider)
+    yield call(switchToTargetChain, provider)
+    
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    
+    const config = getLpStakingConfig()
+    const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
+    
+    console.log('[LpStaking] Claiming reward for round', roundId)
+    
+    const tx = yield call([contract, contract.claim], roundId)
+    console.log('[LpStaking] Claim tx sent:', tx.hash)
+    
+    yield call([tx, tx.wait])
+    console.log('[LpStaking] Claim confirmed')
+    
+    toast.success(`Round ${roundId + 1} reward claimed!`)
+    
+    // 刷新用户数据
+    yield put(actions.fetchUserRoundsState())
+    yield put(actions.fetchRoundsInfo())
+    
+    onSuccess && onSuccess({ txHash: tx.hash })
+  } catch (error) {
+    console.error('[LpStaking] claim error:', error)
+    const message = error.reason || error.message || 'Claim failed'
+    toast.error(message)
+    onError && onError(message)
   }
 }
 
@@ -119,52 +257,60 @@ function* getWalletProvider() {
     provider = web3auth.provider
     console.log('[LpStaking] Using existing provider')
   } else {
-    // 3. 没有连接 → 调用 connectTo（带重试逻辑）
-    console.log('[LpStaking] Connecting to MetaMask...')
-    
-    // 额外等待确保 MetaMask connector 完全初始化
-    // initWeb3Auth 中的 logout 会重置 connectors，需要更多时间
-    yield delay(1000)
-    
-    let retryCount = 0
-    const maxRetries = 5  // 增加重试次数
-    
-    while (retryCount < maxRetries) {
-      try {
-        // 使用 call 包装 Promise，确保能正确捕获 rejection
-        const connectPromise = () => web3auth.connectTo(
-          WALLET_CONNECTORS.METAMASK, {
-            chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: CHAIN_ID_HEX,
-            rpcTarget: RPC_URL,
-          }
-        )
-        provider = yield call(connectPromise)
-        break
-      } catch (connectError) {
-        const code = connectError?.code
-        
-        // 用户拒绝：不重试
-        if (code === 4001) {
-          throw new Error('User rejected wallet connection.')
-        }
-        
-        // 不属于临时错误：不重试
-        if (!isTransientConnectError(connectError)) {
-          throw connectError
-        }
-        
-        retryCount++
-        console.log(`[LpStaking] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
-        
-        if (retryCount >= maxRetries) {
-          throw connectError
-        }
-        
-        // 增加等待时间：第一次 2 秒，之后递增
-        yield delay(2000 + retryCount * 500)
-        console.log(`[LpStaking] Retrying...`)
+    // 3. 并发锁：避免多个 saga 同时 connectTo
+    if (connectInFlight) {
+      console.log('[LpStaking] connect already in flight, waiting...')
+      while (connectInFlight) {
+        yield delay(200)
       }
+      // 连接完成后检查结果
+      if (web3auth.status === 'connected' && web3auth.provider) {
+        return web3auth.provider
+      }
+    }
+
+    // 4. 连接钱包
+    console.log('[LpStaking] Connecting to MetaMask...')
+    setConnectInFlight(true)
+    
+    try {
+      let retryCount = 0
+      const maxRetries = 3
+      
+      while (retryCount < maxRetries) {
+        try {
+          // v10: MetaMask connector 不传 chainId/rpcTarget 参数
+          provider = yield call(
+            [web3auth, web3auth.connectTo],
+            WALLET_CONNECTORS.METAMASK
+          )
+          break
+        } catch (connectError) {
+          const code = connectError?.code
+          
+          // 用户拒绝：不重试
+          if (code === 4001) {
+            throw new Error('User rejected wallet connection.')
+          }
+          
+          // 不属于临时错误：不重试
+          if (!isTransientConnectError(connectError)) {
+            throw connectError
+          }
+          
+          retryCount++
+          console.log(`[LpStaking] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
+          
+          if (retryCount >= maxRetries) {
+            throw connectError
+          }
+          
+          yield delay(1000)
+          console.log(`[LpStaking] Retrying...`)
+        }
+      }
+    } finally {
+      setConnectInFlight(false)
     }
   }
 
@@ -282,6 +428,7 @@ function* depositLpSaga({ payload }) {
     // 刷新数据
     yield put(actions.fetchContractInfo())
     yield put(actions.fetchUserStaking())
+    yield put(actions.fetchUserRoundsState())
     
     onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
@@ -323,6 +470,7 @@ function* withdrawLpSaga({ payload }) {
     // 刷新数据
     yield put(actions.fetchContractInfo())
     yield put(actions.fetchUserStaking())
+    yield put(actions.fetchUserRoundsState())
     
     onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
@@ -363,6 +511,7 @@ function* withdrawAllLpSaga({ payload }) {
     // 刷新数据
     yield put(actions.fetchContractInfo())
     yield put(actions.fetchUserStaking())
+    yield put(actions.fetchUserRoundsState())
     
     onSuccess && onSuccess({ txHash: tx.hash })
   } catch (error) {
@@ -373,12 +522,317 @@ function* withdrawAllLpSaga({ payload }) {
   }
 }
 
+/**
+ * 获取用户的 Activity Log（Deposited/Withdrawn 事件）
+ */
+function* fetchActivityLogSaga() {
+  try {
+    yield put(actions.updateActivityLog({ loading: true, error: null }))
+    
+    const profile = yield select(state => state.auth.profile)
+    if (!profile?.wallet_address) {
+      yield put(actions.updateActivityLog({ loading: false, events: [] }))
+      return
+    }
+    
+    const config = getLpStakingConfig()
+    if (!config.stakingContract) {
+      throw new Error('LP Staking contract not configured')
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, provider)
+    
+    // 获取 Deposited 和 Withdrawn 事件
+    const depositedFilter = contract.filters.Deposited(profile.wallet_address)
+    const withdrawnFilter = contract.filters.Withdrawn(profile.wallet_address)
+    
+    const [depositedEvents, withdrawnEvents] = yield Promise.all([
+      contract.queryFilter(depositedFilter),
+      contract.queryFilter(withdrawnFilter),
+    ])
+    
+    // 处理事件数据
+    const events = []
+    
+    for (const event of depositedEvents) {
+      const block = yield call([provider, provider.getBlock], event.blockNumber)
+      events.push({
+        type: 'Staked',
+        amount: ethers.formatEther(event.args.amount),
+        timestamp: block.timestamp,
+        txHash: event.transactionHash,
+        blockNumber: event.blockNumber,
+      })
+    }
+    
+    for (const event of withdrawnEvents) {
+      const block = yield call([provider, provider.getBlock], event.blockNumber)
+      events.push({
+        type: 'Unstaked',
+        amount: ethers.formatEther(event.args.amount),
+        timestamp: block.timestamp,
+        txHash: event.transactionHash,
+        blockNumber: event.blockNumber,
+      })
+    }
+    
+    // 按时间倒序排列
+    events.sort((a, b) => b.timestamp - a.timestamp)
+    
+    yield put(actions.updateActivityLog({
+      loading: false,
+      events,
+    }))
+    
+    console.log('[LpStaking] Activity log fetched', { eventCount: events.length })
+  } catch (error) {
+    console.error('[LpStaking] fetchActivityLog error:', error)
+    yield put(actions.updateActivityLog({ loading: false, error: error.message }))
+  }
+}
+
+// ============================================
+// Uniswap V2 Add Liquidity 相关 Saga
+// ============================================
+
+/**
+ * 获取 Uniswap V2 Pair 储备量（用于价格计算）
+ */
+function* fetchPairReservesSaga() {
+  try {
+    yield put(actions.updatePairReserves({ loading: true, error: null }))
+    
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.pair || !uniswapConfig.weth) {
+      throw new Error('Uniswap V2 not configured for this network')
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const pairContract = new ethers.Contract(uniswapConfig.pair, UNISWAP_V2_PAIR_ABI, provider)
+    
+    // 获取 token0, token1 和储备量
+    const [token0, token1, reserves] = yield Promise.all([
+      pairContract.token0(),
+      pairContract.token1(),
+      pairContract.getReserves(),
+    ])
+    
+    // 判断 WETH 是 token0 还是 token1
+    const isToken0WETH = token0.toLowerCase() === uniswapConfig.weth.toLowerCase()
+    
+    // 根据 token 顺序确定储备量
+    // USDC 是 6 位小数，WETH 是 18 位小数
+    const pairedTokenDecimals = uniswapConfig.pairedTokenDecimals || 18
+    
+    let reserveETH, reservePairedToken
+    if (isToken0WETH) {
+      reserveETH = ethers.formatEther(reserves._reserve0)
+      reservePairedToken = ethers.formatUnits(reserves._reserve1, pairedTokenDecimals)
+    } else {
+      reserveETH = ethers.formatEther(reserves._reserve1)
+      reservePairedToken = ethers.formatUnits(reserves._reserve0, pairedTokenDecimals)
+    }
+    
+    yield put(actions.updatePairReserves({
+      loading: false,
+      reserveETH,
+      reservePairedToken,
+      token0,
+      token1,
+      isToken0WETH,
+    }))
+    
+    console.log('[LpStaking] Pair reserves fetched', { reserveETH, reservePairedToken, isToken0WETH })
+  } catch (error) {
+    console.error('[LpStaking] fetchPairReserves error:', error)
+    yield put(actions.updatePairReserves({ loading: false, error: error.message }))
+  }
+}
+
+/**
+ * 获取配对代币余额和授权额度（USDC 或 1011）
+ */
+function* fetchPairedTokenBalanceSaga() {
+  try {
+    yield put(actions.updatePairedTokenBalance({ loading: true }))
+    
+    const profile = yield select(state => state.auth.profile)
+    if (!profile?.wallet_address) {
+      yield put(actions.updatePairedTokenBalance({ loading: false, balance: '0', allowance: '0' }))
+      return
+    }
+    
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.pairedToken || !uniswapConfig.router) {
+      yield put(actions.updatePairedTokenBalance({ loading: false, balance: '0', allowance: '0' }))
+      return
+    }
+    
+    const provider = new ethers.JsonRpcProvider(RPC_URL)
+    const tokenContract = new ethers.Contract(uniswapConfig.pairedToken, ERC20_ABI, provider)
+    
+    const pairedTokenDecimals = uniswapConfig.pairedTokenDecimals || 18
+    
+    const [balance, allowance] = yield Promise.all([
+      tokenContract.balanceOf(profile.wallet_address),
+      tokenContract.allowance(profile.wallet_address, uniswapConfig.router),
+    ])
+    
+    yield put(actions.updatePairedTokenBalance({
+      loading: false,
+      balance: ethers.formatUnits(balance, pairedTokenDecimals),
+      allowance: ethers.formatUnits(allowance, pairedTokenDecimals),
+    }))
+    
+    console.log('[LpStaking] Paired token balance fetched', {
+      balance: ethers.formatUnits(balance, pairedTokenDecimals),
+      allowance: ethers.formatUnits(allowance, pairedTokenDecimals),
+    })
+  } catch (error) {
+    console.error('[LpStaking] fetchPairedTokenBalance error:', error)
+    yield put(actions.updatePairedTokenBalance({ loading: false, balance: '0', allowance: '0' }))
+  }
+}
+
+/**
+ * 授权配对代币给 Router（USDC 或 1011）
+ */
+function* approvePairedTokenSaga({ payload }) {
+  const { onSuccess, onError } = payload || {}
+  
+  try {
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.pairedToken || !uniswapConfig.router) {
+      throw new Error('Uniswap V2 not configured')
+    }
+    
+    // 获取钱包 provider
+    const provider = yield call(getWalletProvider)
+    yield call(switchToTargetChain, provider)
+    
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    
+    const tokenContract = new ethers.Contract(uniswapConfig.pairedToken, ERC20_ABI, signer)
+    
+    // 授权最大值
+    const maxApproval = ethers.MaxUint256
+    console.log('[LpStaking] Approving paired token for Router...')
+    
+    const tx = yield call([tokenContract, tokenContract.approve], uniswapConfig.router, maxApproval)
+    console.log('[LpStaking] Approve tx sent:', tx.hash)
+    
+    yield call([tx, tx.wait])
+    console.log('[LpStaking] Approve confirmed')
+    
+    toast.success(`${uniswapConfig.pairedTokenSymbol || 'Token'} approved!`)
+    
+    // 刷新余额
+    yield put(actions.fetchPairedTokenBalance())
+    
+    onSuccess && onSuccess({ txHash: tx.hash })
+  } catch (error) {
+    console.error('[LpStaking] approvePairedToken error:', error)
+    const message = error.reason || error.message || 'Approve failed'
+    toast.error(message)
+    onError && onError(message)
+  }
+}
+
+/**
+ * 添加流动性（ETH + USDC/1011）
+ */
+function* addLiquiditySaga({ payload }) {
+  const { ethAmount, tokenAmount, onSuccess, onError } = payload
+  
+  try {
+    const uniswapConfig = getUniswapV2Config()
+    if (!uniswapConfig.router || !uniswapConfig.pairedToken) {
+      throw new Error('Uniswap V2 not configured')
+    }
+    
+    // 获取钱包 provider
+    const provider = yield call(getWalletProvider)
+    yield call(switchToTargetChain, provider)
+    
+    const ethersProvider = new ethers.BrowserProvider(provider)
+    const signer = yield apply(ethersProvider, ethersProvider.getSigner)
+    const signerAddress = yield apply(signer, signer.getAddress)
+    
+    const routerContract = new ethers.Contract(uniswapConfig.router, UNISWAP_V2_ROUTER_ABI, signer)
+    
+    // 转换金额
+    const pairedTokenDecimals = uniswapConfig.pairedTokenDecimals || 18
+    const ethAmountWei = ethers.parseEther(ethAmount)
+    const tokenAmountWei = ethers.parseUnits(tokenAmount, pairedTokenDecimals)
+    
+    // 设置 1% 滑点保护
+    const minTokenAmount = tokenAmountWei * BigInt(99) / BigInt(100)
+    const minEthAmount = ethAmountWei * BigInt(99) / BigInt(100)
+    
+    // deadline: 当前时间 + 20 分钟
+    const deadline = Math.floor(Date.now() / 1000) + 20 * 60
+    
+    console.log('[LpStaking] Adding liquidity...', {
+      ethAmount,
+      tokenAmount,
+      minTokenAmount: ethers.formatUnits(minTokenAmount, pairedTokenDecimals),
+      minEthAmount: ethers.formatEther(minEthAmount),
+    })
+    
+    const tx = yield call(
+      [routerContract, routerContract.addLiquidityETH],
+      uniswapConfig.pairedToken,
+      tokenAmountWei,
+      minTokenAmount,
+      minEthAmount,
+      signerAddress,
+      deadline,
+      { value: ethAmountWei }
+    )
+    
+    console.log('[LpStaking] AddLiquidity tx sent:', tx.hash)
+    
+    const receipt = yield call([tx, tx.wait])
+    console.log('[LpStaking] AddLiquidity confirmed')
+    
+    toast.success('Liquidity added successfully!')
+    
+    // 刷新数据
+    yield put(actions.fetchUserStaking())
+    yield put(actions.fetchPairedTokenBalance())
+    yield put(actions.fetchPairReserves())
+    
+    onSuccess && onSuccess({ txHash: tx.hash })
+  } catch (error) {
+    console.error('[LpStaking] addLiquidity error:', error)
+    const message = error.reason || error.message || 'Add liquidity failed'
+    toast.error(message)
+    onError && onError(message)
+  }
+}
+
 export default function* lpStakingSaga() {
+  // 合约信息
   yield takeEvery(String(actions.fetchContractInfo), fetchContractInfoSaga)
   yield takeEvery(String(actions.fetchUserStaking), fetchUserStakingSaga)
+  
+  // PointsVaultRounds 新增
+  yield takeEvery(String(actions.fetchRoundsInfo), fetchRoundsInfoSaga)
+  yield takeEvery(String(actions.fetchUserRoundsState), fetchUserRoundsStateSaga)
+  yield takeEvery(String(actions.claimReward), claimRewardSaga)
+  
+  // 质押操作
   yield takeEvery(String(actions.approveLp), approveLpSaga)
   yield takeEvery(String(actions.depositLp), depositLpSaga)
   yield takeEvery(String(actions.withdrawLp), withdrawLpSaga)
   yield takeEvery(String(actions.withdrawAllLp), withdrawAllLpSaga)
+  yield takeEvery(String(actions.fetchActivityLog), fetchActivityLogSaga)
+  
+  // Uniswap V2 Add Liquidity
+  yield takeEvery(String(actions.fetchPairReserves), fetchPairReservesSaga)
+  yield takeEvery(String(actions.fetchPairedTokenBalance), fetchPairedTokenBalanceSaga)
+  yield takeEvery(String(actions.approvePairedToken), approvePairedTokenSaga)
+  yield takeEvery(String(actions.addLiquidity), addLiquiditySaga)
 }
-

@@ -138,6 +138,10 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
     ? phase.user_submission_status[`phase_${phase.current_phase}`]
     : false
 
+  // 检查 OCR 识别的 exchange 是否为 Binance（当前只接受 Binance 提交）
+  const isExchangeAllowed = !ocrForm?.exchange || 
+    ocrForm.exchange.toLowerCase() === 'binance'
+
   const selectExchange = useCallback((exchangeType) => () => {
     setExchangeType(exchangeType)
     setLoadingPhase(true)
@@ -198,22 +202,29 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
   const submitLoss = useCallback(() => {
     if (!isLoggedIn) {
       setIsOpen(true)
-    } else {
-      setSubmitting(true)
-      actions.submitLoss({
-        onSuccess: () => {
-          setSubmitting(false)
-          toast('Submit loss sucess!')
-          setFile()
-          history('/profile')
-        },
-        onError: (message) => {
-          setSubmitting(false)
-          toast(message)
-        },
-      })
+      return
     }
-  }, [file, isLoggedIn])
+    
+    // 检查 exchange 是否为 Binance
+    if (!isExchangeAllowed) {
+      toast.error('Currently only Binance submissions are accepted.')
+      return
+    }
+    
+    setSubmitting(true)
+    actions.submitLoss({
+      onSuccess: () => {
+        setSubmitting(false)
+        toast('Submit loss sucess!')
+        setFile()
+        history('/profile')
+      },
+      onError: (message) => {
+        setSubmitting(false)
+        toast(message)
+      },
+    })
+  }, [file, isLoggedIn, isExchangeAllowed])
 
   useEffect(() => {
     // 当 phase 数据加载完成时，取消 loading 状态
@@ -353,13 +364,6 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                 )}
               </div>
             </div>
-          </div>
-                    隐藏 Crowdfund 入口
-          <div className={styles.crowdfundEntry}>
-            <div className={styles.crowdfundText}>Want to get more tokens?</div>
-            <button className={styles.crowdfundButton} onClick={handleCrowdfundClick}>
-              CROWDFUND
-            </button>
           </div>
           <div className={styles.actions}>
             <button className={styles.backButton} onClick={prevStep}>
@@ -623,9 +627,16 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
                     </div>
                     <div className={styles.input}>
                       <input
-                        className={styles.disabled}
+                        className={classNames(styles.disabled, {
+                          [styles.inputError]: !isExchangeAllowed
+                        })}
                         type="text" value={ocrForm.exchange || ''} />
                     </div>
+                    {!isExchangeAllowed && (
+                      <div className={styles.fieldError}>
+                        Currently only Binance submissions are accepted. Please upload a Binance screenshot.
+                      </div>
+                    )}
                   </div>
                   <div className={styles.field}>
                     <div className={styles.name}>
@@ -696,8 +707,8 @@ const SubmitLoss = ({ actions, exchangePhase, phasesLocked, profile, ocrForm, hi
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </button>
             <button className={classNames(styles.nextButton, {
-              [styles.disabled]: submitting
-            })} onClick={submitLoss}>
+              [styles.disabled]: submitting || !isExchangeAllowed
+            })} onClick={submitLoss} disabled={!isExchangeAllowed}>
               <div className={classNames(styles.leftArrow)}>{">"}</div>
               <div className={classNames(styles.text)}>{uploading ? 'SUBMITTING' : 'SUBMIT'}</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>

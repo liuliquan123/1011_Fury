@@ -1,9 +1,11 @@
 /**
  * Google Analytics 4 事件追踪工具
- * Measurement ID: G-CNW74S8FP0
+ * Measurement ID 通过环境变量配置
  */
 
-export const GA_MEASUREMENT_ID = 'G-CNW74S8FP0'
+import { GA_MEASUREMENT_ID } from 'constants/env'
+
+export { GA_MEASUREMENT_ID }
 
 /**
  * 发送页面浏览事件

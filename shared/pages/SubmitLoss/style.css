@@ -551,7 +551,19 @@
                   opacity: 0.5;
                   cursor: not-allowed;
                 }
+
+                &.inputError {
+                  border: 1px solid #EF4D12;
+                  color: #EF4D12;
+                }
               }
+            }
+
+            .fieldError {
+              color: #EF4D12;
+              font-size: 14px;
+              font-family: "Google Sans Code";
+              margin-top: -10px;
             }
           }
         }

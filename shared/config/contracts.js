@@ -8,6 +8,50 @@ import { CHAIN_ID as ENV_CHAIN_ID } from 'constants/env'
 // 从环境配置读取 chainID，fallback 到 Base Sepolia
 export const CHAIN_ID = ENV_CHAIN_ID || 84532
 
+// ============================================
+// 1011 Token 配置
+// ============================================
+export const TOKEN_1011 = {
+  name: '1011',
+  symbol: '1011',
+  decimals: 18,
+  totalSupply: 2_100_000_000, // 21 亿
+  // 合约地址
+  addresses: {
+    84532: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a', // Base Sepolia
+    8453: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a',  // Base Mainnet (同地址)
+  },
+}
+
+// 获取当前链的 1011 Token 地址
+export const get1011TokenAddress = () => {
+  return TOKEN_1011.addresses[CHAIN_ID] || TOKEN_1011.addresses[84532]
+}
+
+// ============================================
+// 轮次奖励配置 (Token Distribution)
+// ============================================
+export const TOKEN_DISTRIBUTION = {
+  // Submit Loss 证据提交奖励
+  submitLoss: {
+    round1: { percentage: 1.5, tokens: 31_500_000 },  // 第一轮 1.5%
+    round2: { percentage: 4, tokens: 84_000_000 },    // 第二轮 4%
+    round3: { percentage: 8, tokens: 168_000_000 },   // 第三轮 8%
+  },
+  // LP Liquidity Rewards 流动性奖励
+  lpRewards: {
+    round1: { percentage: 1, tokens: 21_000_000 },    // 第一轮 1%
+    round2: { percentage: 2, tokens: 42_000_000 },    // 第二轮 2%
+    round3: { percentage: 3, tokens: 63_000_000 },    // 第三轮 3%
+  },
+  // People DAO 认购
+  peopleDao: { percentage: 37.5, tokens: 787_500_000 }, // 37.5%
+}
+
+// 注意：getCurrentRound() 已移除
+// LP Staking 的轮次信息现在从 PointsVaultRounds 合约直接获取
+// Submit Loss 的轮次信息保留在 TOKEN_DISTRIBUTION 中供后端使用
+
 // 网络配置（用于 Web3Auth connectTo 和 wallet_addEthereumChain）
 export const CHAIN_CONFIG = {
   84532: {
@@ -56,16 +100,44 @@ const TESTNET_CONTRACTS = {
 // 根据当前网络选择合约配置
 export const CONTRACTS = CHAIN_ID === 8453 ? MAINNET_CONTRACTS : TESTNET_CONTRACTS
 
-// LP Staking 配置
+// ============================================
+// LP Staking 配置 (PointsVaultRounds 合约)
+// 三轮奖励机制：Round 1 (7天) + Round 2 (30天) + Round 3 (90天) = 127天
+// ============================================
 export const LP_STAKING = {
-  84532: { // Base Sepolia (测试)
-    stakingContract: '0x82Fd3C14e01E5b1c647AA14E5Db146070a47d204',
+  84532: { // Base Sepolia (测试) - PointsVaultRounds 新合约
+    stakingContract: '0xdF5bF5f4c4DCc27161B028B0a80C62Ae26b828C4',
     lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
-  8453: { // Base Mainnet (未部署)
-    stakingContract: null,
-    lpToken: null,
+  8453: { // Base Mainnet - PointsVaultRounds 合约 (ETH-1011 LP)
+    stakingContract: '0x06A6301283792d7D8154dBAD2cF9B8E2180833ab',
+    lpToken: '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA',
   }
+}
+
+// ============================================
+// Uniswap V2 配置（用于 Add Liquidity）
+// ============================================
+export const UNISWAP_V2 = {
+  84532: { // Base Sepolia (暂无)
+    router: null,
+    weth: null,
+    pairedToken: null, // 1011 token
+    pair: null,
+  },
+  8453: { // Base Mainnet - ETH-1011 交易对
+    router: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
+    weth: '0x4200000000000000000000000000000000000006',
+    pairedToken: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a', // 1011 Token
+    pairedTokenDecimals: 18,
+    pairedTokenSymbol: '1011',
+    pair: '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA', // ETH-1011 LP
+  }
+}
+
+// 获取当前链的 Uniswap V2 配置
+export const getUniswapV2Config = () => {
+  return UNISWAP_V2[CHAIN_ID] || UNISWAP_V2[8453]
 }
 
 // 获取当前链的 LP Staking 配置

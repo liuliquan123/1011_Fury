@@ -3,7 +3,8 @@ import { withRouter } from 'utils/withRouter'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from 'actions/auth'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import classNames from 'classnames'
 import { isExchangeVisible } from 'config/exchanges'
 import styles from './style.css'
@@ -76,12 +77,41 @@ const formatNumber = (num) => {
   return formatNumberWithUnit(num)
 }
 
-const Landing = ({ cases, submissions, actions }) => {
+const Landing = ({ cases, submissions, profile, actions }) => {
+  const navigate = useNavigate()
   const [activeIdx, setActiveIdx] = useState(0)
   const [expandedFAQ, setExpandedFAQ] = useState(null)
+  const [connecting, setConnecting] = useState(false)
   
   // 判断用户是否已提交过
   const hasSubmitted = submissions?.statistics?.total_submissions > 0
+  const isLoggedIn = !!profile?.id
+  const hasWallet = !!profile?.wallet_address
+
+  // 处理 LP Staking 入口点击
+  const handleLpStakingClick = useCallback((e) => {
+    e.preventDefault()
+    
+    // 未登录或已有钱包，直接跳转
+    if (!isLoggedIn || hasWallet) {
+      navigate('/lp-staking')
+      return
+    }
+    
+    // 已登录但无钱包，先连接钱包
+    setConnecting(true)
+    actions.linkWallet({
+      onSuccess: () => {
+        setConnecting(false)
+        toast.success('Wallet connected!')
+        navigate('/lp-staking')
+      },
+      onError: (msg) => {
+        setConnecting(false)
+        toast.error(msg || 'Failed to connect wallet')
+      }
+    })
+  }, [isLoggedIn, hasWallet, navigate, actions])
 
   useEffect(() => {
     actions.getCases({})
@@ -119,19 +149,24 @@ const Landing = ({ cases, submissions, actions }) => {
             They Took Control. We Take It Back
           </div>
           {!hasSubmitted && (
-            <Link className={styles.button} to="/submit-loss">
+          <Link className={styles.button} to="/submit-loss">
               <div className={classNames(styles.leftArrow)}>{">"}</div>
               <div className={classNames(styles.buttonText)}>SUBMIT YOUR LOSS</div>
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </Link>
           )}
-          {/* 隐藏 Crowdfund 入口
-          <Link className={classNames(styles.button, styles.secondaryButton)} to="/crowdfund">
+          {/* 隐藏 LP STAKING 入口 - 可通过 /lp-staking 直接访问 */}
+          {false && (
+          <button 
+            className={classNames(styles.button, styles.secondaryButton)} 
+            onClick={handleLpStakingClick}
+            disabled={connecting}
+          >
             <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.buttonText)}>CROWDFUND</div>
+            <div className={classNames(styles.buttonText)}>{connecting ? 'CONNECTING...' : 'LP STAKING'}</div>
             <div className={classNames(styles.rightArrow)}>{"<"}</div>
-          </Link>
-          */}
+          </button>
+          )}
         </div>
       </div>
       <div className={styles.sections}>
@@ -212,14 +247,14 @@ const Landing = ({ cases, submissions, actions }) => {
             </div>
             {/* 轮播 pagination - 只有多个 case 时才显示 */}
             {caseList.length > 1 && (
-              <div className={styles.pagination}>
-                <div className={styles.paginationContent}>
+            <div className={styles.pagination}>
+              <div className={styles.paginationContent}>
                   <div className={styles.leftButton} onClick={prevCase} style={{ cursor: 'pointer' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
-                      <path d="M0.113852 5.56483C0.103751 5.57951 0.0957266 5.59583 0.0869215 5.6111C0.0387433 5.69507 0.0108409 5.78666 0.00267635 5.8804C-0.0138618 6.06774 0.0465054 6.26109 0.189811 6.40452L5.46894 11.6837C5.7261 11.9406 6.14327 11.9398 6.40047 11.683C6.65744 11.4258 6.65745 11.0093 6.40047 10.7521L2.01627 6.36792H13.794C14.1578 6.36792 14.4528 6.07295 14.4528 5.70915C14.4528 5.34537 14.1578 5.05038 13.794 5.05038H2.47479L6.40047 1.1247C6.65768 0.867487 6.65762 0.449726 6.40047 0.192476C6.1432 -0.0644227 5.72607 -0.0639614 5.46894 0.193166L0.190502 5.47161C0.16168 5.50047 0.136207 5.5324 0.113852 5.56483Z" fill="white" />
-                    </svg>
-                  </div>
-                  <div className={styles.dots}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
+                    <path d="M0.113852 5.56483C0.103751 5.57951 0.0957266 5.59583 0.0869215 5.6111C0.0387433 5.69507 0.0108409 5.78666 0.00267635 5.8804C-0.0138618 6.06774 0.0465054 6.26109 0.189811 6.40452L5.46894 11.6837C5.7261 11.9406 6.14327 11.9398 6.40047 11.683C6.65744 11.4258 6.65745 11.0093 6.40047 10.7521L2.01627 6.36792H13.794C14.1578 6.36792 14.4528 6.07295 14.4528 5.70915C14.4528 5.34537 14.1578 5.05038 13.794 5.05038H2.47479L6.40047 1.1247C6.65768 0.867487 6.65762 0.449726 6.40047 0.192476C6.1432 -0.0644227 5.72607 -0.0639614 5.46894 0.193166L0.190502 5.47161C0.16168 5.50047 0.136207 5.5324 0.113852 5.56483Z" fill="white" />
+                  </svg>
+                </div>
+                <div className={styles.dots}>
                     {caseList.map((_, idx) => (
                       <div 
                         key={idx} 
@@ -235,14 +270,14 @@ const Landing = ({ cases, submissions, actions }) => {
                         onClick={() => setActiveIdx(idx)}
                       />
                     ))}
-                  </div>
+                </div>
                   <div className={styles.rightButton} onClick={nextCase} style={{ cursor: 'pointer' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
-                      <path d="M14.272 5.48209C14.3215 5.53372 14.3599 5.59201 14.3894 5.65334C14.4053 5.68642 14.418 5.72074 14.428 5.75554C14.4335 5.77454 14.4402 5.79353 14.4439 5.81285C14.484 6.02032 14.4236 6.24327 14.263 6.40395L8.98455 11.6824C8.72737 11.9396 8.31027 11.9401 8.05302 11.6831C7.79607 11.4258 7.79587 11.008 8.05302 10.7509L12.4358 6.36804L0.65878 6.36873C0.295167 6.36873 0.000307519 6.07351 1.08056e-05 5.70996C1.06422e-05 5.34617 0.294985 5.05119 0.65878 5.05119L11.9787 5.0505L8.05233 1.12413C7.79558 0.866846 7.79594 0.449676 8.05302 0.192598C8.31011 -0.0643469 8.72662 -0.0641074 8.98386 0.192598L14.2637 5.47242C14.2666 5.47532 14.2692 5.47911 14.272 5.48209Z" fill="black" />
-                    </svg>
-                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
+                    <path d="M14.272 5.48209C14.3215 5.53372 14.3599 5.59201 14.3894 5.65334C14.4053 5.68642 14.418 5.72074 14.428 5.75554C14.4335 5.77454 14.4402 5.79353 14.4439 5.81285C14.484 6.02032 14.4236 6.24327 14.263 6.40395L8.98455 11.6824C8.72737 11.9396 8.31027 11.9401 8.05302 11.6831C7.79607 11.4258 7.79587 11.008 8.05302 10.7509L12.4358 6.36804L0.65878 6.36873C0.295167 6.36873 0.000307519 6.07351 1.08056e-05 5.70996C1.06422e-05 5.34617 0.294985 5.05119 0.65878 5.05119L11.9787 5.0505L8.05233 1.12413C7.79558 0.866846 7.79594 0.449676 8.05302 0.192598C8.31011 -0.0643469 8.72662 -0.0641074 8.98386 0.192598L14.2637 5.47242C14.2666 5.47532 14.2692 5.47911 14.272 5.48209Z" fill="black" />
+                  </svg>
                 </div>
               </div>
+            </div>
             )}
           </div>
         </div>
@@ -389,20 +424,20 @@ const Landing = ({ cases, submissions, actions }) => {
             ].map((faq, index) => (
               <div key={index} className={styles.question}>
                 <div className={styles.questionTitle} onClick={() => toggleFAQ(index)}>
-                  <div className={styles.questionTitleText}>
+                <div className={styles.questionTitleText}>
                     {faq.q}
-                  </div>
-                  <div className={styles.questionTitleIcon}>
+                </div>
+                <div className={styles.questionTitleIcon}>
                     {expandedFAQ === index ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="2" viewBox="0 0 14 2" fill="none">
-                        <path d="M14 2H0V0H14V2Z" fill="white"/>
-                      </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="2" viewBox="0 0 14 2" fill="none">
+                    <path d="M14 2H0V0H14V2Z" fill="white"/>
+                  </svg>
                     ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
-                      </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M8 6H14V8H8V14H6V8H0V6H6V0H8V6Z" fill="white"/>
+                  </svg>
                     )}
-                  </div>
+            </div>
                 </div>
                 {expandedFAQ === index && (
                   <div className={styles.questionContent}>
@@ -412,7 +447,7 @@ const Landing = ({ cases, submissions, actions }) => {
                         {i < faq.a.split('\n').length - 1 && <br />}
                       </React.Fragment>
                     ))}
-                  </div>
+                </div>
                 )}
               </div>
             ))}
@@ -453,13 +488,13 @@ const Landing = ({ cases, submissions, actions }) => {
         </div>
       </div>
       {!hasSubmitted && (
-        <div className={styles.bottomButtons}>
-          <Link className={styles.button} to="/submit-loss">
-            <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.text)}>SUBMIT YOUR LOSS</div>
-            <div className={classNames(styles.rightArrow)}>{"<"}</div>
-          </Link>
-        </div>
+      <div className={styles.bottomButtons}>
+        <Link className={styles.button} to="/submit-loss">
+          <div className={classNames(styles.leftArrow)}>{">"}</div>
+          <div className={classNames(styles.text)}>SUBMIT YOUR LOSS</div>
+          <div className={classNames(styles.rightArrow)}>{"<"}</div>
+        </Link>
+      </div>
       )}
     </div>
   )
@@ -469,7 +504,8 @@ export default withRouter(
   connect(
     state => ({
       cases: state.auth.cases,
-      submissions: state.auth.submissions
+      submissions: state.auth.submissions,
+      profile: state.auth.profile
     }),
     dispatch => ({
       actions: bindActionCreators({
