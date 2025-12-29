@@ -109,9 +109,9 @@ export const LP_STAKING = {
     stakingContract: '0xdF5bF5f4c4DCc27161B028B0a80C62Ae26b828C4',
     lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
-  8453: { // Base Mainnet (ETH-USDC LP 测试) - 需要更新为 PointsVaultRounds 合约地址
-    stakingContract: '0xFE5E79F3cB291CC24E6c4F1c316c3443F59b7760',
-    lpToken: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',
+  8453: { // Base Mainnet - PointsVaultRounds 合约 (ETH-1011 LP)
+    stakingContract: '0x06A6301283792d7D8154dBAD2cF9B8E2180833ab',
+    lpToken: '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA',
   }
 }
 
@@ -125,13 +125,13 @@ export const UNISWAP_V2 = {
     pairedToken: null, // 1011 token
     pair: null,
   },
-  8453: { // Base Mainnet
+  8453: { // Base Mainnet - ETH-1011 交易对
     router: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
     weth: '0x4200000000000000000000000000000000000006',
-    pairedToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC (测试用，正式用 1011)
-    pairedTokenDecimals: 6, // USDC 是 6 位小数
-    pairedTokenSymbol: 'USDC',
-    pair: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C', // ETH-USDC LP
+    pairedToken: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a', // 1011 Token
+    pairedTokenDecimals: 18,
+    pairedTokenSymbol: '1011',
+    pair: '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA', // ETH-1011 LP
   }
 }
 
