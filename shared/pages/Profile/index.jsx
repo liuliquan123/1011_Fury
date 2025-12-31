@@ -525,7 +525,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     onClick={handleLpStakingClick}
                     disabled={connectingWallet}
                   >
-                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                    {connectingWallet ? 'CONNECTING...' : 'STAKING'}
                   </button>
 
                   {/* 右侧：根据状态显示不同按钮 */}
@@ -580,16 +580,13 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                       SUBMIT LOSS
                     </Link>
                   )}
-                  {/* 隐藏 STAKE LP 入口 - 可通过 /lp-staking 直接访问 */}
-                  {false && (
                   <button 
                     className={styles.getMoreButton} 
                     onClick={handleLpStakingClick}
                     disabled={connectingWallet}
                   >
-                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                    {connectingWallet ? 'CONNECTING...' : 'STAKING'}
                   </button>
-                  )}
                 </div>
               </div>
             )}

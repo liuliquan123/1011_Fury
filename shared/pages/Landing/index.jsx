@@ -155,18 +155,15 @@ const Landing = ({ cases, submissions, profile, actions }) => {
               <div className={classNames(styles.rightArrow)}>{"<"}</div>
             </Link>
           )}
-          {/* 隐藏 LP STAKING 入口 - 可通过 /lp-staking 直接访问 */}
-          {false && (
           <button 
             className={classNames(styles.button, styles.secondaryButton)} 
             onClick={handleLpStakingClick}
             disabled={connecting}
           >
             <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.buttonText)}>{connecting ? 'CONNECTING...' : 'LP STAKING'}</div>
+            <div className={classNames(styles.buttonText)}>{connecting ? 'CONNECTING...' : 'STAKING'}</div>
             <div className={classNames(styles.rightArrow)}>{"<"}</div>
           </button>
-          )}
         </div>
       </div>
       <div className={styles.sections}>
