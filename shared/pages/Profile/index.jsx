@@ -527,7 +527,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     onClick={handleLpStakingClick}
                     disabled={connectingWallet}
                   >
-                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                    {connectingWallet ? 'CONNECTING...' : 'STAKING'}
                   </button>
                   )}
 
@@ -588,7 +588,7 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                     onClick={handleLpStakingClick}
                     disabled={connectingWallet}
                   >
-                    {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
+                    {connectingWallet ? 'CONNECTING...' : 'STAKING'}
                   </button>
                 </div>
               </div>

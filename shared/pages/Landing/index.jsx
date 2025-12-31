@@ -161,7 +161,7 @@ const Landing = ({ cases, submissions, profile, actions }) => {
             disabled={connecting}
           >
             <div className={classNames(styles.leftArrow)}>{">"}</div>
-            <div className={classNames(styles.buttonText)}>{connecting ? 'CONNECTING...' : 'LP STAKING'}</div>
+            <div className={classNames(styles.buttonText)}>{connecting ? 'CONNECTING...' : 'STAKING'}</div>
             <div className={classNames(styles.rightArrow)}>{"<"}</div>
           </button>
         </div>
