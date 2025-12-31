@@ -583,8 +583,6 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                       SUBMIT LOSS
                     </Link>
                   )}
-                  {/* 隐藏 STAKE LP 入口 - 可通过 /lp-staking 直接访问 */}
-                  {false && (
                   <button 
                     className={styles.getMoreButton} 
                     onClick={handleLpStakingClick}
@@ -592,7 +590,6 @@ const Profile = ({ profile, userTokens, referralStats, actions, submissions, his
                   >
                     {connectingWallet ? 'CONNECTING...' : 'STAKE LP'}
                   </button>
-                  )}
                 </div>
               </div>
             )}
