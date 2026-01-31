@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satoshi's Fury - 环境配置验证工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            color: #667eea;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+        .check-item.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .check-item.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .check-item.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .label {
+            flex: 1;
+            font-weight: 500;
+            color: #333;
+        }
+        .value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: #666;
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .summary {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .summary-card.total {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .summary-card.passed {
+            background: #d4edda;
+            color: #28a745;
+        }
+        .summary-card.failed {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+        .summary-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .summary-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 环境配置验证工具</h1>
+        <p class="subtitle">用于验证 Satoshi's Fury 生产环境配置是否正确</p>
+        
+        <div id="summary" style="display: none;">
+            <div class="summary">
+                <div class="summary-card total">
+                    <div class="summary-number" id="totalCount">0</div>
+                    <div class="summary-label">总检查项</div>
+                </div>
+                <div class="summary-card passed">
+                    <div class="summary-number" id="passedCount">0</div>
+                    <div class="summary-label">通过</div>
+                </div>
+                <div class="summary-card failed">
+                    <div class="summary-number" id="failedCount">0</div>
+                    <div class="summary-label">失败</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results"></div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="runChecks()">开始检查</button>
+        </div>
+
+        <div class="section" style="margin-top: 40px;">
+            <div class="section-title">📖 使用说明</div>
+            <ol style="padding-left: 20px; color: #666; line-height: 1.8;">
+                <li>将此文件部署到你的网站根目录</li>
+                <li>访问 <code>https://your-domain.vercel.app/environment-verification.html</code></li>
+                <li>点击"开始检查"按钮</li>
+                <li>查看检查结果，红色项目需要在 Vercel 中配置环境变量</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // 关键配置项检查列表
+        const checks = [
+            {
+                name: '区块链网络 ID',
+                key: 'NEXT_PUBLIC_CHAIN_ID',
+                expected: '8453',
+                critical: true,
+                description: '必须为 8453 (Base Mainnet)，否则会使用测试网配置'
+            },
+            {
+                name: 'Base Mainnet RPC URL',
+                key: 'NEXT_PUBLIC_BASE_MAINNET_RPC_URL',
+                pattern: /^https:\/\/.*alchemy.*\/v2\//,
+                critical: true,
+                description: '主网 RPC 节点 URL'
+            },
+            {
+                name: '1011 Token 主网地址',
+                key: 'NEXT_PUBLIC_TOKEN_1011_MAINNET',
+                pattern: /^0x[a-fA-F0-9]{40}$/,
+                critical: true,
+                description: '1011 Token 合约地址'
+            },
+            {
+                name: 'LP Staking 主网合约',
+                key: 'NEXT_PUBLIC_LP_STAKING_CONTRACT_MAINNET',
+                expected: '0xbB0A0222aCbe664aAaaA6dF5210D7E99E2C935Ac',
+                critical: true,
+                description: 'LP 质押合约地址（Phase II）'
+            },
+            {
+                name: 'LP Token 主网地址',
+                key: 'NEXT_PUBLIC_LP_TOKEN_MAINNET',
+                pattern: /^0x[a-fA-F0-9]{40}$/,
+                critical: true,
+                description: 'ETH-1011 LP Token 地址'
+            },
+            {
+                name: 'Uniswap Router 主网',
+                key: 'NEXT_PUBLIC_UNISWAP_ROUTER_MAINNET',
+                pattern: /^0x[a-fA-F0-9]{40}$/,
+                critical: false,
+                description: 'Uniswap V2 Router 地址'
+            },
+            {
+                name: 'WETH 主网地址',
+                key: 'NEXT_PUBLIC_WETH_MAINNET',
+                expected: '0x4200000000000000000000000000000000000006',
+                critical: false,
+                description: 'Base 链 WETH 合约地址'
+            },
+            {
+                name: 'Supabase URL',
+                key: 'NEXT_PUBLIC_SUPABASE_URL',
+                pattern: /^https:\/\/.*\.supabase\.co$/,
+                critical: true,
+                description: 'Supabase API URL'
+            },
+            {
+                name: 'Web3Auth Client ID',
+                key: 'NEXT_PUBLIC_WEB3AUTH_CLIENT_ID',
+                pattern: /^[A-Za-z0-9_-]{50,}$/,
+                critical: true,
+                description: 'Web3Auth 客户端 ID'
+            },
+            {
+                name: 'Telegram Bot',
+                key: 'NEXT_PUBLIC_TELEGRAM_BOT_USERNAME',
+                expected: 'Fury1011Bot',
+                critical: true,
+                description: 'Telegram 登录 Bot 用户名'
+            },
+            {
+                name: 'Google Analytics',
+                key: 'NEXT_PUBLIC_GA_MEASUREMENT_ID',
+                pattern: /^G-[A-Z0-9]+$/,
+                critical: false,
+                description: 'Google Analytics 测量 ID'
+            }
+        ];
+
+        function runChecks() {
+            const resultsDiv = document.getElementById('results');
+            const summaryDiv = document.getElementById('summary');
+            resultsDiv.innerHTML = '';
+            
+            let passed = 0;
+            let failed = 0;
+            const results = [];
+
+            // 关键配置检查
+            const criticalSection = document.createElement('div');
+            criticalSection.className = 'section';
+            criticalSection.innerHTML = '<div class="section-title">⭐ 关键配置项</div>';
+            
+            const optionalSection = document.createElement('div');
+            optionalSection.className = 'section';
+            optionalSection.innerHTML = '<div class="section-title">📦 可选配置项</div>';
+
+            checks.forEach(check => {
+                const value = getEnvValue(check.key);
+                const result = validateCheck(check, value);
+                
+                if (result.status === 'success') {
+                    passed++;
+                } else {
+                    failed++;
+                }
+
+                const item = createCheckItem(check, result, value);
+                
+                if (check.critical) {
+                    criticalSection.appendChild(item);
+                } else {
+                    optionalSection.appendChild(item);
+                }
+            });
+
+            resultsDiv.appendChild(criticalSection);
+            resultsDiv.appendChild(optionalSection);
+
+            // 显示摘要
+            summaryDiv.style.display = 'block';
+            document.getElementById('totalCount').textContent = checks.length;
+            document.getElementById('passedCount').textContent = passed;
+            document.getElementById('failedCount').textContent = failed;
+
+            // 显示总体状态
+            const alertDiv = document.createElement('div');
+            if (failed === 0) {
+                alertDiv.className = 'alert success';
+                alertDiv.innerHTML = '<strong>✅ 所有配置检查通过！</strong><br>你的环境配置正确，可以正常使用。';
+            } else {
+                const criticalFailed = checks.filter(c => c.critical && validateCheck(c, getEnvValue(c.key)).status !== 'success').length;
+                if (criticalFailed > 0) {
+                    alertDiv.className = 'alert error';
+                    alertDiv.innerHTML = `<strong>❌ 发现 ${criticalFailed} 个关键配置问题！</strong><br>请在 Vercel Dashboard → Settings → Environment Variables 中添加缺失的配置项。`;
+                } else {
+                    alertDiv.className = 'alert warning';
+                    alertDiv.innerHTML = `<strong>⚠️ 发现 ${failed} 个可选配置问题</strong><br>不影响核心功能，但建议完善配置。`;
+                }
+            }
+            resultsDiv.insertBefore(alertDiv, resultsDiv.firstChild);
+        }
+
+        function getEnvValue(key) {
+            // 在浏览器中，Next.js 会将 NEXT_PUBLIC_ 前缀的环境变量注入到 process.env
+            return process.env[key] || window.__NEXT_DATA__?.props?.pageProps?.[key] || null;
+        }
+
+        function validateCheck(check, value) {
+            if (!value || value === 'undefined') {
+                return { status: 'error', message: '未配置' };
+            }
+
+            if (check.expected && value !== check.expected) {
+                return { 
+                    status: 'error', 
+                    message: `期望值: ${check.expected}` 
+                };
+            }
+
+            if (check.pattern && !check.pattern.test(value)) {
+                return { 
+                    status: 'error', 
+                    message: '格式不正确' 
+                };
+            }
+
+            return { status: 'success', message: '配置正确' };
+        }
+
+        function createCheckItem(check, result, value) {
+            const item = document.createElement('div');
+            item.className = `check-item ${result.status}`;
+            
+            const icon = result.status === 'success' ? '✅' : '❌';
+            const displayValue = value || '未配置';
+            
+            item.innerHTML = `
+                <span class="icon">${icon}</span>
+                <span class="label">
+                    ${check.name}
+                    ${check.critical ? '<span style="color: #dc3545; font-size: 12px;">(必需)</span>' : ''}
+                </span>
+                <span class="value" title="${displayValue}">${displayValue}</span>
+            `;
+            
+            return item;
+        }
+
+        // 页面加载时自动运行检查
+        window.addEventListener('load', () => {
+            // 延迟 500ms 确保环境变量已加载
+            setTimeout(runChecks, 500);
+        });
+    </script>
+</body>
+</html>

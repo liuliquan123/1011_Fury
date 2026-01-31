@@ -150,14 +150,22 @@ pnpm run build
 
 ### Vercel 部署配置
 
-**详细步骤请参考：[VERCEL_ENV_SETUP.md](./VERCEL_ENV_SETUP.md)**
+**📖 生产环境配置指南（推荐）：[PRODUCTION_ENV_FOR_CLIENT.md](./PRODUCTION_ENV_FOR_CLIENT.md)**
 
-快速步骤：
-1. 打开 `.env.production` 文件
-2. 复制所有内容
-3. 在 Vercel Dashboard → Settings → Environment Variables 中粘贴
-4. 选择 **Production** 环境
-5. 重新部署
+此文档专为生产环境设计，包含：
+- ⭐ 仅生产环境必需的配置项（移除测试网配置）
+- 🔍 环境验证工具和调试方法
+- ✅ 配置检查清单
+- 🚨 常见问题解决方案
+
+**快速步骤：**
+1. 打开 `PRODUCTION_ENV_FOR_CLIENT.md` 文件
+2. 按照文档逐项在 Vercel Dashboard → Settings → Environment Variables 中添加
+3. **关键：** 确保 `NEXT_PUBLIC_CHAIN_ID=8453`（Base Mainnet）
+4. 重新部署
+
+**验证配置：**
+部署后访问 `/docs/environment-verification.html` 自动检查配置是否正确。
 
 ### 环境变量列表
 
