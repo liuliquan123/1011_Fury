@@ -61,15 +61,16 @@ export const TOKEN_DISTRIBUTION = {
 // Submit Loss 的轮次信息保留在 TOKEN_DISTRIBUTION 中供后端使用
 
 // ============================================
-// RPC URL 配置 - 从环境变量读取
+// RPC URL 配置 - 硬编码 Alchemy RPC（公共 RPC 不稳定）
 // ============================================
 const getRpcUrl = (chainId) => {
   if (chainId === 8453) {
-    // 主网：优先使用环境变量，fallback 到公共 RPC
-    return process.env.NEXT_PUBLIC_BASE_MAINNET_RPC_URL || 'https://mainnet.base.org'
+    // 主网：使用 Alchemy RPC（稳定可靠）
+    // 注意：process.env 在自定义 webpack 构建中可能不可用
+    return 'https://base-mainnet.g.alchemy.com/v2/O0Tda15HPvbkGk_1trKvZ'
   }
-  // 测试网：优先使用环境变量，fallback 到公共 RPC
-  return process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'
+  // 测试网
+  return 'https://base-sepolia.g.alchemy.com/v2/FZyIRZ0HcoRTVgwCW8PV4'
 }
 
 // 网络配置（用于 Web3Auth connectTo 和 wallet_addEthereumChain）
