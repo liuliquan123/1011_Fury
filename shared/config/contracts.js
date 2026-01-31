@@ -16,10 +16,10 @@ export const TOKEN_1011 = {
   symbol: '1011',
   decimals: 18,
   totalSupply: 2_100_000_000, // 21 亿
-  // 合约地址
+  // 合约地址 - 从环境变量读取
   addresses: {
-    84532: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a', // Base Sepolia
-    8453: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a',  // Base Mainnet (同地址)
+    84532: process.env.NEXT_PUBLIC_TOKEN_1011_TESTNET || '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a',
+    8453: process.env.NEXT_PUBLIC_TOKEN_1011_MAINNET || '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a',
   },
 }
 
@@ -52,20 +52,32 @@ export const TOKEN_DISTRIBUTION = {
 // LP Staking 的轮次信息现在从 PointsVaultRounds 合约直接获取
 // Submit Loss 的轮次信息保留在 TOKEN_DISTRIBUTION 中供后端使用
 
+// ============================================
+// RPC URL 配置 - 从环境变量读取
+// ============================================
+const getRpcUrl = (chainId) => {
+  if (chainId === 8453) {
+    // 主网：优先使用环境变量，fallback 到公共 RPC
+    return process.env.NEXT_PUBLIC_BASE_MAINNET_RPC_URL || 'https://mainnet.base.org'
+  }
+  // 测试网：优先使用环境变量，fallback 到公共 RPC
+  return process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'
+}
+
 // 网络配置（用于 Web3Auth connectTo 和 wallet_addEthereumChain）
 export const CHAIN_CONFIG = {
   84532: {
     chainId: '0x14A34', // 84532 十六进制
     chainName: 'Base Sepolia',
     nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: ['https://base-sepolia.g.alchemy.com/v2/FZyIRZ0HcoRTVgwCW8PV4'],
+    rpcUrls: [getRpcUrl(84532)],
     blockExplorerUrls: ['https://sepolia.basescan.org'],
   },
   8453: {
     chainId: '0x2105', // 8453 十六进制
     chainName: 'Base',
     nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: ['https://base-mainnet.g.alchemy.com/v2/pMrL8GqUkE5zs50Y1x6ZX'],
+    rpcUrls: [getRpcUrl(8453)],
     blockExplorerUrls: ['https://basescan.org'],
   },
 }
@@ -80,43 +92,43 @@ export const CHAIN_ID_HEX = CURRENT_CHAIN_CONFIG.chainId
 export const RPC_URL = CURRENT_CHAIN_CONFIG.rpcUrls[0]
 
 // ============================================
-// 按网络区分的合约地址配置
+// 按网络区分的合约地址配置 - 从环境变量读取
 // ============================================
 
 // Base Mainnet (8453) 合约地址
 const MAINNET_CONTRACTS = {
-  signatureClaim: '0x22f198A0d94B3E410c5478f052CdA489f51418f0', // 已部署
-  signatureClaimETH: null, // 未部署
-  crowdfund: null,         // 未部署
+  signatureClaim: process.env.NEXT_PUBLIC_SIGNATURE_CLAIM_MAINNET || '0x22f198A0d94B3E410c5478f052CdA489f51418f0',
+  signatureClaimETH: process.env.NEXT_PUBLIC_SIGNATURE_CLAIM_ETH_MAINNET || null,
+  crowdfund: process.env.NEXT_PUBLIC_CROWDFUND_MAINNET || null,
 }
 
 // Base Sepolia (84532) 测试合约地址
 const TESTNET_CONTRACTS = {
-  signatureClaim: '0x0c500663300c053affA1f9f49Ba6846D80693A89',
-  signatureClaimETH: '0x97984818f82B39E91f52dE914810F37922aB27F6',
-  crowdfund: '0xf893Db8f7708377120f6B50f78c23Eb17118338f',
+  signatureClaim: process.env.NEXT_PUBLIC_SIGNATURE_CLAIM_TESTNET || '0x0c500663300c053affA1f9f49Ba6846D80693A89',
+  signatureClaimETH: process.env.NEXT_PUBLIC_SIGNATURE_CLAIM_ETH_TESTNET || '0x97984818f82B39E91f52dE914810F37922aB27F6',
+  crowdfund: process.env.NEXT_PUBLIC_CROWDFUND_TESTNET || '0xf893Db8f7708377120f6B50f78c23Eb17118338f',
 }
 
 // 根据当前网络选择合约配置
 export const CONTRACTS = CHAIN_ID === 8453 ? MAINNET_CONTRACTS : TESTNET_CONTRACTS
 
 // ============================================
-// LP Staking 配置 (PointsVaultRounds 合约)
+// LP Staking 配置 (PointsVaultRounds 合约) - 从环境变量读取
 // 三轮奖励机制：Round 1 (7天) + Round 2 (30天) + Round 3 (90天) = 127天
 // ============================================
 export const LP_STAKING = {
   84532: { // Base Sepolia (测试) - PointsVaultRounds 新合约
-    stakingContract: '0xdF5bF5f4c4DCc27161B028B0a80C62Ae26b828C4',
-    lpToken: '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
+    stakingContract: process.env.NEXT_PUBLIC_LP_STAKING_CONTRACT_TESTNET || '0xdF5bF5f4c4DCc27161B028B0a80C62Ae26b828C4',
+    lpToken: process.env.NEXT_PUBLIC_LP_TOKEN_TESTNET || '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
   8453: { // Base Mainnet - PointsVaultRounds 合约 (ETH-1011 LP)
-    stakingContract: '0x06A6301283792d7D8154dBAD2cF9B8E2180833ab',
-    lpToken: '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA',
+    stakingContract: process.env.NEXT_PUBLIC_LP_STAKING_CONTRACT_MAINNET || '0x06A6301283792d7D8154dBAD2cF9B8E2180833ab',
+    lpToken: process.env.NEXT_PUBLIC_LP_TOKEN_MAINNET || '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA',
   }
 }
 
 // ============================================
-// Uniswap V2 配置（用于 Add Liquidity）
+// Uniswap V2 配置（用于 Add Liquidity） - 从环境变量读取
 // ============================================
 export const UNISWAP_V2 = {
   84532: { // Base Sepolia (暂无)
@@ -126,12 +138,12 @@ export const UNISWAP_V2 = {
     pair: null,
   },
   8453: { // Base Mainnet - ETH-1011 交易对
-    router: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
-    weth: '0x4200000000000000000000000000000000000006',
-    pairedToken: '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a', // 1011 Token
+    router: process.env.NEXT_PUBLIC_UNISWAP_ROUTER_MAINNET || '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
+    weth: process.env.NEXT_PUBLIC_WETH_MAINNET || '0x4200000000000000000000000000000000000006',
+    pairedToken: process.env.NEXT_PUBLIC_TOKEN_1011_MAINNET || '0x7420726162497cd100d0038cA3ff2473Ba4Dd61a',
     pairedTokenDecimals: 18,
     pairedTokenSymbol: '1011',
-    pair: '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA', // ETH-1011 LP
+    pair: process.env.NEXT_PUBLIC_UNISWAP_PAIR_MAINNET || '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA',
   }
 }
 
