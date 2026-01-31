@@ -122,7 +122,7 @@ export const LP_STAKING = {
     lpToken: process.env.NEXT_PUBLIC_LP_TOKEN_TESTNET || '0xb5dDf8eDF044a997eB5863BF81700aaF145ED2f8',
   },
   8453: { // Base Mainnet - PointsVaultRounds 合约 (ETH-1011 LP)
-    stakingContract: process.env.NEXT_PUBLIC_LP_STAKING_CONTRACT_MAINNET || '0x06A6301283792d7D8154dBAD2cF9B8E2180833ab',
+    stakingContract: process.env.NEXT_PUBLIC_LP_STAKING_CONTRACT_MAINNET || '0xbB0A0222aCbe664aAaaA6dF5210D7E99E2C935Ac',
     lpToken: process.env.NEXT_PUBLIC_LP_TOKEN_MAINNET || '0x2B6C35e8b2b0ffaf637C3cfbDE6bEF77A109B4fA',
   }
 }
