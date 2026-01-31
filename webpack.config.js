@@ -187,7 +187,23 @@ const baseConfig = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production'),
-        APP_ENV: JSON.stringify(APP_ENV)
+        APP_ENV: JSON.stringify(APP_ENV),
+        // RPC URLs - 从 Vercel 环境变量注入
+        NEXT_PUBLIC_BASE_MAINNET_RPC_URL: JSON.stringify(process.env.NEXT_PUBLIC_BASE_MAINNET_RPC_URL),
+        NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL: JSON.stringify(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL),
+        // Chain ID
+        NEXT_PUBLIC_CHAIN_ID: JSON.stringify(process.env.NEXT_PUBLIC_CHAIN_ID),
+        // Contract addresses - Mainnet
+        NEXT_PUBLIC_TOKEN_1011_MAINNET: JSON.stringify(process.env.NEXT_PUBLIC_TOKEN_1011_MAINNET),
+        NEXT_PUBLIC_SIGNATURE_CLAIM_MAINNET: JSON.stringify(process.env.NEXT_PUBLIC_SIGNATURE_CLAIM_MAINNET),
+        NEXT_PUBLIC_LP_STAKING_CONTRACT_MAINNET: JSON.stringify(process.env.NEXT_PUBLIC_LP_STAKING_CONTRACT_MAINNET),
+        NEXT_PUBLIC_LP_TOKEN_MAINNET: JSON.stringify(process.env.NEXT_PUBLIC_LP_TOKEN_MAINNET),
+        NEXT_PUBLIC_UNISWAP_ROUTER_MAINNET: JSON.stringify(process.env.NEXT_PUBLIC_UNISWAP_ROUTER_MAINNET),
+        NEXT_PUBLIC_WETH_MAINNET: JSON.stringify(process.env.NEXT_PUBLIC_WETH_MAINNET),
+        NEXT_PUBLIC_UNISWAP_PAIR_MAINNET: JSON.stringify(process.env.NEXT_PUBLIC_UNISWAP_PAIR_MAINNET),
+        // Other configs
+        NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: JSON.stringify(process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME),
+        NEXT_PUBLIC_VISIBLE_EXCHANGES: JSON.stringify(process.env.NEXT_PUBLIC_VISIBLE_EXCHANGES),
       }
     }),
     new webpack.NormalModuleReplacementPlugin(/.\/production/, `./${APP_ENV}.json`),
