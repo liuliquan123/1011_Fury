@@ -391,6 +391,9 @@ function* authByTelegram(action) {
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       if (isIOS) {
+        // iOS：尝试唤起应用，失败后自动回退到 Web 版本
+        console.log('[Telegram] iOS detected, attempting to open app...')
+        
         const link = document.createElement('a')
         link.href = deepLink
         link.style.display = 'none'
@@ -398,16 +401,25 @@ function* authByTelegram(action) {
 
         link.click()
 
+        // 设置回退计时器：如果应用未打开，自动打开 Web 版本
         setTimeout(() => {
           try {
             if (link.parentNode) {
               document.body.removeChild(link)
             }
+            // 检查页面是否仍然可见（应用未打开的情况）
+            if (document.visibilityState === 'visible') {
+              console.log('[Telegram] App not opened, falling back to web version')
+              window.open(webLink, 'telegram-auth', 'width=600,height=700')
+            }
           } catch (e) {
             console.log('iOS: Failed to remove link element', e)
           }
-        }, 100)
+        }, 1500)
       } else {
+        // Android：使用 iframe 尝试唤起应用
+        console.log('[Telegram] Android detected, attempting to open app...')
+        
         const iframe = document.createElement('iframe')
         iframe.style.cssText = 'display:none;width:0;height:0;border:0;position:absolute;top:-9999px;'
         iframe.src = deepLink
@@ -425,11 +437,16 @@ function* authByTelegram(action) {
         }, 2000)
       }
     } else {
+      // 桌面端：始终使用 Web 版本，避免 tg:// 协议错误
+      console.log('[Telegram] Opening web version for desktop:', webLink)
+      
       const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
 
       if (!webWindow) {
         throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
       }
+      
+      console.log('[Telegram] Web window opened successfully')
     }
 
     let finished = false
