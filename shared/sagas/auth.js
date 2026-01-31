@@ -385,7 +385,24 @@ function* authByTelegram(action) {
     const deepLink = `tg://resolve?domain=${TELEGRAM_BOT_USERNAME}&start=${encodedToken}`
     const webLink = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodedToken}`
 
-    const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    // 增强的设备检测逻辑
+    const isMobile = (() => {
+      if (typeof window === 'undefined') return false
+      
+      const ua = navigator.userAgent || ''
+      console.log('[Telegram] User Agent:', ua)
+      
+      // 优先检测桌面平台（排除移动端）
+      if (/Windows NT|Macintosh|Linux x86_64/i.test(ua) && !/Mobile|Android/i.test(ua)) {
+        console.log('[Telegram] Desktop platform detected')
+        return false  // 明确是桌面端
+      }
+      
+      // 检测移动设备
+      const isMobileDevice = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua)
+      console.log('[Telegram] Is mobile device:', isMobileDevice)
+      return isMobileDevice
+    })()
 
     if (isMobile) {
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -437,16 +454,33 @@ function* authByTelegram(action) {
         }, 2000)
       }
     } else {
-      // 桌面端：始终使用 Web 版本，避免 tg:// 协议错误
-      console.log('[Telegram] Opening web version for desktop:', webLink)
+      // 桌面端：强制使用 Web 版本，避免 tg:// 协议错误
+      console.log('[Telegram] Desktop detected - using web link only')
+      console.log('[Telegram] Web link:', webLink)
+      console.log('[Telegram] Deep link will NOT be used')
       
-      const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
-
-      if (!webWindow) {
-        throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
+      // 防御性代码：确保不会意外触发 deeplink
+      try {
+        const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
+        
+        if (!webWindow) {
+          console.error('[Telegram] Popup blocked, trying fallback...')
+          // 回退方案：尝试在当前标签页打开（用户需要手动返回）
+          const shouldFallback = confirm(
+            'Popup blocked. Click OK to open Telegram in a new tab (you will need to return here after login).'
+          )
+          if (shouldFallback) {
+            window.location.href = webLink
+          } else {
+            throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
+          }
+        } else {
+          console.log('[Telegram] Web window opened successfully')
+        }
+      } catch (error) {
+        console.error('[Telegram] Error opening web window:', error)
+        throw new Error('Failed to open Telegram. Please check your popup blocker settings.')
       }
-      
-      console.log('[Telegram] Web window opened successfully')
     }
 
     let finished = false
