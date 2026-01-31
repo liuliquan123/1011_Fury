@@ -454,32 +454,88 @@ function* authByTelegram(action) {
         }, 2000)
       }
     } else {
-      // 桌面端：强制使用 Web 版本，避免 tg:// 协议错误
-      console.log('[Telegram] Desktop detected - using web link only')
-      console.log('[Telegram] Web link:', webLink)
-      console.log('[Telegram] Deep link will NOT be used')
+      // 桌面端：先尝试唤起桌面应用，失败后自动回退到 Web 版本
+      // 使用 localStorage 记住用户偏好，避免重复检测
+      const PREF_KEY = 'telegram_login_preference'
+      const preference = localStorage.getItem(PREF_KEY)
       
-      // 防御性代码：确保不会意外触发 deeplink
-      try {
-        const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
-        
-        if (!webWindow) {
-          console.error('[Telegram] Popup blocked, trying fallback...')
-          // 回退方案：尝试在当前标签页打开（用户需要手动返回）
-          const shouldFallback = confirm(
-            'Popup blocked. Click OK to open Telegram in a new tab (you will need to return here after login).'
-          )
-          if (shouldFallback) {
-            window.location.href = webLink
+      console.log('[Telegram] Desktop detected')
+      console.log('[Telegram] User preference:', preference || 'none (first time)')
+      console.log('[Telegram] Deep link:', deepLink)
+      console.log('[Telegram] Web link:', webLink)
+      
+      // 打开 Web 版本的辅助函数
+      const openWebVersion = () => {
+        console.log('[Telegram] Opening web version...')
+        try {
+          const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
+          
+          if (!webWindow) {
+            console.error('[Telegram] Popup blocked, trying fallback...')
+            const shouldFallback = confirm(
+              'Popup blocked. Click OK to open Telegram in a new tab (you will need to return here after login).'
+            )
+            if (shouldFallback) {
+              window.location.href = webLink
+            } else {
+              throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
+            }
           } else {
-            throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
+            console.log('[Telegram] Web window opened successfully')
           }
-        } else {
-          console.log('[Telegram] Web window opened successfully')
+        } catch (error) {
+          console.error('[Telegram] Error opening web window:', error)
+          throw new Error('Failed to open Telegram. Please check your popup blocker settings.')
         }
-      } catch (error) {
-        console.error('[Telegram] Error opening web window:', error)
-        throw new Error('Failed to open Telegram. Please check your popup blocker settings.')
+      }
+      
+      if (preference === 'web') {
+        // 用户之前选择了 Web 版本，直接使用
+        console.log('[Telegram] Using saved preference: web')
+        openWebVersion()
+      } else {
+        // 首次使用或用户偏好桌面应用：尝试唤起桌面应用
+        console.log('[Telegram] Attempting to open desktop app first...')
+        
+        // 使用 blur 事件检测应用是否成功打开
+        let appOpened = false
+        const handleBlur = () => {
+          appOpened = true
+          console.log('[Telegram] Window blur detected - app may have opened')
+        }
+        window.addEventListener('blur', handleBlur)
+        
+        // 尝试通过 deep link 唤起桌面应用
+        const link = document.createElement('a')
+        link.href = deepLink
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
+        
+        // 1.5 秒后检测结果
+        setTimeout(() => {
+          window.removeEventListener('blur', handleBlur)
+          
+          // 清理 link 元素
+          try {
+            if (link.parentNode) {
+              document.body.removeChild(link)
+            }
+          } catch (e) {
+            console.log('[Telegram] Failed to remove link element', e)
+          }
+          
+          if (appOpened) {
+            // 应用成功打开，记住偏好
+            console.log('[Telegram] Desktop app opened successfully, saving preference')
+            localStorage.setItem(PREF_KEY, 'desktop')
+          } else {
+            // 应用未打开，回退到 Web 版本并记住偏好
+            console.log('[Telegram] Desktop app not detected, falling back to web version')
+            localStorage.setItem(PREF_KEY, 'web')
+            openWebVersion()
+          }
+        }, 1500)
       }
     }
 

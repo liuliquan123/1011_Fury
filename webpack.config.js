@@ -21,8 +21,8 @@ const getAppEnv = () => {
   if (process.env.VERCEL_ENV === 'production') {
     return 'production'
   }
-  // preview、development 或本地开发都使用 staging (测试网)
-  return 'staging'
+  // 默认使用 production（主网）
+  return 'production'
 }
 const APP_ENV = getAppEnv()
 console.log(`[Webpack] Building with APP_ENV=${APP_ENV}, VERCEL_ENV=${process.env.VERCEL_ENV || 'local'}`)
