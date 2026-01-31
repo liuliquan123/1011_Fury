@@ -29,7 +29,14 @@ function* fetchContractInfoSaga() {
   try {
     yield put(actions.updateContractInfo({ loading: true, error: null }))
     
+    // DEBUG: 打印当前配置
+    console.log('[LpStaking] DEBUG - CHAIN_ID:', CHAIN_ID)
+    console.log('[LpStaking] DEBUG - RPC_URL:', RPC_URL)
+    
     const config = getLpStakingConfig()
+    console.log('[LpStaking] DEBUG - Staking Contract:', config.stakingContract)
+    console.log('[LpStaking] DEBUG - LP Token:', config.lpToken)
+    
     if (!config.stakingContract) {
       throw new Error('LP Staking contract not configured')
     }

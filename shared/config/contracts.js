@@ -5,8 +5,16 @@
 
 import { CHAIN_ID as ENV_CHAIN_ID } from 'constants/env'
 
+// DEBUG: 打印构建时的环境配置
+console.log('[Contracts] DEBUG - ENV_CHAIN_ID from constants/env:', ENV_CHAIN_ID)
+console.log('[Contracts] DEBUG - process.env.NEXT_PUBLIC_CHAIN_ID:', process.env.NEXT_PUBLIC_CHAIN_ID)
+console.log('[Contracts] DEBUG - process.env.NEXT_PUBLIC_BASE_MAINNET_RPC_URL:', process.env.NEXT_PUBLIC_BASE_MAINNET_RPC_URL)
+
 // 从环境配置读取 chainID，fallback 到 Base Sepolia
 export const CHAIN_ID = ENV_CHAIN_ID || 84532
+
+// DEBUG: 打印最终使用的 CHAIN_ID
+console.log('[Contracts] DEBUG - Final CHAIN_ID:', CHAIN_ID)
 
 // ============================================
 // 1011 Token 配置
