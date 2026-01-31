@@ -129,17 +129,58 @@ pnpm run build
 
 ## 🔐 环境变量配置
 
-### 运行时环境变量
-- **文件**: `shared/constants/env/production.json`
-- **配置**:
+### ⚠️ 重要变更（2025-01）
 
-| 环境变量 | 说明 |
-|---------|------|
-| `WEB3AUTH_CLIENT_ID` | web3auth 的 client id |
-| `SUPABASE_URL` | supabase 的 api url |
-| `SUPABASE_ANON_KEY` | supabase 的 api access key |
-| `TELEGRAM_BOT_USERNAME` | telegram bot 名称 |
-| `CHAIN_ID` | 目前支持的链ID |
+项目已重构为**环境变量驱动**的配置方式，所有敏感配置（RPC URL、合约地址等）现在从环境变量读取。
+
+### 本地开发配置
+
+1. **复制环境变量模板**：
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **填写真实配置值**：
+   编辑 `.env.local` 文件，填入你的实际配置（参考 `.env.production` 文件）
+
+3. **重启开发服务器**：
+   ```bash
+   pnpm start
+   ```
+
+### Vercel 部署配置
+
+**详细步骤请参考：[VERCEL_ENV_SETUP.md](./VERCEL_ENV_SETUP.md)**
+
+快速步骤：
+1. 打开 `.env.production` 文件
+2. 复制所有内容
+3. 在 Vercel Dashboard → Settings → Environment Variables 中粘贴
+4. 选择 **Production** 环境
+5. 重新部署
+
+### 环境变量列表
+
+| 类别 | 变量 | 说明 |
+|------|------|------|
+| **网络** | `NEXT_PUBLIC_CHAIN_ID` | 链 ID（8453=主网, 84532=测试网）|
+| **RPC** | `NEXT_PUBLIC_BASE_MAINNET_RPC_URL` | 主网 RPC URL |
+|  | `NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL` | 测试网 RPC URL |
+| **Supabase** | `NEXT_PUBLIC_SUPABASE_URL` | Supabase 项目 URL |
+|  | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase 公钥 |
+| **Web3Auth** | `NEXT_PUBLIC_WEB3AUTH_CLIENT_ID` | Web3Auth 客户端 ID |
+| **Telegram** | `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` | Telegram Bot 用户名 |
+| **Analytics** | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Google Analytics ID |
+| **合约地址** | `NEXT_PUBLIC_TOKEN_1011_MAINNET` | 1011 Token 主网地址 |
+|  | `NEXT_PUBLIC_SIGNATURE_CLAIM_MAINNET` | SignatureClaim 主网地址 |
+|  | `NEXT_PUBLIC_LP_STAKING_CONTRACT_MAINNET` | LP Staking 主网地址 |
+|  | ... | 更多合约地址见 `.env.example` |
+
+完整环境变量列表请查看 `.env.example` 文件。
+
+### 向后兼容
+
+所有环境变量都提供了 fallback 默认值，如果未设置环境变量，将使用原有的硬编码值。
 
 ## 📊 数据埋点 (Google Analytics 4)
 
