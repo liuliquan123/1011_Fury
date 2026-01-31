@@ -76,7 +76,6 @@ async function runApp() {
         import('intl/locale-data/jsonp/en.js'/* webpackChunkName: 'en' */),
         import('intl/locale-data/jsonp/zh.js'/* webpackChunkName: 'zh' */)
       ])
-      console.log('using intl polyfill')
     }
 
     if (preloadedChunks) {

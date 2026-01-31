@@ -50,8 +50,6 @@ function* waitUntil(web3auth, status) {
       if (web3auth.status === status) {
         clearInterval(iv)
         resolve(true)
-      } else {
-        console.log('wait until', web3auth, status)
       }
     }, 100)
   })
@@ -63,8 +61,6 @@ function waitUntilNot(web3auth, status) {
       if (web3auth.status !== status) {
         clearInterval(iv)
         resolve(true)
-      } else {
-        console.log('wait until not', web3auth, status)
       }
     }, 100)
   })
@@ -75,7 +71,6 @@ function* initWeb3Auth(action) {
 
   // 并发锁：避免多个 saga 同时 init
   if (initInFlight) {
-    console.log('[Web3Auth] init already in flight, waiting...')
     while (initInFlight) {
       yield delay(200)
     }
@@ -99,13 +94,10 @@ function* initWeb3Auth(action) {
       })
     }
 
-    console.log('[Web3Auth] initWeb3Auth load, status:', web3auth.status)
-
     // 仅在 not_ready 状态时 init
     if (web3auth.status === 'not_ready') {
       yield apply(web3auth, web3auth.init)
       yield call(waitUntilNot, web3auth, 'not_ready')
-      console.log('[Web3Auth] initWeb3Auth init done, status:', web3auth.status)
     }
 
     // 不再强制 logout - 如果已 connected，保持连接状态
@@ -113,7 +105,6 @@ function* initWeb3Auth(action) {
 
     onSuccess()
   } catch (error) {
-    console.log('[Web3Auth] initWeb3Auth error:', error)
     onError(error.message)
   } finally {
     initInFlight = false
@@ -146,7 +137,6 @@ export function* waitWeb3AuthReady() {
     web3auth.status !== 'connected' &&
     waitCount < maxWait
   ) {
-    console.log('[Web3Auth] waiting, status:', web3auth.status)
     yield delay(500)
     waitCount++
   }
@@ -155,8 +145,6 @@ export function* waitWeb3AuthReady() {
   if (!web3auth || (web3auth.status !== 'ready' && web3auth.status !== 'connected')) {
     throw new Error('Web3Auth initialization timeout. Please refresh and try again.')
   }
-
-  console.log('[Web3Auth] ready, status:', web3auth.status)
 
   // 4. 给一个小延迟让 SDK 内部稳定（不再轮询内部字段）
   yield delay(500)
@@ -171,9 +159,8 @@ export function* disconnectWallet() {
     try {
       // cleanup: false 更安全，不会破坏 connector 状态
       yield apply(web3auth, web3auth.logout, [{ cleanup: false }])
-      console.log('[Web3Auth] disconnected')
     } catch (error) {
-      console.log('[Web3Auth] disconnect error:', error)
+      // disconnect error ignored
     }
   }
 }
@@ -196,21 +183,17 @@ function* switchToTargetChain(provider) {
 
   try {
     // 尝试切换网络
-    console.log('[Chain] Switching to', chainConfig.chainName, '...')
     yield apply(provider, provider.request, [{
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: chainConfig.chainId }],
     }])
-    console.log('[Chain] Switched to', chainConfig.chainName)
   } catch (switchError) {
     // 错误码 4902 = 用户钱包中未添加该网络
     if (switchError.code === 4902) {
-      console.log('[Chain] Network not found, adding...')
       yield apply(provider, provider.request, [{
         method: 'wallet_addEthereumChain',
         params: [chainConfig],
       }])
-      console.log('[Chain] Network added:', chainConfig.chainName)
     } else if (switchError.code === 4001) {
       // 用户拒绝切换
       throw new Error('User rejected network switch. Please switch to ' + chainConfig.chainName + ' manually.')
@@ -238,10 +221,6 @@ function* web3AuthLogin(web3auth, data) {
 
   if (web3AuthToken) {
     localStorage.setItem('web3Auth_token', web3AuthToken)
-
-    console.log('[Referral] Calling web3AuthLogin API with:', {
-      referred_by: data.referralCode || null
-    })
 
     const authResponse = yield call(api.web3AuthLogin, {
       id_token: web3AuthToken,
@@ -273,7 +252,6 @@ function* web3AuthLogin(web3auth, data) {
     })
 
     yield put(actions.updateProfile(profileResponse.data))
-    console.log('profileResponse', profileResponse)
   }
 }
 
@@ -285,9 +263,6 @@ function* authByWallet(action) {
      *   onSuccess: () => {},
      *   onError: () => {},
      * }}) */
-
-    console.log('[Referral] authByWallet received:', { referralCode, isWalletBrowser })
-    console.log('authByWallet start', web3auth, web3auth.status)
 
     if (isWalletBrowser) {
       yield apply(web3auth, web3auth.connect)
@@ -303,12 +278,9 @@ function* authByWallet(action) {
 
     yield call(web3AuthLogin, web3auth, { referralCode, method: 'metamask' })
 
-    console.log('authByWallet end', web3auth, web3auth.status)
     onSuccess()
   } catch (error) {
     localStorage.removeItem('auth_store')
-    console.log('authByWallet error')
-    console.log('error', error)
     onError(error.message)
   }
 }
@@ -317,10 +289,6 @@ function* authByEmail(action) {
   const { onSuccess, onError, email, referralCode } = action.payload
 
   try {
-    // const web3auth = yield call(initWeb3Auth)
-    console.log('[Referral] authByEmail received:', { email, referralCode })
-    console.log('authByEmail start', web3auth, web3auth.status)
-
     yield apply(web3auth, web3auth.connectTo, [
       WALLET_CONNECTORS.AUTH, {
         authConnection: AUTH_CONNECTION.EMAIL_PASSWORDLESS,
@@ -330,12 +298,9 @@ function* authByEmail(action) {
 
     yield call(web3AuthLogin, web3auth, { referralCode, method: 'email' })
 
-    console.log('authByEmail end', web3auth, web3auth.status)
     onSuccess()
   } catch (error) {
     localStorage.removeItem('auth_store')
-    console.log('authByEmail error')
-    console.log('error', error)
     onError(error.message)
   }
 }
@@ -344,9 +309,6 @@ function* authByTwitter(action) {
   const { onSuccess, onError, referralCode } = action.payload
 
   try {
-    // const web3auth = yield call(initWeb3Auth)
-    console.log('authByTwitter start', web3auth, web3auth.status)
-
     yield apply(web3auth, web3auth.connectTo, [
       WALLET_CONNECTORS.AUTH, {
         authConnection: AUTH_CONNECTION.TWITTER,
@@ -355,12 +317,9 @@ function* authByTwitter(action) {
 
     yield call(web3AuthLogin, web3auth, { referralCode, method: 'twitter' })
 
-    console.log('authByTwitter end', web3auth, web3auth.status)
     onSuccess()
   } catch (error) {
     localStorage.removeItem('auth_store')
-    console.log('authByTwitter error')
-    console.log('error', error)
     onError(error.message)
   }
 }
@@ -379,8 +338,6 @@ function* authByTelegram(action) {
       user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
     })
 
-    console.log('authByTelegram')
-
     const encodedToken = encodeURIComponent(token)
     const deepLink = `tg://resolve?domain=${TELEGRAM_BOT_USERNAME}&start=${encodedToken}`
     const webLink = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodedToken}`
@@ -390,17 +347,14 @@ function* authByTelegram(action) {
       if (typeof window === 'undefined') return false
       
       const ua = navigator.userAgent || ''
-      console.log('[Telegram] User Agent:', ua)
       
       // 优先检测桌面平台（排除移动端）
       if (/Windows NT|Macintosh|Linux x86_64/i.test(ua) && !/Mobile|Android/i.test(ua)) {
-        console.log('[Telegram] Desktop platform detected')
         return false  // 明确是桌面端
       }
       
       // 检测移动设备
       const isMobileDevice = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua)
-      console.log('[Telegram] Is mobile device:', isMobileDevice)
       return isMobileDevice
     })()
 
@@ -409,8 +363,6 @@ function* authByTelegram(action) {
 
       if (isIOS) {
         // iOS：尝试唤起应用，失败后自动回退到 Web 版本
-        console.log('[Telegram] iOS detected, attempting to open app...')
-        
         const link = document.createElement('a')
         link.href = deepLink
         link.style.display = 'none'
@@ -426,17 +378,14 @@ function* authByTelegram(action) {
             }
             // 检查页面是否仍然可见（应用未打开的情况）
             if (document.visibilityState === 'visible') {
-              console.log('[Telegram] App not opened, falling back to web version')
               window.open(webLink, 'telegram-auth', 'width=600,height=700')
             }
           } catch (e) {
-            console.log('iOS: Failed to remove link element', e)
+            // Failed to remove link element
           }
         }, 1500)
       } else {
         // Android：使用 iframe 尝试唤起应用
-        console.log('[Telegram] Android detected, attempting to open app...')
-        
         const iframe = document.createElement('iframe')
         iframe.style.cssText = 'display:none;width:0;height:0;border:0;position:absolute;top:-9999px;'
         iframe.src = deepLink
@@ -447,9 +396,8 @@ function* authByTelegram(action) {
             if (iframe.parentNode) {
               document.body.removeChild(iframe)
             }
-            console.log('Android: Iframe removed, polling continues')
           } catch (e) {
-            console.log('Android: Failed to remove iframe', e);
+            // Failed to remove iframe
           }
         }, 2000)
       }
@@ -459,19 +407,12 @@ function* authByTelegram(action) {
       const PREF_KEY = 'telegram_login_preference'
       const preference = localStorage.getItem(PREF_KEY)
       
-      console.log('[Telegram] Desktop detected')
-      console.log('[Telegram] User preference:', preference || 'none (first time)')
-      console.log('[Telegram] Deep link:', deepLink)
-      console.log('[Telegram] Web link:', webLink)
-      
       // 打开 Web 版本的辅助函数
       const openWebVersion = () => {
-        console.log('[Telegram] Opening web version...')
         try {
           const webWindow = window.open(webLink, 'telegram-auth', 'width=600,height=700')
           
           if (!webWindow) {
-            console.error('[Telegram] Popup blocked, trying fallback...')
             const shouldFallback = confirm(
               'Popup blocked. Click OK to open Telegram in a new tab (you will need to return here after login).'
             )
@@ -480,28 +421,21 @@ function* authByTelegram(action) {
             } else {
               throw new Error('Popup blocked. Please allow popups for Telegram authentication.')
             }
-          } else {
-            console.log('[Telegram] Web window opened successfully')
           }
         } catch (error) {
-          console.error('[Telegram] Error opening web window:', error)
           throw new Error('Failed to open Telegram. Please check your popup blocker settings.')
         }
       }
       
       if (preference === 'web') {
         // 用户之前选择了 Web 版本，直接使用
-        console.log('[Telegram] Using saved preference: web')
         openWebVersion()
       } else {
         // 首次使用或用户偏好桌面应用：尝试唤起桌面应用
-        console.log('[Telegram] Attempting to open desktop app first...')
-        
         // 使用 blur 事件检测应用是否成功打开
         let appOpened = false
         const handleBlur = () => {
           appOpened = true
-          console.log('[Telegram] Window blur detected - app may have opened')
         }
         window.addEventListener('blur', handleBlur)
         
@@ -522,16 +456,14 @@ function* authByTelegram(action) {
               document.body.removeChild(link)
             }
           } catch (e) {
-            console.log('[Telegram] Failed to remove link element', e)
+            // Failed to remove link element
           }
           
           if (appOpened) {
             // 应用成功打开，记住偏好
-            console.log('[Telegram] Desktop app opened successfully, saving preference')
             localStorage.setItem(PREF_KEY, 'desktop')
           } else {
             // 应用未打开，回退到 Web 版本并记住偏好
-            console.log('[Telegram] Desktop app not detected, falling back to web version')
             localStorage.setItem(PREF_KEY, 'web')
             openWebVersion()
           }
@@ -558,8 +490,6 @@ function* authByTelegram(action) {
         select: 'status,access_token,refresh_token,user_id,is_new_user'
       })
 
-      console.log('tgAuthResponse', tgAuthResponse)
-
       if (tgAuthResponse && tgAuthResponse[0]) {
         const status = tgAuthResponse[0].status
         
@@ -569,7 +499,6 @@ function* authByTelegram(action) {
           refreshToken = tgAuthResponse[0].refresh_token
           userId = tgAuthResponse[0].user_id
           isNewUser = tgAuthResponse[0].is_new_user === true  // 确保是布尔值
-          console.log('[GA4] Telegram auth complete:', { isNewUser, status })
           finished = true
           break
         }
@@ -598,11 +527,9 @@ function* authByTelegram(action) {
     })
 
     yield put(actions.updateProfile(profileResponse.data))
-    console.log('profileResponse', profileResponse)
 
     onSuccess()
   } catch (error) {
-    console.log('error', error)
     onError(error.message)
   }
 }
@@ -616,7 +543,6 @@ function* uploadEvidenceOcr(action) {
         'Content-Type': 'multipart/form-data'
       }
     })
-    console.log('evidenceResponse', evidenceResponse)
 
     // 检查 OCR 是否成功
     if (evidenceResponse.data.ocr) {
@@ -635,7 +561,6 @@ function* uploadEvidenceOcr(action) {
       onError(errorDetails)
     }
   } catch (error) {
-    console.log('error', error)
     onError(error.message)
   }
 }
@@ -645,7 +570,6 @@ function* submitLoss(action) {
 
   try {
     const ocrForm = yield select(state => state.auth.ocrForm)
-    console.log('ocrForm', ocrForm)
 
     const authToken = localStorage.getItem('auth_token')
 
@@ -671,10 +595,8 @@ function* submitLoss(action) {
       exchange: ocrForm.exchange || 'unknown',
     })
 
-    console.log('submitLossResponse', submitLossResponse)
     onSuccess()
   } catch (error) {
-    console.log('submitLoss error', error)
     const message = typeof error.message === 'string' ? error.message : (error.message && error.message.error)
     onError(message)
   }
@@ -718,7 +640,7 @@ function* getProfile(action) {
       yield put(actions.updateReferralStats(referralStatsResponse.data))
     }
   } catch (error) {
-    console.log('getProfile error', error)
+    // getProfile error ignored
   }
 }
 
@@ -735,7 +657,7 @@ function* getExchangePhase(action) {
 
     yield put(actions.updateExchangePhase({ exchange, phase: exchangePhaseResponse.data }))
   } catch (error) {
-    console.log('getExchangePhase error', error)
+    // getExchangePhase error ignored
   }
 }
 
@@ -747,7 +669,7 @@ function* getReferralInfo(action) {
 
     yield put(actions.updateReferralInfo({ code: referralCode, ...infoResponse.data }))
   } catch (error) {
-    console.log('error', error)
+    // getReferralInfo error ignored
   }
 }
 
@@ -775,7 +697,6 @@ function* saveProfile(action) {
       onError && onError(response.error || 'Failed to update profile')
     }
   } catch (error) {
-    console.log('saveProfile error', error)
     onError && onError(error.message || 'Failed to update profile')
   }
 }
@@ -792,7 +713,7 @@ function* logout(action) {
       try {
         yield apply(web3auth, web3auth.logout, [{ cleanup: true }])
       } catch (error) {
-        console.log('error', error)
+        // logout error ignored
       }
     }
 
@@ -805,7 +726,7 @@ function* logout(action) {
 
     onSuccess()
   } catch (error) {
-    console.log('error', error)
+    // logout error ignored
   }
 }
 
@@ -817,30 +738,24 @@ function* linkWallet(action) {
     if (web3auth && web3auth.status === 'connected') {
       try {
         yield apply(web3auth, web3auth.logout, [{ cleanup: false }])
-        console.log('[linkWallet] disconnected existing connection')
       } catch (error) {
-        console.log('[linkWallet] disconnect error:', error)
+        // disconnect error ignored
       }
     }
 
     // 等待 Web3Auth 初始化完成
     yield call(waitWeb3AuthReady)
 
-    console.log('[linkWallet] start, status:', web3auth.status)
-
     // v10: MetaMask connector 不传额外参数
     const provider = yield apply(web3auth, web3auth.connectTo, [
       WALLET_CONNECTORS.METAMASK
     ])
-    console.log('linkWallet 1', provider)
     const web3AuthResponse = yield apply(web3auth, web3auth.getIdentityToken)
     const web3AuthToken = web3AuthResponse.idToken
-    console.log('linkWallet 2', web3AuthToken)
 
     const ethersProvider = new ethers.BrowserProvider(provider)
     const signer = yield apply(ethersProvider, ethersProvider.getSigner)
     const walletAddress = yield apply(signer, signer.getAddress)
-    console.log('linkWallet start3', walletAddress)
 
     const authToken = localStorage.getItem('auth_token')
 
@@ -851,13 +766,11 @@ function* linkWallet(action) {
       requireAuth: true,
       tokenFetcher: () => authToken
     })
-    console.log('linkResponse', linkResponse)
 
     yield put(actions.getProfile())
 
     onSuccess()
   } catch (error) {
-    console.log('error', error)
     const message = typeof error.message === 'string' ? error.message : (error.message && error.message.error)
     onError(message)
   }
@@ -924,7 +837,6 @@ function* claimToken(action) {
     }
 
     const { claimData, signature } = signatureResponse.data
-    console.log('claimToken: Got signature', { claimData, signature })
 
     // 通知状态变化：开始连接钱包
     if (onStatusChange) onStatusChange('connecting')
@@ -937,14 +849,10 @@ function* claimToken(action) {
     if (web3auth.status === 'connected' && web3auth.provider) {
       // 已经有连接（connected + provider）→ 直接复用
       provider = web3auth.provider
-      console.log('claimToken: Using existing provider')
     } else {
       // 没有连接 → 走 connectTo（带重试逻辑 + 并发锁）
-      console.log('claimToken: Connecting to MetaMask...')
-      
       // 并发锁：避免多个 saga 同时 connectTo
       if (connectInFlight) {
-        console.log('claimToken: connect already in flight, waiting...')
         while (connectInFlight) {
           yield delay(200)
         }
@@ -982,14 +890,12 @@ function* claimToken(action) {
               }
               
               retryCount++
-              console.log(`[Wallet] Connection attempt ${retryCount} failed:`, connectError.message)
               
               if (retryCount >= maxRetries) {
                 throw connectError
               }
               
               yield delay(1000)
-              console.log(`[Wallet] Retrying connection (${retryCount}/${maxRetries})...`)
             }
           }
         } finally {
@@ -1005,8 +911,6 @@ function* claimToken(action) {
     let ethersProvider = new ethers.BrowserProvider(provider)
     let signer = yield apply(ethersProvider, ethersProvider.getSigner)
     const signerAddress = yield apply(signer, signer.getAddress)
-
-    console.log('claimToken: Wallet connected', { signerAddress })
 
     // 4. 验证钱包地址匹配
     if (signerAddress.toLowerCase() !== claimData.claimer.toLowerCase()) {
@@ -1024,8 +928,6 @@ function* claimToken(action) {
     const currentChainId = Number(network.chainId)
     
     if (currentChainId !== CHAIN_ID) {
-      console.log(`[Chain] Current: ${currentChainId}, Target: ${CHAIN_ID}, switching...`)
-      
       // 自动切换到目标网络
       yield call(switchToTargetChain, provider)
       
@@ -1038,8 +940,6 @@ function* claimToken(action) {
       if (newAddress.toLowerCase() !== signerAddress.toLowerCase()) {
         throw new Error('Wallet address changed after network switch. Please try again.')
       }
-      
-      console.log('[Chain] Network switched successfully')
     }
 
     // 通知状态变化：发送交易
@@ -1058,9 +958,6 @@ function* claimToken(action) {
     if (deadline - now < 60) {
       throw new Error('Signature is about to expire. Please try again to get a fresh claim.')
     }
-    
-    console.log('claimToken: Signature valid, time remaining:', deadline - now, 'seconds')
-    console.log('claimToken: Calling contract', { contractAddress, exchange })
 
     const contract = new ethers.Contract(contractAddress, SIGNATURE_CLAIM_ABI, signer)
 
@@ -1071,16 +968,9 @@ function* claimToken(action) {
       signature
     ])
 
-    console.log('claimToken: Transaction sent', { hash: tx.hash })
-
     // 8. 等待交易确认
     if (onStatusChange) onStatusChange('confirming')
     const receipt = yield apply(tx, tx.wait)
-
-    console.log('claimToken: Transaction confirmed', { 
-      hash: receipt.hash,
-      blockNumber: receipt.blockNumber 
-    })
 
     // 9. 刷新用户数据
     yield put(actions.getProfile())

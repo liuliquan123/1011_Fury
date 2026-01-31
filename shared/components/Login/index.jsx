@@ -44,8 +44,6 @@ const isWalletBrowser = () => {
     typeof window.web3 !== "undefined";
 
   // If a wallet name is in UA, or we have an injected provider *without* being a desktop browser extension
-  console.log('isWalletBrowser', ua, walletRegex.test(ua))
-  console.log('hasInjectedProvider', ua, hasInjectedProvider, /Android|iPhone|iPad/i.test(ua))
   return walletRegex.test(ua) // || (hasInjectedProvider && /Android|iPhone|iPad/i.test(ua));
 };
 
@@ -209,8 +207,6 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       } catch (err) {
         if (codeToValidate !== referralCodeRef.current) return
 
-        console.error('[Register] Validation error:', err)
-
         // 所有验证失败（除了为空）都禁用登录
         setValidationState({
           status: 'invalid',
@@ -241,7 +237,6 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       return
     }
 
-    console.log('[Referral] Email login with code:', referralCode)
     setConnectingEmail(true)
 
     actions.authByEmail({
@@ -270,8 +265,6 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
     const walletInfo = detectWalletBrowser()
 
     if (walletInfo.inWallet) {
-      console.log('[Wallet] In-app browser detected:', walletInfo.walletName)
-      console.log('[Referral] Wallet login with code:', referralCode)
       setConnectingWallet(true)
       actions.authByWallet({
         walletId: walletInfo.walletId,
@@ -297,13 +290,10 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
     }
 
     const wallets = detectAllWallets()
-    console.log('[Wallet] Detected', wallets.length, 'wallet(s) in browser')
 
     if (wallets.length === 0) {
       toast('No wallet detected. Please install a Web3 wallet.')
     } else if (wallets.length === 1) {
-      console.log('[Wallet] Auto-selecting:', wallets[0].name)
-      console.log('[Referral] Wallet login with code:', referralCode)
       setConnectingWallet(true)
       actions.authByWallet({
         walletId: wallets[0].id,
@@ -320,15 +310,12 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
         }
       })
     } else {
-      console.log('[Wallet] Showing selector')
       setDetectedWallets(wallets)
       setShowWalletSelector(true)
     }
   }, [referralCode, isNoted, onLoggedIn, isLoginDisabled, checked])
 
   const onWalletSelected = useCallback((wallet) => {
-    console.log('[Wallet] User selected:', wallet.name)
-    console.log('[Referral] Wallet login with code:', referralCode)
     setShowWalletSelector(false)
     setConnectingWallet(true)
     actions.authByWallet({
@@ -405,9 +392,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
   }, [])
 
   useEffect(() => {
-    if (code) {
-      console.log('[Referral] Code from URL:', code)
-    }
+    // Referral code from URL
   }, [code])
 
   const openModal = useCallback(() => {
@@ -423,7 +408,7 @@ const Login = ({ actions, code, onClick, onLoggedIn, onLoggedOut, onClose }) => 
       navigator.clipboard.writeText(link);
       toast('Copied!')
     } catch (error) {
-      console.error('Failed to copy:', error);
+      // Failed to copy
     }
   }, [link])
 

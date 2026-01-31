@@ -17,7 +17,7 @@ const sagas = {
 }
 
 if (ENV === 'production') {
-  // delete sagas.loggerSaga
+  delete sagas.loggerSaga
 }
 
 export default function* rootSaga() {

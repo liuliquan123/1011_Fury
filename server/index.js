@@ -21,14 +21,12 @@ import sagas from 'sagas'
 const numCPUs = os.cpus().length
 
 if (cluster.isMaster) {
-  console.log(`Master ${process.pid} is running`)
-
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork()
   }
 
   cluster.on('exit', (worker) => {
-    console.log(`worker ${worker.process.pid} died`)
+    cluster.fork() // Restart worker
   })
 } else {
   const renderFullPage = (root, title, state, chunks) => `
@@ -84,14 +82,12 @@ if (cluster.isMaster) {
 
     const context = { preloadedChunks: [] }
     const matches = matchRoutes(routes, location)
-    console.log('context', location, context)
 
     if (!matches.length) {
       res.redirect(301, '/')
     } else {
       const MatchedPage = matches.slice(-1)[0].route.component
       context.preloadedChunks.push(MatchedPage.chunkName || 'Landing')
-      console.log('match', MatchedPage.chunkName)
 
       const html = ReactDOMServer.renderToString(
         <Provider store={store}>
@@ -111,6 +107,5 @@ if (cluster.isMaster) {
     // }
   })
 
-  app.listen(port, () => console.log(`Listening on port ${port}`))
-  console.log(`Worker ${process.pid} started`)
+  app.listen(port)
 }

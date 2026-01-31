@@ -9,27 +9,9 @@ export async function validateReferralCode(code) {
     // 提取基础邀请码（去掉 -BNB、-OKX 等后缀）并 trim
     const baseCode = code.split('-')[0].trim()
     
-    console.log('[Referral] Validating code', { 
-      originalCode: code, 
-      baseCode,
-      codeLength: baseCode.length 
-    })
-    
     const info = await api.getReferralInfo({ referral_code: baseCode })
-    
-    console.log('[Referral] API response', { 
-      info,
-      hasInfo: !!info,
-      hasData: !!(info && info.data),
-      hasReferrer: !!(info && info.data && info.data.referrer)
-    })
 
     if (info && info.data && info.data.referrer) {
-      console.log('[Referral] Valid referral code', {
-        code,
-        referrer: info.data.referrer.username,
-        stats: info.data.stats
-      })
       return {
         isValid: true,
         reason: 'valid',
@@ -37,14 +19,12 @@ export async function validateReferralCode(code) {
       }
     }
 
-    console.log('[Referral] Code not found - no referrer in response')
     return {
       isValid: false,
       reason: 'not_found',
       error: 'Referral code not found'
     }
   } catch (error) {
-    console.error('[Referral] Failed to validate code', { code, error })
 
     const errorMessage = error?.message || ''
 

@@ -86,11 +86,9 @@ function* getWalletProvider() {
   let provider
   if (web3auth.status === 'connected' && web3auth.provider) {
     provider = web3auth.provider
-    console.log('[Crowdfund] Using existing provider')
   } else {
     // 3. 并发锁：避免多个 saga 同时 connectTo
     if (connectInFlight) {
-      console.log('[Crowdfund] connect already in flight, waiting...')
       while (connectInFlight) {
         yield delay(200)
       }
@@ -101,7 +99,6 @@ function* getWalletProvider() {
     }
 
     // 4. 连接钱包
-    console.log('[Crowdfund] Connecting to MetaMask...')
     setConnectInFlight(true)
     
     try {
@@ -130,14 +127,12 @@ function* getWalletProvider() {
           }
           
           retryCount++
-          console.log(`[Crowdfund] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
           
           if (retryCount >= maxRetries) {
             throw connectError
           }
           
           yield delay(1000)
-          console.log(`[Crowdfund] Retrying...`)
         }
       }
     } finally {
@@ -205,14 +200,11 @@ function* contributeSaga({ payload }) {
     const contract = new ethers.Contract(contractAddress, CROWDFUND_ABI, signer)
     
     // 发送交易
-    console.log('[Crowdfund] Contributing', amount, 'ETH')
     const tx = yield call([contract, contract.contribute], {
       value: ethers.parseEther(amount)
     })
     
-    console.log('[Crowdfund] Transaction sent:', tx.hash)
     yield call([tx, tx.wait])
-    console.log('[Crowdfund] Transaction confirmed')
     
     // 刷新数据
     yield put(actions.fetchCrowdfund({ exchange }))
@@ -252,7 +244,6 @@ function* claimRefundSaga({ payload }) {
     
     // 获取用户当前 nonce
     const nonce = yield call([contract, contract.getNonce], userAddress)
-    console.log('[Crowdfund] User nonce:', nonce.toString())
     
     // 从后端获取签名
     const authToken = localStorage.getItem('auth_token')
@@ -277,14 +268,10 @@ function* claimRefundSaga({ payload }) {
       deadline: response.deadline
     }
     
-    console.log('[Crowdfund] Claiming refund with request:', request)
-    
     // 调用合约 claim
     const tx = yield call([contract, contract.claim], request, response.signature)
-    console.log('[Crowdfund] Refund transaction sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    console.log('[Crowdfund] Refund transaction confirmed')
     
     // 刷新数据
     yield put(actions.fetchCrowdfund({ exchange }))

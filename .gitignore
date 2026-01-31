@@ -113,3 +113,8 @@ releases
 
 dump.rdb
 .vercel
+
+# Internal documentation (do not upload to GitHub)
+*.md
+!README.md
+docs/*.md

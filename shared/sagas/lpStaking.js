@@ -53,12 +53,6 @@ function* fetchContractInfoSaga() {
       isPaused: info._isPaused,
       currentRound: Number(currentRoundId),
     }))
-    
-    console.log('[LpStaking] Contract info fetched', {
-      totalStaked: ethers.formatEther(info._totalStaked),
-      participantCount: Number(info._participantCount),
-      currentRound: Number(currentRoundId),
-    })
   } catch (error) {
     console.error('[LpStaking] fetchContractInfo error:', error)
     yield put(actions.updateContractInfo({ loading: false, error: error.message }))
@@ -101,11 +95,6 @@ function* fetchUserStakingSaga() {
       lpBalance: ethers.formatEther(lpBalance),
       allowance: ethers.formatEther(allowance),
     }))
-    
-    console.log('[LpStaking] User staking fetched', {
-      balance: ethers.formatEther(balance),
-      lpBalance: ethers.formatEther(lpBalance),
-    })
   } catch (error) {
     console.error('[LpStaking] fetchUserStaking error:', error)
     yield put(actions.updateUserStaking({ loading: false, error: error.message }))
@@ -143,8 +132,6 @@ function* fetchRoundsInfoSaga() {
       loading: false,
       rounds,
     }))
-    
-    console.log('[LpStaking] Rounds info fetched', rounds)
   } catch (error) {
     console.error('[LpStaking] fetchRoundsInfo error:', error)
     yield put(actions.updateRoundsInfo({ loading: false, error: error.message }))
@@ -193,8 +180,6 @@ function* fetchUserRoundsStateSaga() {
       loading: false,
       rounds,
     }))
-    
-    console.log('[LpStaking] User rounds state fetched', rounds)
   } catch (error) {
     console.error('[LpStaking] fetchUserRoundsState error:', error)
     yield put(actions.updateUserRoundsState({ loading: false, error: error.message }))
@@ -218,13 +203,9 @@ function* claimRewardSaga({ payload }) {
     const config = getLpStakingConfig()
     const contract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
     
-    console.log('[LpStaking] Claiming reward for round', roundId)
-    
     const tx = yield call([contract, contract.claim], roundId)
-    console.log('[LpStaking] Claim tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    console.log('[LpStaking] Claim confirmed')
     
     toast.success(`Round ${roundId + 1} reward claimed!`)
     
@@ -255,11 +236,9 @@ function* getWalletProvider() {
   let provider
   if (web3auth.status === 'connected' && web3auth.provider) {
     provider = web3auth.provider
-    console.log('[LpStaking] Using existing provider')
   } else {
     // 3. 并发锁：避免多个 saga 同时 connectTo
     if (connectInFlight) {
-      console.log('[LpStaking] connect already in flight, waiting...')
       while (connectInFlight) {
         yield delay(200)
       }
@@ -270,7 +249,6 @@ function* getWalletProvider() {
     }
 
     // 4. 连接钱包
-    console.log('[LpStaking] Connecting to MetaMask...')
     setConnectInFlight(true)
     
     try {
@@ -299,14 +277,12 @@ function* getWalletProvider() {
           }
           
           retryCount++
-          console.log(`[LpStaking] Connection attempt ${retryCount}/${maxRetries} failed:`, connectError.message)
           
           if (retryCount >= maxRetries) {
             throw connectError
           }
           
           yield delay(1000)
-          console.log(`[LpStaking] Retrying...`)
         }
       }
     } finally {
@@ -326,28 +302,22 @@ function* getWalletProvider() {
  */
 function* switchToTargetChain(provider) {
   const chainConfig = CHAIN_CONFIG[CHAIN_ID]
-  console.log('[LpStaking] Target chain:', CHAIN_ID, chainConfig?.chainId)
   
   if (!chainConfig) {
     throw new Error(`Chain ${CHAIN_ID} not configured`)
   }
   
   try {
-    console.log('[LpStaking] Switching to chain:', chainConfig.chainId)
     yield apply(provider, provider.request, [{
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: chainConfig.chainId }]
     }])
-    console.log('[LpStaking] Network switched successfully')
   } catch (switchError) {
-    console.log('[LpStaking] Switch error:', switchError.code, switchError.message)
     if (switchError.code === 4902) {
-      console.log('[LpStaking] Adding chain...')
       yield apply(provider, provider.request, [{
         method: 'wallet_addEthereumChain',
         params: [chainConfig]
       }])
-      console.log('[LpStaking] Chain added')
     } else if (switchError.code === 4001) {
       throw new Error('User rejected network switch')
     } else {
@@ -375,13 +345,10 @@ function* approveLpSaga({ payload }) {
     
     // 授权最大值
     const maxApproval = ethers.MaxUint256
-    console.log('[LpStaking] Approving LP Token...')
     
     const tx = yield call([lpTokenContract, lpTokenContract.approve], config.stakingContract, maxApproval)
-    console.log('[LpStaking] Approve tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    console.log('[LpStaking] Approve confirmed')
     
     toast.success('LP Token approved!')
     
@@ -415,13 +382,10 @@ function* depositLpSaga({ payload }) {
     const stakingContract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
     
     const amountWei = ethers.parseEther(amount)
-    console.log('[LpStaking] Depositing', amount, 'LP')
     
     const tx = yield call([stakingContract, stakingContract.deposit], amountWei)
-    console.log('[LpStaking] Deposit tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    console.log('[LpStaking] Deposit confirmed')
     
     toast.success(`Deposited ${amount} LP!`)
     
@@ -457,13 +421,10 @@ function* withdrawLpSaga({ payload }) {
     const stakingContract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
     
     const amountWei = ethers.parseEther(amount)
-    console.log('[LpStaking] Withdrawing', amount, 'LP')
     
     const tx = yield call([stakingContract, stakingContract.withdraw], amountWei)
-    console.log('[LpStaking] Withdraw tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    console.log('[LpStaking] Withdraw confirmed')
     
     toast.success(`Withdrawn ${amount} LP!`)
     
@@ -498,13 +459,9 @@ function* withdrawAllLpSaga({ payload }) {
     const config = getLpStakingConfig()
     const stakingContract = new ethers.Contract(config.stakingContract, LP_STAKING_ABI, signer)
     
-    console.log('[LpStaking] Withdrawing all LP')
-    
     const tx = yield call([stakingContract, stakingContract.withdrawAll])
-    console.log('[LpStaking] WithdrawAll tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    console.log('[LpStaking] WithdrawAll confirmed')
     
     toast.success('All LP withdrawn!')
     
@@ -584,8 +541,6 @@ function* fetchActivityLogSaga() {
       loading: false,
       events,
     }))
-    
-    console.log('[LpStaking] Activity log fetched', { eventCount: events.length })
   } catch (error) {
     console.error('[LpStaking] fetchActivityLog error:', error)
     yield put(actions.updateActivityLog({ loading: false, error: error.message }))
@@ -642,8 +597,6 @@ function* fetchPairReservesSaga() {
       token1,
       isToken0WETH,
     }))
-    
-    console.log('[LpStaking] Pair reserves fetched', { reserveETH, reservePairedToken, isToken0WETH })
   } catch (error) {
     console.error('[LpStaking] fetchPairReserves error:', error)
     yield put(actions.updatePairReserves({ loading: false, error: error.message }))
@@ -684,11 +637,6 @@ function* fetchPairedTokenBalanceSaga() {
       balance: ethers.formatUnits(balance, pairedTokenDecimals),
       allowance: ethers.formatUnits(allowance, pairedTokenDecimals),
     }))
-    
-    console.log('[LpStaking] Paired token balance fetched', {
-      balance: ethers.formatUnits(balance, pairedTokenDecimals),
-      allowance: ethers.formatUnits(allowance, pairedTokenDecimals),
-    })
   } catch (error) {
     console.error('[LpStaking] fetchPairedTokenBalance error:', error)
     yield put(actions.updatePairedTokenBalance({ loading: false, balance: '0', allowance: '0' }))
@@ -718,13 +666,10 @@ function* approvePairedTokenSaga({ payload }) {
     
     // 授权最大值
     const maxApproval = ethers.MaxUint256
-    console.log('[LpStaking] Approving paired token for Router...')
     
     const tx = yield call([tokenContract, tokenContract.approve], uniswapConfig.router, maxApproval)
-    console.log('[LpStaking] Approve tx sent:', tx.hash)
     
     yield call([tx, tx.wait])
-    console.log('[LpStaking] Approve confirmed')
     
     toast.success(`${uniswapConfig.pairedTokenSymbol || 'Token'} approved!`)
     
@@ -774,13 +719,6 @@ function* addLiquiditySaga({ payload }) {
     // deadline: 当前时间 + 20 分钟
     const deadline = Math.floor(Date.now() / 1000) + 20 * 60
     
-    console.log('[LpStaking] Adding liquidity...', {
-      ethAmount,
-      tokenAmount,
-      minTokenAmount: ethers.formatUnits(minTokenAmount, pairedTokenDecimals),
-      minEthAmount: ethers.formatEther(minEthAmount),
-    })
-    
     const tx = yield call(
       [routerContract, routerContract.addLiquidityETH],
       uniswapConfig.pairedToken,
@@ -792,10 +730,7 @@ function* addLiquiditySaga({ payload }) {
       { value: ethAmountWei }
     )
     
-    console.log('[LpStaking] AddLiquidity tx sent:', tx.hash)
-    
     const receipt = yield call([tx, tx.wait])
-    console.log('[LpStaking] AddLiquidity confirmed')
     
     toast.success('Liquidity added successfully!')
     
